@@ -1211,3 +1211,156 @@ $(document).ready(function () {
         }
     });
 });
+
+//Salary Calculator
+$(document).ready(function(){
+    // Initialize Select2 for better dropdown UX (if used)
+    //$('select').select2();
+
+    // Sync tax residency to hidden field
+    $('#tax_residency').on('change', function(){
+        $('#resident_status').val($(this).val());
+    });
+
+    // Sync dependents to hidden field
+    $('#no_of_dependent_frm').on('change', function(){
+        $('#no_of_dependent').val($(this).val());
+    });
+
+    // Fetch area name when place is selected
+    $('#hr_place').on('change', function(){
+        let placeId = $(this).val();
+        if (placeId) {
+            $.ajax({
+                url: window.Laravel.routes.SalaryCalculatorHRArea,
+                type: 'GET',
+                data: { id: placeId },
+                headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
+                success: function(data) {
+                    $('#hr_area').val(data.area_name);
+                    updateHRA();
+                },
+                error: function() {
+                    $('#hr_area').val('');
+                    $('#house_rent_allowance').val('');
+                }
+            });
+        } else {
+            $('#hr_area').val('');
+            $('#house_rent_allowance').val('');
+        }
+    });
+
+    // Update HRA when HRA type or rent amount changes
+    $('#hra_type, #hra_amount_per_week').on('change', updateHRA);
+
+    function updateHRA() {
+        let hraType = $('#hra_type').val();
+        let rentAmount = parseFloat($('#hra_amount_per_week').val()) || 0;
+        let areaType = $('#hr_area').val();
+
+        if (hraType && rentAmount && areaType && hraType !== '3') {
+            $.ajax({
+                url: window.Laravel.routes.SalaryCalculatorHRA,
+                type: 'GET',
+                data: { amount: rentAmount, hra_type: hraType, area_type: areaType },
+                headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
+                success: function(data) {
+                    $('#house_rent_allowance').val(data.amount.toFixed(2));
+                },
+                error: function() {
+                    $('#house_rent_allowance').val('');
+                }
+            });
+        } else {
+            $('#house_rent_allowance').val('');
+        }
+    }
+
+    // Fetch vehicle allowance when vehicle type changes
+    $('#va_type').on('change', function(){
+        let vaType = $(this).val();
+        if (vaType && vaType !== '3') {
+            $.ajax({
+                url: window.Laravel.routes.SalaryCalculatorVehicle,
+                type: 'GET',
+                data: { type: vaType },
+                headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
+                success: function(data) {
+                    $('#vehicle_allowance').val(data.amount.toFixed(2));
+                },
+                error: function() {
+                    $('#vehicle_allowance').val('');
+                }
+            });
+        } else {
+            $('#vehicle_allowance').val('');
+        }
+    });
+
+    // Fetch meals allowance when checkbox is toggled
+    $('#meals_tag').on('change', function(){
+        if ($(this).is(':checked')) {
+            $.ajax({
+                url: window.Laravel.routes.SalaryCalculatorMeals,
+                type: 'GET',
+                data: { type: 1 }, // Adjust ID as needed
+                headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
+                success: function(data) {
+                    $('#meals_allowance').val(data.amount.toFixed(2));
+                },
+                error: function() {
+                    $('#meals_allowance').val('');
+                }
+            });
+        } else {
+            $('#meals_allowance').val('');
+        }
+    });
+
+    // Update superannuation contribution percentage and tax method
+    $('#superannuation_id').on('change', function(){
+        let contribution = $(this).find(':selected').data('contribution') || 0;
+        let taxMethod = $(this).find(':selected').data('tax-method') || 'None';
+        $('#employer_contribution_percentage').val(contribution.toFixed(2));
+        // Optionally display taxMethod (e.g., in a hidden field or UI element)
+        // $('#tax_method_display').text(taxMethod); // Uncomment if needed
+    });
+
+    // Form submission
+    $('#salaryCalcForm').on('submit', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: window.Laravel.routes.SalaryCalculator,
+            type: 'POST',
+            data: $(this).serialize(),
+            headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
+            success: function(data) {
+                $('#resultBox').show();
+
+                // Populate output table
+                $('#slip_basic_salary').text(data.basic_salary);
+                $('#slip_house_rent_allowance').text(data.house_rent_allowance);
+                $('#slip_vehicle_allowance').text(data.vehicle_allowance);
+                $('#slip_meals_allowance').text(data.meals_allowance);
+                $('#slip_medical_allowance').text(data.medical_allowance);
+                $('#slip_special_allowance').text(data.special_allowance);
+                $('#slip_other_allowance').text(data.other_allowance);
+                $('#slip_electricity_allowance').text(data.electricity_allowance);
+                $('#slip_security_allowance').text(data.security_allowance);
+                $('#gross_salary').text(data.gross_salary);
+                $('#tax_deduction').text(data.tax_deduction);
+                $('#slip_provident_fund_deduction').text(data.provident_fund_deduction);
+                $('#rebate').text(data.rebate);
+                $('#total_deduction').text(data.total_deduction);
+                $('#net_salary').text(data.net_salary);
+            },
+            error: function(xhr) {
+                let errors = xhr.responseJSON?.errors || { general: ['Error calculating salary. Please check inputs.'] };
+                let errorMessage = Object.values(errors).flat().join('\n');
+                alert(errorMessage);
+            }
+        });
+    });
+});

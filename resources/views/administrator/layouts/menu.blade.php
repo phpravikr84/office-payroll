@@ -101,8 +101,8 @@
             </a>
             <div class="collapse" id="processpay">
               <ul class="nav flex-column sub-menu">
-               
-                <li class="nav-item"> <a class="nav-link" href="{{ route('pay_references.status_enquiry') }}"><i class="fa fa-circle-o"></i>{{ __('Status Enquiry') }}</a></li>
+
+                <li class="nav-item"> <a class="nav-link" href="{{ route('pay_references.payref.statusEnquiry') }}"><i class="fa fa-circle-o"></i>{{ __('Status Enquiry') }}</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ route('pay_references.create')}}"><i class="fa fa-circle-o"></i>{{ __('Create Pay') }}</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ route('pay_references.index')}}"><i class="fa fa-circle-o"></i>{{ __('Manage Pay') }}</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ url('/process_pay/pay_references/approve_pay') }}"><i class="fa fa-circle-o"></i>{{ __('Approve Process Pay') }}</a></li>

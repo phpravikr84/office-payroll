@@ -268,7 +268,7 @@
                                             </button>
                                         </div>
                                     @endif
-                                    <form action="{{ route('pay_reference_submit', $pay_reference->id) }}" method="post">
+                                    <form action="{{ route('pay_references.pay_reference_submit', $pay_reference->id) }}" method="post">
                                             {{ csrf_field() }}
                                         <button type="submit" name="submit_pay_salary" id="submit_pay_salary" class="btn btn-success">Submit Pay</button>
                                     </form>
@@ -289,7 +289,7 @@
                 <h4 class="modal-title" id="addPayRefPayItemLabel">{{ __('Add Pay Items') }}</h4>
             </div>
             <div class="modal-body">
-                <form id="payItemForm" action="{{ route('add_payitem_payref') }}" method="post">
+                <form id="payItemForm" action="{{ route('pay_references.add_payitem_payref') }}" method="post">
                     {{ csrf_field() }}
                     <input type="hidden" name="payrefid" id="payrefid" value="{{$pay_reference->id}}"/>
                     <input type="hidden" name="empid" id="payrefempid" />

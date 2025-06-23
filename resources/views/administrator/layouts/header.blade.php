@@ -23,14 +23,19 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+                <!-- <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
                     <i class="icon-bell mx-0"></i>
                     <span class="count"></span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                </a> -->
+                <!-- <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
                     <p class="mb-0 font-weight-normal float-left dropdown-header">{{ __('Notifications') }}</p>
-                    <!-- You can add notification items here -->
-                </div>
+                   
+                </div> -->
+                <a href="{{ route('salary.calculator')}}" class="btn btn-primary flex pull-right">
+                    <img src="{{ asset('backend/images/calculator_new.png') }}" alt="Calculator" style="width: 20px; height: 20px; margin-right: 5px;">
+                    Salary Calculator
+                </a>
+
             </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">

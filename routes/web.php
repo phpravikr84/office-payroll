@@ -67,7 +67,8 @@ use App\Http\Controllers\{
 	BankDetailController,
 	CompanyController,
 	SuperAnnuationReportController,
-	CostCenterController
+	CostCenterController,
+	SalaryCalculatorController
 };
 
 header("Cache-Control: no-cache, must-revalidate");
@@ -264,19 +265,19 @@ Route::group(['middleware' => 'auth'], function () {
 		//
 	// Pay References
 	Route::prefix('process_pay/pay_references')->name('pay_references.')->group(function () {
-		Route::get('/', [PayReferenceController::class, 'index'])->name('pay_references.index');
-		Route::get('/create', [PayReferenceController::class, 'create'])->name('pay_references.create');
-		Route::post('/store', [PayReferenceController::class, 'store'])->name('pay_references.store');
-		Route::get('/edit/{id}', [PayReferenceController::class, 'edit'])->name('pay_references.edit');
-		Route::get('/show/{id}', [PayReferenceController::class, 'show'])->name('pay_references.show');
-		Route::post('/update/{id}', [PayReferenceController::class, 'update'])->name('pay_references.update');
-		Route::post('/destroy/{id}', [PayReferenceController::class, 'destroy'])->name('pay_references.destroy');
+		Route::get('/', [PayReferenceController::class, 'index'])->name('index');
+		Route::get('/create', [PayReferenceController::class, 'create'])->name('create');
+		Route::post('/store', [PayReferenceController::class, 'store'])->name('store');
+		Route::get('/edit/{id}', [PayReferenceController::class, 'edit'])->name('edit');
+		Route::get('/show/{id}', [PayReferenceController::class, 'show'])->name('show');
+		Route::post('/update/{id}', [PayReferenceController::class, 'update'])->name('update');
+		Route::post('/destroy/{id}', [PayReferenceController::class, 'destroy'])->name('destroy');
 		Route::post('/save_pay_reference', [PayReferenceController::class, 'savePayReferenceEmployees'])->name('pay_reference_employees.save');
 		Route::post('/pay_reference_add_loan', [PayReferenceController::class, 'addLoanDetailsByPayReference'])->name('pay_reference_add_loan');
 		Route::post('/pay_reference_add_leave', [PayReferenceController::class, 'addLeaveDetailsByPayReference'])->name('pay_reference_add_leave');
 		Route::get('/payslip/{employee_id}/{pay_ref_id}', [PayReferenceController::class, 'showPaymentSlip'])->name('show_payment_slip');
 		Route::post('/submit_pay_reference/{pay_ref_id}', [PayReferenceController::class, 'submitPayRef'])->name('pay_reference_submit');
-		Route::get('/payslips', [PayReferenceController::class, 'viewpaySlipsByPayRef'])->name('pay_reference_viewpayslip');
+		Route::get('/payslips', [PayReferenceController::class, 'viewpaySlipsByPayRef'])->name('view_payslips');
 		Route::get('/payslips/all/{pay_ref_id}', [PayReferenceController::class, 'viewAllpaySlipsByPayRef'])->name('payref.allpayslips');
 		Route::get('/status_enquiry', [PayReferenceController::class, 'payrefStatusEnquiry'])->name('payref.statusEnquiry');
 		Route::get('/export-payslips/{pay_reference_id}', [PayReferenceController::class, 'exportPayslips'])->name('export.payslips');
@@ -638,6 +639,11 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('/superannuation-report', [SuperAnnuationReportController::class, 'index'])->name('superannuation.report');
 		Route::post('/superannuation-report/show', [SuperAnnuationReportController::class, 'showSuperannuationReport'])->name('superannuation.report_show');
 	});
+
+	//Salary Calculation
+	Route::get('/salary-calculator', [SalaryCalculatorController::class, 'index'])->name('salary.calculator');
+	Route::post('/salary-calculator/calculate', [SalaryCalculatorController::class, 'calculate'])->name('salary.calculate');
+
 
 });
 // Auth::routes();

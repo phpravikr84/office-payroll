@@ -49,13 +49,13 @@
                                 <td>
                                     @if($pay_reference->payref_status!=4)
                                         @if($pay_reference->payref_finalStatus==0)
-                                        <form id="waitingConfirmForm" action="{{ route('pay_references_approved', $pay_reference->id) }}" method="GET">
+                                        <form id="waitingConfirmForm" action="{{ route('pay_references.pay_references_approved', $pay_reference->id) }}" method="GET">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="pay_ref_id" value="{{ $pay_reference->id }}" />
                                             <button data-id="{{ $pay_reference->id }}" class="btn btn-warning btn-sm waitingConfirm" data-payrefid="{{ $pay_reference->id }}">{{ __('Waiting for approve payref') }}</button>
                                         </form>
                                         @else
-                                        <form id="rejectConfirmForm" action="{{ route('pay_references_rejected', $pay_reference->id) }}" method="GET">
+                                        <form id="rejectConfirmForm" action="{{ route('pay_references.pay_references_rejected', $pay_reference->id) }}" method="GET">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="pay_ref_id" value="{{ $pay_reference->id }}" />
                                             <button data-payrefid="{{ $pay_reference->id }}" class="btn btn-danger btn-sm rejectConfirm">{{ __('Do you want disapprove payref') }}</button>

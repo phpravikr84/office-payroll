@@ -68,7 +68,7 @@
                                     <td>{{ $pay_reference->payroll_number }}</td>
                                     <td>
                                         @if($status!='Cancel')
-                                            <a href="{{ route('payref.allpayslips', $pay_reference->id) }}" class="btn btn-success btn-sm">{{ __('View all payslips') }}</a>
+                                            <a href="{{ route('pay_references.payref.allpayslips', $pay_reference->id) }}" class="btn btn-success btn-sm">{{ __('View all payslips') }}</a>
                                         @else
                                             <span class="badge badge-danger">Payref Rejected</span>
                                         @endif

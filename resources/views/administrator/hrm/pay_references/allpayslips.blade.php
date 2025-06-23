@@ -31,7 +31,7 @@
             <div class="col-12 mb-4 mt-4">
                 <h3>{{ __('Manage Payslip References') }}</h3>
                 <button class="btn btn-primary mb-3" onclick="printAllPayslips()">Print All Payslips</button>
-                <button class="btn btn-primary mb-3" onclick="window.location.href='{{ route('export.payslips', ['pay_reference_id' => $pay_reference->id]) }}'">Export Payslips </button>
+                <button class="btn btn-primary mb-3" onclick="window.location.href='{{ route('pay_references.export.payslips', ['pay_reference_id' => $pay_reference->id]) }}'">Export Payslips </button>
             </div>
 
             <div class="col-12">

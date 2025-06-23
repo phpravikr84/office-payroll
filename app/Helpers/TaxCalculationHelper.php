@@ -2,11 +2,11 @@
 
 namespace App\Helpers;
 
-use App\HraRate;
-use App\HraAreaPlace;
-use App\TaxResident;
-use App\DependentRebate;
-use App\Allowance;
+use App\Models\HraRate;
+use App\Models\HraAreaPlace;
+use App\Models\TaxResident;
+use App\Models\DependentRebate;
+use App\Models\Allowance;
 
 class TaxCalculationHelper
 {

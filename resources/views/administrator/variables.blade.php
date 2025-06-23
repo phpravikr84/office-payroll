@@ -65,7 +65,14 @@
             
             //Company
             CompanyBankDetails: '{{ url("/setting/company/bank_detail/") }}',
-           
+
+            //Salary Calculator
+            SalaryCalculator: '{{ url("/salary-calculator/calculate") }}',
+            SalaryCalculatorHRArea: '{{ url("/salary-calculator/hra_area_src") }}',
+            SalaryCalculatorHRA: '{{ url("/salary-calculator/hra") }}',
+            SalaryCalculatorVehicle: '{{ url("/salary-calculator/vehicle") }}',
+            SalaryCalculatorMeals: '{{ url("/salary-calculator/meals") }}',
+
         }
     };
 </script>
