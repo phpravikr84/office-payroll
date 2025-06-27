@@ -1228,7 +1228,7 @@ $(document).ready(function(){
     });
 
     // Fetch area name when place is selected
-    $('#hr_place').on('change', function(){
+    $('#hr_place_salcal').on('change', function(){
         let placeId = $(this).val();
         if (placeId) {
             $.ajax({

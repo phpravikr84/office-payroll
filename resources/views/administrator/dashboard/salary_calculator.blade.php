@@ -164,9 +164,9 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td><label for="hr_place" class="form-label">Place Name</label></td>
+                                                    <td><label for="hr_place_salcal" class="form-label">Place Name</label></td>
                                                     <td>
-                                                        <select name="hr_place" id="hr_place" class="form-select" required>
+                                                        <select name="hr_place" id="hr_place_salcal" class="form-select" required>
                                                             <option value="" selected disabled>Select place</option>
                                                             @foreach($loca_places as $place)
                                                                 <option value="{{ $place->id }}">{{ $place->places }}</option>
