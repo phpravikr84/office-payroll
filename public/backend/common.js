@@ -1230,6 +1230,7 @@ $(document).ready(function(){
     // Fetch area name when place is selected
     $('#hr_place_salcal').on('change', function(){
         let placeId = $(this).val();
+        console.log('Place Id: '+placeId);
         if (placeId) {
             $.ajax({
                 url: window.Laravel.routes.SalaryCalculatorHRArea,
@@ -1237,6 +1238,7 @@ $(document).ready(function(){
                 data: { id: placeId },
                 headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
                 success: function(data) {
+                    console.log('Area Name' +  data.area_name);
                     $('#hr_area').val(data.area_name);
                     updateHRA();
                 },
