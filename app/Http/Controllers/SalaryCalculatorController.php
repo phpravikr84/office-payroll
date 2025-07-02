@@ -144,6 +144,7 @@ class SalaryCalculatorController extends Controller
         $grossTax = $taxData
             ? (($grossYearly * ($taxData->gross_tax_per / 100)) - $taxData->deduted_amt)
             : 0;
+        
 
         // Dependent rebate
         $rebate = 0;
@@ -193,11 +194,17 @@ class SalaryCalculatorController extends Controller
         ]);
     }
 
-    public function hra_area_src(Request $request)
+    public function hra_area_name($hra_area_id)
     {
-        $hraId = $request->id;
-        $area = HraAreaPlace::find($hraId);
-        return response()->json(['area_name' => $area ? $area->loca_name : '']);
+        $area_location = HraAreaPlace::query()
+			->where('id', $hra_area_id)
+			->get(['id', 'loca_name', 'places'])
+			->toArray();
+
+		foreach ($area_location as $key => $value) {
+				$area_location1 = $value['loca_name'];
+		}
+		return response([$area_location1]);
     }
 
     public function hra(Request $request)
@@ -229,9 +236,8 @@ class SalaryCalculatorController extends Controller
         return response()->json(['amount' => $vaAmount ?? 0]);
     }
 
-    public function meals(Request $request)
+    public function meals($mealsType)
     {
-        $mealsType = (int) ($request->type ?? 1);
         $mealsAmount = Allowance::where('id', $mealsType)->value('amount');
         return response()->json(['amount' => $mealsAmount ?? 0]);
     }

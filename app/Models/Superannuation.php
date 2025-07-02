@@ -20,6 +20,8 @@ class Superannuation extends Model
         'employer_name',
         'employer_superannuation_no',
         'registration_date',
+        'employee_contrib_percent',
+        'employee_contrib_amount',
         'status',
     ];
 }

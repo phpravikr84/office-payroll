@@ -297,7 +297,7 @@
                                                 <tr><th colspan="2" class="text-dark">Deductions & Rebate</th></tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
+                                                <tr style="display:none;">
                                                     <td><label for="tax_deduction_a" class="form-label">Tax Deduction</label></td>
                                                     <td>
                                                         <input type="number" name="tax_deduction_a" class="form-control" id="tax_deduction_a" readonly>
@@ -319,20 +319,25 @@
                                                     <td colspan="2" class="text-dark"><strong>Superannuation Fund</strong></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><label for="superannuation_id" class="form-label">Superannuation Name</label></td>
+                                                    <td><label for="superannuation_id" class="form-label">Superannuation</label></td>
                                                     <td>
+                                                        <label for="superannuation_id" class="form-label">Superannuation name</label>
                                                         <select class="form-select" id="superannuation_id" name="superannuation_id" required>
                                                             <option value="" selected disabled>Select option</option>
                                                             @foreach($superannuations as $superannuation)
                                                                 <option value="{{ $superannuation->id }}" 
-                                                                        data-contribution="{{ $superannuation->employer_contribution_percentage }}"
+                                                                        data-contribution-empy="{{ $superannuation->employer_contribution_percentage }}"
+                                                                        data-contribution-empl="{{ $superannuation->employee_contrib_percent }}"
                                                                         data-tax-method="{{ $superannuation->tax_method_for_employee_contribution }}">
                                                                     {{ $superannuation->name }} ({{ $superannuation->code }})
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                         <div class="error-feedback" id="errors_superannuation_id"></div>
+                                                        <label for="superannuation_contrib_percentage" class="form-label mt-2">Employer Contribution Percentage</label>
                                                         <input type="text" id="employer_contribution_percentage" name="employer_contribution_percentage" class="form-control mt-2" readonly placeholder="Contribution %">
+                                                        <label for="superannuation_contrib_percentage" class="form-label mt-2">Employer Contribution Percentage</label>
+                                                        <input type="text" id="employee_contribution_percentage" name="employee_contribution_percentage" class="form-control mt-2" readonly placeholder="Contribution %">
                                                     </td>
                                                 </tr>
                                                 <tr>

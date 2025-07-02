@@ -37,6 +37,14 @@
                         <input type="number" name="employer_contribution_fixed_amount" class="form-control" step="0.01" value="{{ $superannuation->employer_contribution_fixed_amount }}">
                     </div>
                     <div class="form-group">
+                        <label for="employee_contrib_percent">{{ __('Employee Contribution (%)') }}</label>
+                        <input type="number" name="employee_contrib_percent" class="form-control" step="0.01" value="{{ $superannuation->employee_contrib_percent }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="employee_contrib_amount">{{ __('Employee Contribution (Fixed Amount)') }}</label>
+                        <input type="number" name="employee_contrib_amount" class="form-control" step="0.01" value="{{ $superannuation->employee_contrib_amount }}">
+                    </div>
+                    <div class="form-group">
                         <label for="tax_method_for_employee_contribution">{{ __('Tax Method for Employee Contribution') }}</label>
                         <select name="tax_method_for_employee_contribution" class="form-control">
                             <option value="after_tax" {{ $superannuation->tax_method_for_employee_contribution=='after_tax' ? 'selected' : '' }}>{{ __('After Tax') }}</option>

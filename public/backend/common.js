@@ -1233,13 +1233,12 @@ $(document).ready(function(){
         console.log('Place Id: '+placeId);
         if (placeId) {
             $.ajax({
-                url: window.Laravel.routes.SalaryCalculatorHRArea,
+                url: window.Laravel.routes.SalaryCalculatorHRArea+'/'+placeId,
                 type: 'GET',
-                data: { id: placeId },
                 headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
                 success: function(data) {
-                    console.log('Area Name' +  data.area_name);
-                    $('#hr_area').val(data.area_name);
+                    console.log('Area Name' +  data);
+                    $('#hr_area').val(data);
                     updateHRA();
                 },
                 error: function() {
@@ -1304,9 +1303,8 @@ $(document).ready(function(){
     $('#meals_tag').on('change', function(){
         if ($(this).is(':checked')) {
             $.ajax({
-                url: window.Laravel.routes.SalaryCalculatorMeals,
+                url: window.Laravel.routes.SalaryCalculatorMeals+'/3',
                 type: 'GET',
-                data: { type: 1 }, // Adjust ID as needed
                 headers: {'X-CSRF-TOKEN': window.Laravel.csrfToken},
                 success: function(data) {
                     $('#meals_allowance').val(data.amount.toFixed(2));
@@ -1322,11 +1320,19 @@ $(document).ready(function(){
 
     // Update superannuation contribution percentage and tax method
     $('#superannuation_id').on('change', function(){
-        let contribution = $(this).find(':selected').data('contribution') || 0;
-        let taxMethod = $(this).find(':selected').data('tax-method') || 'None';
-        $('#employer_contribution_percentage').val(contribution.toFixed(2));
-        // Optionally display taxMethod (e.g., in a hidden field or UI element)
-        // $('#tax_method_display').text(taxMethod); // Uncomment if needed
+        console.log('superannuation_id: '+$(this).val())
+        var selectedOption = $(this).find('option:selected');
+        var employer_contrib_percentage = selectedOption.data('contribution-empy');
+        var employee_contrib_percentage = selectedOption.data('contribution-empl');
+        console.log('Employer Contrib Perecentage'+ employer_contrib_percentage);
+        console.log('Employee Contrib Perecentage'+ employee_contrib_percentage);
+        if (employer_contrib_percentage || employee_contrib_percentage) {
+            $('#employer_contribution_percentage').val(employer_contrib_percentage);
+            $('#employee_contribution_percentage').val(employee_contrib_percentage);
+        } else {
+            // Clear fields if no superannuation selected
+            $('#employer_contribution_percentage, #employee_contribution_percentage').val('');
+        }
     });
 
     // Form submission
@@ -1352,7 +1358,7 @@ $(document).ready(function(){
                 $('#slip_electricity_allowance').text(data.electricity_allowance);
                 $('#slip_security_allowance').text(data.security_allowance);
                 $('#gross_salary').text(data.gross_salary);
-                $('#tax_deduction').text(data.tax_deduction);
+                $('#tax_deduction').text(data.gross_tax);
                 $('#slip_provident_fund_deduction').text(data.provident_fund_deduction);
                 $('#rebate').text(data.rebate);
                 $('#total_deduction').text(data.total_deduction);

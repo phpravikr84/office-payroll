@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Superannuation;
-use App\Bank;
+use App\Models\Superannuation;
+use App\Models\Bank;
 use Illuminate\Http\Request;
 
 class SuperannuationController extends Controller
@@ -35,6 +35,8 @@ class SuperannuationController extends Controller
             'employer_name' => 'nullable|string|max:255',
             'employer_superannuation_no' => 'nullable|string|max:255',
             'registration_date' => 'nullable|date',
+            'employee_contrib_percent' => 'nullable|numeric|between:0,100',
+            'employee_contrib_amount' => 'nullable|numeric',
             'status' => 'required|in:0,1',
         ]);
 
@@ -66,6 +68,8 @@ class SuperannuationController extends Controller
             'employer_name' => 'nullable|string|max:255',
             'employer_superannuation_no' => 'nullable|string|max:255',
             'registration_date' => 'nullable|date',
+            'employee_contrib_percent' => 'nullable|numeric|between:0,100',
+            'employee_contrib_amount' => 'nullable|numeric',
             'status' => 'required|in:0,1',
         ]);
 

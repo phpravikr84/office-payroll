@@ -68,7 +68,7 @@
 
             //Salary Calculator
             SalaryCalculator: '{{ url("/salary-calculator/calculate") }}',
-            SalaryCalculatorHRArea: '{{ url("/salary-calculator/hra_area_src") }}',
+            SalaryCalculatorHRArea: '{{ url("/salary-calculator/hra_area_name") }}',
             SalaryCalculatorHRA: '{{ url("/salary-calculator/hra") }}',
             SalaryCalculatorVehicle: '{{ url("/salary-calculator/vehicle") }}',
             SalaryCalculatorMeals: '{{ url("/salary-calculator/meals") }}',

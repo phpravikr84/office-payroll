@@ -643,7 +643,10 @@ Route::group(['middleware' => 'auth'], function () {
 	//Salary Calculation
 	Route::get('/salary-calculator', [SalaryCalculatorController::class, 'index'])->name('salary.calculator');
 	Route::post('/salary-calculator/calculate', [SalaryCalculatorController::class, 'calculate'])->name('salary.calculate');
-
+	Route::get('/salary-calculator/hra_area_name/{id}', [SalaryCalculatorController::class, 'hra_area_name']);
+	Route::get('/salary-calculator/hra', [SalaryCalculatorController::class, 'hra']);
+	Route::get('/salary-calculator/vehicle', [SalaryCalculatorController::class, 'vehicle']);
+	Route::get('/salary-calculator/meals/{id}', [SalaryCalculatorController::class, 'meals']);
 
 });
 // Auth::routes();
