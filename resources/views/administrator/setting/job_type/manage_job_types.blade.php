@@ -50,7 +50,7 @@
                     @endif
                 </div>
                 <!-- /.Notification Box -->
-                <table  class="table table-bordered table-striped">
+                <table  id="example1" class="table table-bordered table-striped">
                     <tbody id="myTable">
                         <tr>
                             <th>{{ __('SL#') }}</th>
@@ -67,7 +67,7 @@
                         <tr>
                             <td>{{ $sl++ }}</td>
                             <td>{{ $job_type['job_type'] }}</td>
-                            <td>{{ str_limit($job_type['job_type_description'], 65) }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($job_type['job_type_description'], 65) }}</td>
                             <td class="text-center">{{ date("d F Y", strtotime($job_type['created_at'])) }}</td>
                             <td class="text-center">
                                 @if ($job_type['publication_status'] == 1)
@@ -77,7 +77,7 @@
                                 @endif
                             </td>
                             <td>
-                               <a href="{{ url('/setting/job-types/edit/' . $job_type['id']) }}"><i class="icon fa fa-edit"></i>{{ __('Edit') }} </a>
+                               <a href="{{ url('/setting/job-types/edit/' . $job_type['id']) }}"><i class="icon fa fa-edit"></i><i class="fas fa-edit"></i> </a>
                             </td>
                         </tr>
                         @endforeach

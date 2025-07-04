@@ -58,7 +58,7 @@
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <table id="example1" class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead class="bg-gradient-primary text-white">
               <tr>
                 <th>#</th>

@@ -30,7 +30,7 @@
                         @if ($message = Session::get('success'))
                             <div class="alert alert-success">{{ $message }}</div>
                         @endif
-                        <table class="table table-bordered">
+                        <table id="example1" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>{{ __('GL Code') }}</th>
@@ -46,10 +46,10 @@
                                         <td>{{ $glCode->gl_name }}</td>
                                         <td>{{ $glCode->status == 1 ? __('Active') : __('Inactive') }}</td>
                                         <td>
-                                            <a href="{{ route('gl_codes.edit', $glCode->id) }}" class="btn btn-sm btn-info">{{ __('Edit') }}</a>
+                                            <a href="{{ route('gl_codes.edit', $glCode->id) }}" class="btn-sm btn-info"><i class="fas fa-edit"></i></a>
                                             <form action="{{ route('gl_codes.destroy', $glCode->id) }}" method="POST" style="display:inline;">
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-sm btn-danger">{{ __('Delete') }}</button>
+                                                <button type="submit" class="btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
                                             </form>
                                         </td>
                                     </tr>

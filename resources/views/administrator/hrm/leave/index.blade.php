@@ -40,7 +40,7 @@ use Carbon\Carbon;
                 @if ($leaveApplications->isEmpty())
                     <p>{{ __('No leave applications found.') }}</p>
                 @else
-                    <table class="table table-bordered">
+                    <table id="example1" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>{{ __('Start Date') }}</th>

@@ -2,147 +2,141 @@
 <html lang="en">
 
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Payhours Admin</title>
-  <!-- plugins:css -->
+
+  <!-- Plugins and styles -->
   <link rel="stylesheet" href="{{ asset('backend/vendors/feather/feather.css') }}">
   <link rel="stylesheet" href="{{ asset('backend/vendors/ti-icons/css/themify-icons.css') }}">
   <link rel="stylesheet" href="{{ asset('backend/vendors/css/vendor.bundle.base.css') }}">
-  <!-- endinject -->
-  <!-- Plugin css for this page -->
-  <!-- End plugin css for this page -->
-  <!-- inject:css -->
   <link rel="stylesheet" href="{{ asset('backend/css/vertical-layout-light/style.css') }}">
-  <!-- endinject -->
   <link rel="shortcut icon" href="{{ asset('backend/images/favicon.png') }}" />
+
+  <!-- Custom CSS -->
   <style>
-    .loginBg{
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
-	height: 100vh;
-}
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
 
-.auth .auth-form-light {
-    background: #ffffff;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Adjust as needed */
-    border-radius: 8px; /* Optional: gives rounded corners */
-    padding: 20px; /* Optional: adds some padding */
-}
+    .loginBg {
+      background: url('{{ asset("profile_picture/payroll_management-bg.png") }}') no-repeat center center;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
 
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
+    .auth-form-light {
+      background: rgb(255 255 255 / 7%); /* white transparent */
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 0px 40px;
+      width: 100%;
+      max-width: 400px;
+      margin-right: 60px;
+    }
+
+    .form-control {
+      border-radius: 4px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #23d5ab, #137a9f);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      transition: background 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #137a9f, #23d5ab);
+    }
+
+    .btn-link {
+      color: #137a9f;
+      text-decoration: underline;
+    }
+
+    .help-block {
+      color: red;
+      font-size: 13px;
+    }
+
+    .brand-logo img {
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    h4 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #fff;
+    }
   </style>
 </head>
 
 <body>
-  <div class="container-scroller">
-    <div class="container-fluid page-body-wrapper full-page-wrapper">
-      <div class="content-wrapper loginBg d-flex align-items-center auth px-0">
-        <div class="row w-100 mx-0">
-          <div class="col-lg-4 mx-auto">
-            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-              <div class="brand-logo">
-              <img src="{{  asset('backend/images/logo.svg') }}" width="150" alt="logo"/>
-              </div>
-              <h4>Login</h4>
-              <form class="form-horizontal" method="POST" action="{{ route('login') }}">
-                        {{ csrf_field() }}
-
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="control-label">{{ __('E-Mail Address') }}</label>
-
-          
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                    
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="control-label">{{ __('Password') }}</label>
-
-                    
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                        
-                        </div>
-
-                        <div class="form-group">
-                        
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                         
-                        </div>
-
-                        <div class="form-group">
-                       
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                   {{ __('Forgot Your Password?') }} 
-                                </a>
-                            
-                        </div>
-                    </form>
-            </div>
-          </div>
-        </div>
+  <div class="loginBg">
+    <div class="auth-form-light text-left pt-5">
+      <div class="brand-logo">
+        <!-- <img src="{{ asset('backend/images/logo.svg') }}" width="150" alt="logo"/> -->
       </div>
-      <!-- content-wrapper ends -->
+      <h4>Login</h4>
+      <form method="POST" action="{{ route('login') }}">
+        @csrf
+
+        @if ($errors->any())
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+        @endif
+
+        <div class="form-group">
+          <label for="email" class="text-light">{{ __('E-Mail Address') }}</label>
+          <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
+          @if ($errors->has('email'))
+          <span class="help-block">{{ $errors->first('email') }}</span>
+          @endif
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="text-light">{{ __('Password') }}</label>
+          <input id="password" type="password" class="form-control" name="password" required>
+          @if ($errors->has('password'))
+          <span class="help-block">{{ $errors->first('password') }}</span>
+          @endif
+        </div>
+
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+          <label class="form-check-label text-light" for="remember">{{ __('Remember Me') }}</label>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary w-100">{{ __('Login') }}</button>
+        </div>
+
+        <div class="text-center">
+          <a class="btn btn-link" href="{{ route('password.request') }}">{{ __('Forgot Your Password?') }}</a>
+        </div>
+      </form>
     </div>
-    <!-- page-body-wrapper ends -->
   </div>
-  <!-- container-scroller -->
-  <!-- plugins:js -->
+
+  <!-- Scripts -->
   <script src="{{ asset('backend/vendors/js/vendor.bundle.base.js') }}"></script>
-  <!-- endinject -->
-  <!-- Plugin js for this page -->
-  <!-- End plugin js for this page -->
-  <!-- inject:js -->
   <script src="{{ asset('backend/js/off-canvas.js') }}"></script>
   <script src="{{ asset('backend/js/hoverable-collapse.js') }}"></script>
   <script src="{{ asset('backend/js/template.js') }}"></script>
   <script src="{{ asset('backend/js/settings.js') }}"></script>
   <script src="{{ asset('backend/js/todolist.js') }}"></script>
-  <!-- endinject -->
 </body>
 
 </html>
-

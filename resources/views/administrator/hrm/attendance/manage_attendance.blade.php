@@ -36,7 +36,7 @@
         <div class="box box-primary">
             <!-- Table to display attendance data -->
             <div class="table-responsive">
-                <table class="table table-bordered">
+                <table id="example1" class="table table-bordered">
                     <thead class="bg-info">
                         <tr>
                             <th>sl#</th>

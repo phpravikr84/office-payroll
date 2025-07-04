@@ -101,7 +101,7 @@ $(function () {
                             <td class="transaction-fee">0</td>
                             <td>
                                 <a href="#" class="btn btn-sm btn-primary pull-right edit-btn">Edit</a>
-                                <a href="#" class="btn btn-sm btn-danger pull-right remove-btn">Remove</a>
+                                <a href="#" class="btn-sm btn-danger pull-right remove-btn">Remove</a>
                             </td>
                         </tr>`;
 
@@ -325,7 +325,7 @@ $(function () {
                             <td class="transaction-fee">0</td>
                             <td>
                                 <a href="#" class="btn btn-sm btn-primary pull-right anz-edit-btn">Edit</a>
-                                <a href="#" class="btn btn-sm btn-danger pull-right anz-remove-btn">Remove</a>
+                                <a href="#" class="btn-sm btn-danger pull-right anz-remove-btn">Remove</a>
                             </td>
                         </tr>`;
 
@@ -540,7 +540,7 @@ $(function () {
                             <td class="transaction-fee">0</td>
                             <td>
                                 <a href="#" class="btn btn-sm btn-primary pull-right wpac-edit-btn">Edit</a>
-                                <a href="#" class="btn btn-sm btn-danger pull-right wpac-remove-btn">Remove</a>
+                                <a href="#" class="btn-sm btn-danger pull-right wpac-remove-btn">Remove</a>
                             </td>
                         </tr>`;
 
@@ -752,7 +752,7 @@ $(function () {
                             <td class="transaction-fee">0</td>
                             <td>
                                 <a href="#" class="btn btn-sm btn-primary pull-right kina-edit-btn">Edit</a>
-                                <a href="#" class="btn btn-sm btn-danger pull-right kina-remove-btn">Remove</a>
+                                <a href="#" class="btn-sm btn-danger pull-right kina-remove-btn">Remove</a>
                             </td>
                         </tr>`;
 

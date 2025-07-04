@@ -10,7 +10,7 @@
             <li class="active">{{ __('Payslip References') }}</li>
         </ol>
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+            <table id="example1" id="example1" class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <td>ID: {{ $pay_reference->id }}</td>
@@ -78,7 +78,7 @@
                             <!-- Payment Table -->
                             <div class="col-md-12" id="div_pay">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table id="example1" class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>Description</th>

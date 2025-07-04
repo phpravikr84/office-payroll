@@ -87,7 +87,7 @@
           <div class="box-body">
             <!-- Notification Box -->
             <div class="col-md-12">
-              <table class="table table-bordered">
+              <table id="example1" class="table table-bordered">
                <tr class="bg-info">
                 <th>{{ __('sl#') }}</th>
                 <th>{{ __('Employee Name') }}</th>

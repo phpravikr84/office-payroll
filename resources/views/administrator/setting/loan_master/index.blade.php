@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ route('loan_master.create') }}" class="btn btn-primary">Add Loan</a>
-                <table class="table table-bordered">
+                <table id="example1" class="table table-bordered">
                     <thead>
                         <tr>
                             <th>ID</th>

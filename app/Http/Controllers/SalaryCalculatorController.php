@@ -8,6 +8,7 @@ use App\Models\Allowance;
 use App\Models\HraRate;
 use App\Models\HraAreaPlace;
 use App\Models\Superannuation;
+use App\Models\TaxRate;
 
 class SalaryCalculatorController extends Controller
 {
@@ -119,10 +120,13 @@ class SalaryCalculatorController extends Controller
         $superannuation = Superannuation::find($superannuationId);
         $taxMethod = $superannuation ? $superannuation->tax_method_for_employee_contribution : null;
 
+        $employer_ctb_perct = $superannuation->employer_contribution_percentage ? $superannuation->employer_contribution_percentage : 6;
+        $employee_ctb_perct = $superannuation->employee_contrib_percent ? $superannuation->employee_contrib_percent : 8.4;
+
         // Calculate superannuation base (exclude optional allowances if not core)
         $superannuationBase = $grossFortnight - ($specialAllowance + $otherAllowance); // Exclude non-core allowances
-        $employeeContribution = round($superannuationBase * 0.06, 2); // 6%
-        $employerContribution = round($superannuationBase * 0.084, 2); // 8.4%
+        $employeeContribution = round($superannuationBase * ($employee_ctb_perct/100), 2); // 6%
+        $employerContribution = round($superannuationBase * ($employer_ctb_perct/100), 2); // 8.4%
 
         // Use input provident_fund_deduction if provided, else calculated employee contribution
         $providentFundDeduction = $providentFundDeductionInput > 0 ? $providentFundDeductionInput : $employeeContribution;
@@ -137,24 +141,82 @@ class SalaryCalculatorController extends Controller
         $grossAnnual = $preTaxGross * 26;
         $grossYearly = $residency === 1 ? $grossAnnual - 200 : $grossAnnual;
 
-        $taxData = TaxResident::whereRaw('? BETWEEN min_amt AND max_amt', [$grossYearly])
-                    ->where('resi_status', $residency)
-                    ->first();
+        // $taxData = TaxResident::whereRaw('? BETWEEN min_amt AND max_amt', [$grossYearly])
+        //             ->where('resi_status', $residency)
+        //             ->first();
 
-        $grossTax = $taxData
-            ? (($grossYearly * ($taxData->gross_tax_per / 100)) - $taxData->deduted_amt)
-            : 0;
+        // $grossTax = $taxData
+        //     ? (($grossYearly * ($taxData->gross_tax_per / 100)) - $taxData->deduted_amt)
+        //     : 0;
+
+        //
+        $tax_per = 0;
+        $deduted_amt = 0;
+
+        $tax_detail = TaxResident::query()
+            ->whereRaw('? between min_amt and max_amt', [$grossYearly])
+            ->where('resi_status', $residency)
+            ->select('gross_tax_per', 'deduted_amt')
+            ->first();
+
+        if ($tax_detail) {
+            $tax_per = $tax_detail->gross_tax_per / 100;
+            $deduted_amt = $tax_detail->deduted_amt;
+        }
+
+        $grossTax = ($grossYearly * $tax_per) - $deduted_amt;
+
         
 
         // Dependent rebate
-        $rebate = 0;
-        if ($dependents > 0) {
-            $rebateData = DependentRebate::where('no_of_dependent', min(3, $dependents))->first();
-            if ($rebateData) {
-                $calculated = ($rebateData->per_of_tax / 100) * $grossTax;
-                $rebate = max($rebateData->rebate_amt1, min($calculated, $rebateData->rebate_amt2));
-            }
+        // $rebate = 0;
+        // if ($dependents > 0) {
+        //     $rebateData = DependentRebate::where('no_of_dependent', min(3, $dependents))->first();
+        //     if ($rebateData) {
+        //         $calculated = ($rebateData->per_of_tax / 100) * $grossTax;
+        //         $rebate = max($rebateData->rebate_amt1, min($calculated, $rebateData->rebate_amt2));
+        //     }
+        // }
+
+        if ($dependents >= 3) {
+            $dependents = 3;
         }
+
+        $depend_qry = DependentRebate::where('no_of_dependent', $dependents)
+            ->select('rebate_amt1', 'rebate_amt2', 'per_of_tax')
+            ->first();
+
+        $rebate_amt1 = 0;
+        $rebate_amt2 = 0;
+        $per_of_tax = 0;
+        $rebate_amt = 0;
+        $rebate = 0;
+
+        if ($depend_qry) {
+            $rebate_amt1 = (float) $depend_qry->rebate_amt1; // 75
+            $rebate_amt2 = (float) $depend_qry->rebate_amt2; // 750
+            $per_of_tax = (float) $depend_qry->per_of_tax;
+
+            $rebate_amt = round(($per_of_tax / 100) * $grossTax, 2);
+
+            $mid = ($rebate_amt1 + $rebate_amt2) / 2;
+
+            // If below midpoint, use min; otherwise, use max
+            $rebate = ($rebate_amt < $mid) ? $rebate_amt1 : $rebate_amt2;
+
+            // return response()->json([
+            //     'rebate_amt1' => $rebate_amt1,
+            //     'rebate_amt2' => $rebate_amt2,
+            //     'rebate_amt'  => $rebate,
+            //     'per_of_tax'  => $per_of_tax,
+            // ]);
+
+        }
+
+
+        
+
+
 
         $netTax = $grossTax - $rebate;
         $taxPerFortnight = $netTax / 26;
@@ -168,11 +230,17 @@ class SalaryCalculatorController extends Controller
         // Net salary
         $netSalary = $grossFortnight - $totalDeduction;
 
+        // Calculate Tax 
+        $data = $this->calculateTaxA($grossFortnight, $dependents, 'resident');
+
         // Return JSON response
         return response()->json([
             'gross_salary' => number_format($grossFortnight, 2),
             'gross_annual' => number_format($grossAnnual, 2),
             'tax_deduction' => number_format($taxPerFortnight, 2),
+            'tax_deduction_new' => number_format($data['tax'], 2),
+            'rebate_new' => number_format($data['rebate'], 2),
+            'tax_after_rebate' => number_format($data['tax_after_rebate'], 2), //fixed key name
             'total_deduction' => number_format($totalDeduction, 2),
             'net_salary' => number_format($netSalary, 2),
             'rebate' => number_format($rebate, 2),
@@ -191,8 +259,76 @@ class SalaryCalculatorController extends Controller
             'employer_contribution' => number_format($employerContribution, 2),
             'area_name' => $areaName,
             'tax_method' => $taxMethod,
+            'superann' => $superannuationBase,
+            'grossfor' => $grossFortnight,
         ]);
     }
+
+    /**
+     * Calculate TAX A
+     */
+
+    public function calculateTaxA($fortnightlyIncome = 0, $dependents = 0, $residentType = 'resident')
+    {
+        $tax = 0.00;
+        $rebate = 0.00;
+
+        // Cap dependents at 3
+        $effectiveDependents = min((int)$dependents, 3);
+
+        if ($fortnightlyIncome <= 950) {
+            $taxRate = TaxRate::where('salary_min', '<=', $fortnightlyIncome)
+                ->where('salary_max', '>=', $fortnightlyIncome)
+                ->first();
+
+            if ($taxRate) {
+                // Select column name based on dependents
+                $taxColumn = match ($effectiveDependents) {
+                    0 => 'tax_none',
+                    1 => 'tax_one',
+                    2 => 'tax_two',
+                    default => 'tax_three_or_more',
+                };
+
+                $rebate = $taxRate->$taxColumn ?? 0.00;
+                $tax = 115.38;
+            }
+        } else {
+            // Income-based slab tax
+            if ($fortnightlyIncome <= 1276) {
+                $tax = 115.38 + 0.30 * ($fortnightlyIncome - 950);
+            } elseif ($fortnightlyIncome <= 2700) {
+                $tax = 213.46 + 0.35 * ($fortnightlyIncome - 1276);
+            } elseif ($fortnightlyIncome <= 9623) {
+                $tax = 711.54 + 0.40 * ($fortnightlyIncome - 2700);
+            } else {
+                $tax = 3480.77 + 0.42 * ($fortnightlyIncome - 9623);
+            }
+
+            $tax = max(0, round($tax, 2));
+
+            // Static rebate values
+            $rebate = match ($effectiveDependents) {
+                1 => 17.30,
+                2 => 28.85,
+                3 => 40.38,
+                default => 0.00,
+            };
+        }
+
+        $taxAfterRebate = max(0, round($tax - $rebate, 2));
+
+        // Return as array for internal use
+        return [
+            'fortnightly_income' => $fortnightlyIncome,
+            'dependents' => $dependents,
+            'resident_type' => $residentType,
+            'tax' => $tax,
+            'rebate' => $rebate,
+            'tax_after_rebate' => $taxAfterRebate,
+        ];
+    }
+
 
     public function hra_area_name($hra_area_id)
     {

@@ -27,7 +27,7 @@
             <div class="box-body">
                 <a href="{{ url('/setting/designations') }}" class="btn btn-primary btn-flat"><i class="fa fa-arrow-left"></i>{{ __('Back') }} </a>
                 <hr>
-                <table  class="table table-bordered table-striped">
+                <table  id="example1" class="table table-bordered table-striped">
                     <tbody id="myTable">
                         <tr>
                             <td>{{ __('Designation') }}</td>
@@ -82,7 +82,7 @@
                                     <div class="btn-group">
                                         <a href="{{ url('/setting/designations/edit/' . $designation['id']) }}" class="tip btn btn-success tip btn-flat" title="" data-original-title="Edit Product">
                                             <i class="fa fa-edit"></i>
-                                            <span class="hidden-sm hidden-xs"> {{ __('Edit') }}</span>
+                                            <span class="hidden-sm hidden-xs"> <i class="fas fa-edit"></i></span>
                                         </a>
                                     </div>
                                     

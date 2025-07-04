@@ -111,7 +111,7 @@ $personalevents= \App\PersonalEvent::all();
 <div class="row myrow">
     <div class="col-lg-6">
       <h2 class="myh2">{{ __('Holiday') }}</h2>
-      <table class="table table-bordered table-striped">
+      <table id="example1" id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>{{ __('SL') }}</th>
@@ -136,7 +136,7 @@ $personalevents= \App\PersonalEvent::all();
     </div>
     <div class="col-lg-6">
       <h2 class="myh2-1">{{ __('Notice') }}</h2>
-       <table class="table table-bordered table-striped">
+       <table id="example1" id="example1" class="table table-bordered table-striped">
 
                         <thead>
                             <tr>
@@ -270,7 +270,7 @@ beginAtZero: true
       </div>
       <!-- /.box-header -->
       <div class="box-body table-responsive no-padding">
-        <table  class="table table-bordered table-striped">
+        <table id="example1" id="example1" class="table table-bordered table-striped">
           <tr>
             <th>{{ __('SL#') }}</th>
             <th>{{ __('Event Name') }}</th>

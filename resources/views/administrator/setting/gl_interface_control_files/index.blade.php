@@ -30,7 +30,7 @@
                         @if ($message = Session::get('success'))
                             <div class="alert alert-success">{{ $message }}</div>
                         @endif
-                        <table class="table table-bordered">
+                        <table id="example1" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>{{ __('Control Setup Name') }}</th>
@@ -44,10 +44,10 @@
                                         <td>{{ $controlFile->control_setup_name }}</td>
                                         <td>{{ $controlFile->gl_name }}</td>
                                         <td>
-                                            <a href="{{ route('gl_interface_control_files.edit', $controlFile->id) }}" class="btn btn-sm btn-info">{{ __('Edit') }}</a>
+                                            <a href="{{ route('gl_interface_control_files.edit', $controlFile->id) }}" class="btn-sm btn-info"><i class="fas fa-edit"></i></a>
                                             <form action="{{ route('gl_interface_control_files.destroy', $controlFile->id) }}" method="POST" style="display:inline;">
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-sm btn-danger">{{ __('Delete') }}</button>
+                                                <button type="submit" class="btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
                                             </form>
                                         </td>
                                     </tr>

@@ -1,36 +1,38 @@
-.loginBg{
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
-	height: 100vh;
+/* Login background with improved color harmony */
+.loginBg {
+    background: linear-gradient(-45deg, #137a9f, #23d5ab, #3ecf8e, #1e88e5);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    height: 100vh;
+    color: #ffffff;
 }
 
-
 @keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .sidebar .nav .nav-item .nav-link {
-        -webkit-flex-direction: row!important;
-        flex-direction: row!important;
-       
-    }
+    -webkit-flex-direction: row !important;
+    flex-direction: row !important;
+}
 
+/* Optional: uncomment if needed
 @media (min-width: 992px) {
     .sidebar-mini .sidebar {
-        width: 235px!important;
+        width: 235px !important;
     }
-}
- li {
-    list-style-type: none!important;
+} */
+
+li {
+    list-style-type: none !important;
 }
 
 .breadcrumb {
@@ -60,12 +62,12 @@
 
 .breadcrumb a {
     text-decoration: none;
-    color: #4B49AC;
+    color: #137a9f;
     transition: color 0.3s ease;
 }
 
 .breadcrumb a:hover {
-    color: #6a68f0;
+    color: #0e5f79;
     text-decoration: underline;
 }
 
@@ -77,73 +79,129 @@
 .breadcrumb i {
     margin-right: 0.5rem;
     font-size: 1rem;
-    color: #007bff;
+    color: #137a9f;
 }
 
 h1, .h1 {
-    font-size: 2.125rem !important;
+    font-size: 1.5rem !important;
+    color: #ffffff;
+    background-color: #137a9f;
+    padding: 010px;
 }
-.table.table-bordered{
+
+h3, .h3 {
+    font-size: 1.2rem !important;
+}
+
+.table.table-bordered {
     background: #fff;
 }
-.bg-info, .settings-panel .color-tiles .tiles.info, th {
+
+.bg-info,
+.settings-panel .color-tiles .tiles.info,
+th {
     background-color: #f4f4f4 !important;
 }
+
 .calendar-icon {
     cursor: pointer;
-    color: #0097a7; /* Customize icon color */
+    color: #0097a7;
 }
 
 .calendar-icon i {
-    font-size: 16px; /* Adjust icon size */
+    font-size: 16px;
 }
 
 @media (min-width: 576px) {
     .modal-dialog {
-        max-width: 576px!important;
+        max-width: 576px !important;
     }
 }
 
 .nav-item.active {
-    background: none!important;
+    background: none !important;
 }
+
 .img-thumbnail {
-    max-width: 100px!important;
+    max-width: 100px !important;
 }
 
-/* Style for the form group when there's an error */
+/* Form error styles */
 .form-group.has-error {
-    border-color: #ff6850; /* Red border for error */
+    border-color: #ff6850;
 }
 
-/* Style for the input field inside the error group */
 .form-group.has-error .form-control {
-    border-color: #ff6850; /* Red border for the input field */
-    box-shadow: none; /* Remove input shadow */
+    border-color: #ff6850;
+    box-shadow: none;
 }
 
-/* Style for the help block (error message) */
 .form-group.has-error .help-block {
-    color: #ff6850; /* Red text for the error message */
+    color: #ff6850;
     font-weight: bold;
     margin-top: 5px;
 }
 
-/* Style for the feedback icon (if any) */
 .form-group.has-error .has-feedback {
-    color: #ff6850; /* Red for any feedback icon */
+    color: #ff6850;
 }
-/**
-IOv
-*/
 
+/* Sidebar sub-menu */
 .sidebar .nav.sub-menu .nav-item .nav-link.active {
-    background: transparent;
+    background: #000;
     border-bottom: 1px solid #fff !important;
-border-radius: 0 !important;
+    border-radius: 0 !important;
 }
+
 .sidebar .nav.sub-menu {
-background: transparent !important;
+    background: #137a9f!important;
 }
 
+/* Updated primary button to match color scheme */
+.btn-primary {
+    background-color: #137a9f;
+    border-color: #137a9f;
+    color: #fff;
+}
 
+.btn-primary:hover {
+    background-color: #0e5f79;
+    border-color: #0e5f79;
+}
+
+/* Sidebar active link updated for consistency */
+.sidebar .nav .nav-item .nav-link.active {
+    background-color: #137a9f;
+    color: #ffffff !important;
+}
+
+/**
+Override
+**/
+.sidebar .nav .nav-item .nav-link .menu-title {
+    font-size: 0.8rem !important;
+}
+
+.sidebar .nav.sub-menu .nav-item .nav-link {
+     font-size: 0.8rem !important;
+}
+
+.sidebar .nav:not(.sub-menu) {
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.sidebar .nav .nav-item .nav-link {
+    border-radius: 0!important;
+}
+.sidebar .nav:not(.sub-menu) > .nav-item > .nav-link[aria-expanded="true"] {
+    border-radius: 0!important;
+}
+
+@media (min-width: 992px) {
+    .sidebar-mini:not(.sidebar-icon-only) .sidebar .nav.sub-menu .nav-item .nav-link {
+        padding: 1rem !important;
+        width: 100% !important;
+    }
+}

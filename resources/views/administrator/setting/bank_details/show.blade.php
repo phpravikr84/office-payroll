@@ -26,7 +26,7 @@
             <div class="box-body">
                 <a href="{{ url('/setting/bank_details') }}" class="btn btn-primary btn-flat"><i class="fa fa-arrow-left"></i>{{ __('Back') }} </a>
                 <hr>
-                <table class="table table-bordered table-striped">
+                <table id="example1" id="example1" class="table table-bordered table-striped">
                     <tbody id="myTable">
                         @if($bankDetails)
                             @foreach($bankDetails as $bankDetail)

@@ -61,7 +61,7 @@
                 <div class="tab-pane active" id="job_details">
 
                     <!-- notice details -->
-                    <table  class="table table-bordered table-striped">
+                    <table id="example1" id="example1" class="table table-bordered table-striped">
                         <tbody id="myTable">
                             <tr>
                                 <td><strong>{{ $notice['notice_title'] }}</strong></td>

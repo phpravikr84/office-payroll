@@ -24,7 +24,7 @@
             @endif
 
             <div class="box-body">
-                <table id="payReferencesTable" class="table table-bordered table-striped">
+                <table id="payReferencesTable" id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>ID</th>

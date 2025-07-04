@@ -48,7 +48,7 @@ use Carbon\Carbon;
                 </div>
                 <!-- /.Notification Box -->
                 <div class="col-md-12 table-responsive">
-                    <table  class="table table-bordered table-striped">
+                    <table id="example1" id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>{{ __('SL#') }}</th>
@@ -67,7 +67,7 @@ use Carbon\Carbon;
                         @foreach($leave_applications as $leave_application)
                           <tr>
                             <td>{{  $sl++ }}</td>
-                            <td>{{str_limit($leave_application['reason'], 65)}}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($leave_application['reason'], 65)}}</td>
                             <td>{{ date('d/m/Y', strtotime($leave_application['start_date'])) }}</td>
                             <td>{{ date('d/m/Y', strtotime($leave_application['end_date'])) }}</td>
                             <td class="text-center">

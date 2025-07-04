@@ -49,7 +49,7 @@
                     </div>
                     <!-- /.Notification Box -->
                     <div class="col-12 table-responsive">
-                        <table  class="table table-bordered table-striped">
+                        <table  id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>{{ __('SL#') }}</th>
@@ -88,7 +88,7 @@
                                     @endif
                                     </td>
                                     <td class="text-center">
-                                    <a href="{{ url('/setting/bank_details/edit/' . $bankDetail->id) }}"><i class="icon fa fa-edit"></i> {{ __('Edit') }}</a>
+                                    <a href="{{ url('/setting/bank_details/edit/' . $bankDetail->id) }}"><i class="icon fa fa-edit"></i> <i class="fas fa-edit"></i></a>
                                     </td>
                                 </tr>
                                 @endforeach

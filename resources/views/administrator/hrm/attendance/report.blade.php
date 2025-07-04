@@ -91,7 +91,7 @@
         <div class="box box-primary border-top">
             <!-- Table to display attendance data -->
             <div class="table-responsive">
-                <table class="table table-bordered table-striped" id="attendanceTable">
+                <table id="example1" id="example1" class="table table-bordered table-striped" id="attendanceTable">
                     <thead class="bg-info">
                         <tr>
                             <th>sl#</th>

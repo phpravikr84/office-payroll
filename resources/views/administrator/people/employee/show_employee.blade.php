@@ -28,7 +28,7 @@
             <a href="{{ url('/people/employees') }}" class="btn btn-primary btn-flat"><i class="fa fa-arrow-left"></i> {{ __('Back') }}</a>
             <hr>
             <div id="printable_area">
-                <table class="table table-bordered">
+                <table id="example1" class="table table-bordered">
                     <tr>
                         <td>
                             <p>
@@ -49,7 +49,7 @@
                     </tr>
                 </table>
                 <hr>
-                <table class="table table-bordered table-striped">
+                <table id="example1" id="example1" class="table table-bordered table-striped">
                     <tbody>
                         <tr>
                             <td>{{ __('Father\'s Name') }}</td>
@@ -216,13 +216,13 @@
                 <div class="btn-group">
                     <a href="{{ url('/people/employees/edit/' . $employee->id) }}" class="tip btn btn-warning tip btn-flat" title="" data-original-title="Edit Product">
                         <i class="fa fa-edit"></i>
-                        <span class="hidden-sm hidden-xs"> {{ __('Edit') }}</span>
+                        <span class="hidden-sm hidden-xs"> <i class="fas fa-edit"></i></span>
                     </a>
                 </div>
                 <div class="btn-group">
                     <a href="{{ url('/people/employees/delete/' . $employee->id) }}" class="tip btn btn-danger btn-flat" data-toggle="tooltip" data-original-title="Click to delete" onclick="return confirm('Are you sure to delete this ?');">
                         <i class="fa fa-arrow-up"></i>
-                        <span class="hidden-sm hidden-xs"> {{ __('Delete') }}</span>
+                        <span class="hidden-sm hidden-xs"> <i class="fas fa-trash-alt"></i></span>
                     </a>
                 </div>
             </div>

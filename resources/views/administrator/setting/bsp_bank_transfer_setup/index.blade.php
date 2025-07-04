@@ -130,8 +130,8 @@
                                                 <td>{{ $bspSettingBank->bank_name }}</td>
                                                 <td>{{ $bspSettingBank->transaction_fee ? $bspSettingBank->transaction_fee : 0 }}</td>
                                                 <td>
-                                                    <a href="#" class="btn btn-sm btn-primary pull-right edit-btn">Edit</a>
-                                                    <a href="#" class="btn btn-sm btn-danger pull-right remove-btn">Remove</a>
+                                                    <a href="#" class="btn btn-sm btn-primary pull-right edit-btn"><i class="fas fa-edit"></i></a>
+                                                    <a href="#" class="btn-sm btn-danger pull-right remove-btn"><i class="fas fa-trash-alt"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach

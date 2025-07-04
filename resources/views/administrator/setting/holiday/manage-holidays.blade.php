@@ -49,7 +49,7 @@
                     </div>
                     <!-- /.Notification Box -->
                     <div  class="col-12 table-responsive">
-                        <table  class="table table-bordered table-striped">
+                        <table  id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>{{ __('SL#') }}</th>
@@ -68,20 +68,17 @@
                                     <td>{{ $sl++ }}</td>
                                     <td>{{ $holiday['holiday_name'] }}</td>
                                     <td>{{ $holiday['date'] }}</td>
-                                    <td>@foreach (\App\Helpers\CommonHelper::str_split($holiday['description'], 65) as $chunk)
-                                            <div>{{ $chunk }}</div>
-                                        @endforeach
-                                    </td>
+                                    <td>{{ \Illuminate\Support\Str::limit($holiday['description'], 65) }}</td>
                                     <td>{{ $holiday['name'] }}</td>
                                     <td class="text-center">
                                     @if( $holiday['publication_status'] == 1 )
                                         <span class="label label-success">{{ __('Published') }}</span>
                                     @else
                                     <span class="label label-warning">{{ __('Unpublished') }}</span>
-                                        @endif
+                                    @endif
                                     </td>
                                     <td class="text-center">
-                                    <a href="{{ url('/setting/holidays/edit/' . $holiday['id'] ) }}"><i class="icon fa fa-edit"></i> {{ __('Edit') }}</a>
+                                    <a href="{{ url('/setting/holidays/edit/' . $holiday['id'] ) }}"><i class="icon fa fa-edit"></i> <i class="fas fa-edit"></i></a>
                                     </td>
                                 </tr>
                                 @endforeach

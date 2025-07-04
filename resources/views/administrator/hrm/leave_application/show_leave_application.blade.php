@@ -36,7 +36,7 @@ use Carbon\Carbon;
         <div class="text-center">
           <h4><strong>{{ __('APPLICATION FOR LEAVE') }}</strong></h4>
         </div>
-      <table  class="table table-bordered table-striped">
+      <table id="example1" id="example1" class="table table-bordered table-striped">
         <tbody id="myTable">
 
           <tr>
@@ -110,7 +110,7 @@ use Carbon\Carbon;
         <h4><strong>{{ __('For Office Use only') }}</strong></h4>
       </div>
      
-      <table class="table table-bordered table-striped">
+      <table id="example1" id="example1" class="table table-bordered table-striped">
 
         <tbody>
         

@@ -132,7 +132,7 @@
                                                 <td>{{ $wpacSettingBank->transaction_fee ? $wpacSettingBank->transaction_fee : 0 }}</td>
                                                 <td>
                                                     <a href="#" class="btn btn-sm btn-primary pull-right wpac-edit-btn">Edit</a>
-                                                    <a href="#" class="btn btn-sm btn-danger pull-right wpac-remove-btn">Remove</a>
+                                                    <a href="#" class="btn-sm btn-danger pull-right wpac-remove-btn">Remove</a>
                                                 </td>
                                             </tr>
                                         @endforeach

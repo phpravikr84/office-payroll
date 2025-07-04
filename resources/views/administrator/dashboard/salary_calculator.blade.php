@@ -158,7 +158,7 @@
                                 </div>
                                 <div class="card-body p-0">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered">
+                                        <table id="example1" class="table table-bordered">
                                             <thead>
                                                 <tr><th colspan="2" class="text-dark">House Allowances</th></tr>
                                             </thead>
@@ -292,7 +292,7 @@
                                 </div>
                                 <div class="card-body p-0">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered">
+                                        <table id="example1" class="table table-bordered">
                                             <thead>
                                                 <tr><th colspan="2" class="text-dark">Deductions & Rebate</th></tr>
                                             </thead>
@@ -321,7 +321,6 @@
                                                 <tr>
                                                     <td><label for="superannuation_id" class="form-label">Superannuation</label></td>
                                                     <td>
-                                                        <label for="superannuation_id" class="form-label">Superannuation name</label>
                                                         <select class="form-select" id="superannuation_id" name="superannuation_id" required>
                                                             <option value="" selected disabled>Select option</option>
                                                             @foreach($superannuations as $superannuation)
@@ -385,9 +384,12 @@
                                     <tr><td>Electricity Allowance</td><td id="slip_electricity_allowance"></td></tr>
                                     <tr><td>Security Allowance</td><td id="slip_security_allowance"></td></tr>
                                     <tr><td><strong>Gross Salary (Fortnight)</strong></td><td id="gross_salary"></td></tr>
-                                    <tr><td>Tax Deduction (Fortnight)</td><td id="tax_deduction"></td></tr>
+                                    <tr><td>Tax Deduction (Fortnight) A </td><td id="tax_deduction_new"></td></tr>
+                                    <tr><td>Tax Deduction After Rebate (Fortnight) A </td><td id="tax_after_rebate"></td></tr>
+                                    <tr><td>Tax Deduction (Fortnight) B </td><td id="tax_deduction"></td></tr>
                                     <tr><td>Superannuation Deduction</td><td id="slip_provident_fund_deduction"></td></tr>
-                                    <tr><td>Rebate for Dependents</td><td id="rebate"></td></tr>
+                                    <tr><td>Rebate for Dependents A </td><td id="rebate_new"></td></tr>
+                                    <tr><td>Rebate for Dependents B </td><td id="rebate"></td></tr>
                                     <tr><td><strong>Total Deduction</strong></td><td id="total_deduction"></td></tr>
                                     <tr><td><strong>Net Salary (Fortnight)</strong></td><td id="net_salary"></td></tr>
                                 </tbody>

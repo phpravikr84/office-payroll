@@ -81,7 +81,7 @@
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table class="table table-bordered">
+            <table id="example1" class="table table-bordered">
               <tr>
                 <th>{{ __('#SL') }}</th>
                 <th>{{ __('Transection Type') }}</th>
@@ -168,7 +168,7 @@
           @php($total_provident_fund = $salary['provident_fund_contribution'] + $salary['provident_fund_deduction'])
 
           <div class="box-body">
-            <table class="table table-bordered">
+            <table id="example1" class="table table-bordered">
               <tr>
                 <td>{{ __('Gross Salary') }}</td>
                 <td>

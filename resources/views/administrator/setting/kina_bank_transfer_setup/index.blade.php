@@ -132,7 +132,7 @@
                                                 <td>{{ $kinaSettingBank->transaction_fee ? $kinaSettingBank->transaction_fee : 0 }}</td>
                                                 <td>
                                                     <a href="#" class="btn btn-sm btn-primary pull-right kina-edit-btn">Edit</a>
-                                                    <a href="#" class="btn btn-sm btn-danger pull-right kina-remove-btn">Remove</a>
+                                                    <a href="#" class="btn-sm btn-danger pull-right kina-remove-btn">Remove</a>
                                                 </td>
                                             </tr>
                                         @endforeach

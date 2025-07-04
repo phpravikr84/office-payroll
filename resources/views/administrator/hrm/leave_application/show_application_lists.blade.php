@@ -30,7 +30,7 @@ use Carbon\Carbon;
     <div class="box-body table-responsive">
       <a href="{{ url('/hrm/application_lists') }}" class="btn btn-primary btn-flat"><i class="fa fa-arrow-left"></i>{{ __('Back') }} </a>
       <hr>
-      <table  class="table table-bordered table-striped">
+      <table id="example1" id="example1" class="table table-bordered table-striped">
         <tbody id="myTable">
 
 

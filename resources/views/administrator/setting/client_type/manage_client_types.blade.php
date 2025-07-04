@@ -44,7 +44,7 @@
 
                 <!-- /.Notification Box -->
                 <div class="col-md-12 table-responsive">
-                <table class="table table-bordered table-striped">
+                <table id="example1" id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>{{ __('SL#') }}</th>
@@ -61,7 +61,7 @@
                         <tr>
                             <td>{{ $sl++ }}</td>
                             <td><a href="{{ url('/setting/client-types/details/' . $client_type['id']) }}">{{ $client_type['client_type'] }}</a></td>
-                            <td>{{ str_limit($client_type['client_type_description'], 65) }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($client_type['client_type_description'], 65) }}</td>
                             <td class="text-center">{{ date("d F Y", strtotime($client_type['created_at'])) }}</td>
                             <td class="text-center">
                                 @if ($client_type['publication_status'] == 1)
@@ -72,7 +72,7 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                               <a href="{{ url('/setting/client-types/edit/' . $client_type['id']) }}"><i class="icon fa fa-edit"></i> {{ __('Edit') }}</a>
+                               <a href="{{ url('/setting/client-types/edit/' . $client_type['id']) }}"><i class="icon fa fa-edit"></i> <i class="fas fa-edit"></i></a>
                             </td>
                         </tr>
                         @endforeach

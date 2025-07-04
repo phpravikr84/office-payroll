@@ -31,7 +31,7 @@
            
             <hr>
             <div id="printable_area" class="table-responsive">
-              <table class="table table-bordered">
+              <table id="example1" class="table table-bordered">
                 <tr>
                   <td>
                     <p>
@@ -57,7 +57,7 @@
               </table>
               <hr>
 
-              <table class="table table-bordered">
+              <table id="example1" class="table table-bordered">
                 <tr class="bg-info">
                   <th>{{ __('sl#') }}</th>
                   <th>{{ __('Description') }}</th>
@@ -119,7 +119,7 @@
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table class="table table-bordered">
+            <table id="example1" class="table table-bordered">
              <tr class="bg-info">
               <th>{{ __('sl#') }}</th>
               <th>{{ __('Salary Month') }}</th>

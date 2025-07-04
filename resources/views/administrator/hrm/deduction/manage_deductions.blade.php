@@ -47,7 +47,7 @@
                 </div>
                 <!-- /.Notification Box -->
                 <div class="col-md-12 table-responsive">
-                    <table  class="table table-bordered table-striped">
+                    <table id="example1" id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>{{ __('SL#') }}</th>
@@ -72,7 +72,7 @@
                                 <td>{{ $deduction['deduction_amount'] }}</td>
                                 <td>{{ date("d F Y", strtotime($deduction['created_at'])) }}</td>
                                 <td class="text-center">
-                                <a href="{{ url('/hrm/deductions/edit/' . $deduction['id']) }}"><i class="icon fa fa-edit"></i> {{ __('Edit') }}</a>
+                                <a href="{{ url('/hrm/deductions/edit/' . $deduction['id']) }}"><i class="icon fa fa-edit"></i> <i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
                             @endforeach

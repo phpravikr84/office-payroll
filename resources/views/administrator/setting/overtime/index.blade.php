@@ -28,7 +28,7 @@
                     <i class="fa fa-arrow-left"></i> {{ __('Back') }}
                 </a>
                 <hr>
-                <table class="table table-bordered table-striped">
+                <table id="example1" id="example1" class="table table-bordered table-striped">
                     <tbody id="myTable">
                         @if(isset($overtimes) && !empty($overtimes))
                             @foreach($overtimes as $overtime)

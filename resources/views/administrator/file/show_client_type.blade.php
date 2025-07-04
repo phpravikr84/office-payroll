@@ -32,7 +32,7 @@
 
                 <div class="col-md-12">
 
-                    <table class="table table-bordered table-striped">
+                    <table id="example1" id="example1" class="table table-bordered table-striped">
                         <tbody>
                             <tr>
                                 <td>{{ __('Client Type') }}</td>
@@ -87,13 +87,13 @@
                                         <div class="btn-group">
                                             <a href="{{ url('/setting/client-types/edit/' . $client_type->id) }}" class="tip btn btn-warning tip btn-flat" title="" data-original-title="Edit Product">
                                                 <i class="fa fa-edit"></i>
-                                                <span class="hidden-sm hidden-xs"> {{ __('Edit') }}</span>
+                                                <span class="hidden-sm hidden-xs"> <i class="fas fa-edit"></i></span>
                                             </a>
                                         </div>
                                         <div class="btn-group">
                                             <a href="{{ url('/setting/client-types/delete/' . $client_type->id) }}" onclick="return confirm('Are you sure to delete this ?');" class="tip btn btn-danger bpo btn-flat" title="" data-content="<div><p>{{ __('Are you sure?') }}</p><a class='btn btn-danger' href='https://btrc.gunitok.com/products/delete/1'>{{ __('Yes I am sure') }}</a> <button class='btn bpo-close'>{{ __('No') }}</button></div>" data-html="true" data-placement="top" data-original-title="<b>{{ __('Delete Product') }}</b>">
                                                 <i class="fa fa-trash-o"></i>
-                                                <span class="hidden-sm hidden-xs">{{ __('Delete') }} </span>
+                                                <span class="hidden-sm hidden-xs"><i class="fas fa-trash-alt"></i> </span>
                                             </a>
                                         </div>
                                     </div>

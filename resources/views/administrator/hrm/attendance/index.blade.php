@@ -78,7 +78,7 @@
             <!-- /.box-header -->
 
             <div class="box-body">
-              <table class="table table-bordered">
+              <table id="example1" class="table table-bordered">
                 <thead>
                   <tr class="bg-info">
                     <th>Sl#</th>

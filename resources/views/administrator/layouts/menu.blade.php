@@ -1,4 +1,4 @@
-<nav class="sidebar sidebar-offcanvas loginBg" id="sidebar">
+<nav class="sidebar sidebar-offcanvas SidebarBg" id="sidebar">
   @if(Auth::user()->access_label == 1) 
         <ul class="nav">
           <li class="nav-item">

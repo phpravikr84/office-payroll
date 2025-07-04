@@ -30,7 +30,7 @@
                          @if ($message = Session::get('success'))
                             <div class="alert alert-success">{{ $message }}</div>
                         @endif
-                        <table class="table table-bordered">
+                        <table id="example1" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>{{ __('Bank Code') }}</th>
@@ -46,10 +46,10 @@
                                         <td>{{ $bank->bank_name }}</td>
                                         <td>{{ $bank->status == 1 ? __('Published') : __('Unpublished') }}</td>
                                         <td>
-                                            <a href="{{ route('banks.edit', $bank->id) }}" class="btn btn-sm btn-info">{{ __('Edit') }}</a>
+                                            <a href="{{ route('banks.edit', $bank->id) }}" class="btn-sm btn-info"><i class="fas fa-edit"></i></a>
                                             <form action="{{ route('banks.destroy', $bank->id) }}" method="POST" style="display:inline;">
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-sm btn-danger">{{ __('Delete') }}</button>
+                                                <button type="submit" class="btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
                                             </form>
                                         </td>
                                     </tr>

@@ -80,7 +80,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <button type="submit" class="btn btn-primary btn-flat"><i class="icon fa fa-edit"></i>{{ __('Edit') }} </button>
+                <button type="submit" class="btn btn-primary btn-flat"><i class="icon fa fa-edit"></i><i class="fas fa-edit"></i> </button>
             </div>
         </form>
     </div>

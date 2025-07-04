@@ -27,7 +27,7 @@
             <div class="box-body">
                 <a href="{{ url('/setting/leave_categories') }}" class="btn btn-primary btn-flat"><i class="fa fa-arrow-left"></i>{{ __('Back') }} </a>
                 <hr>
-                <table  class="table table-bordered table-striped">
+                <table  id="example1" class="table table-bordered table-striped">
                     <tbody id="myTable">
                         <tr>
                             <td>{{ __('Category Name') }}</td>
@@ -82,13 +82,13 @@
                                     <div class="btn-group">
                                         <a href="{{ url('/setting/leave_categories/edit/' . $leave_category['id']) }}" class="tip btn btn-warning tip btn-flat" title="" data-original-title="Edit Product">
                                             <i class="fa fa-edit"></i>
-                                            <span class="hidden-sm hidden-xs"> {{ __('Edit') }}</span>
+                                            <span class="hidden-sm hidden-xs"> <i class="fas fa-edit"></i></span>
                                         </a>
                                     </div>
                                     <div class="btn-group">
                                         <a href="{{ url('/setting/leave_categories/delete/' . $leave_category['id']) }}" onclick="return confirm('Are you sure to delete this ?');" class="tip btn btn-danger bpo btn-flat" title="" data-content="<div><p>Are you sure?</p><a class='btn btn-danger' href='https://btrc.gunitok.com/products/delete/1'>Yes I am sure</a> <button class='btn bpo-close'>No</button></div>" data-html="true" data-placement="top" data-original-title="<b>Delete Product</b>">
                                             <i class="fa fa-trash-o"></i>
-                                            <span class="hidden-sm hidden-xs"> {{ __('Delete') }}</span>
+                                            <span class="hidden-sm hidden-xs"> <i class="fas fa-trash-alt"></i></span>
                                         </a>
                                     </div>
                                 </div>

@@ -95,7 +95,7 @@
                                 <button type="button" class="btn btn-default btn-sm" id="clear-all-departments">{{ __('Clear') }}</button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table id="example1" class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>{{ __('ID') }}</th>
@@ -126,7 +126,7 @@
                                 <button type="button" class="btn btn-default btn-sm" id="clear-all-locations">{{ __('Clear') }}</button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table id="example1" class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>{{ __('ID') }}</th>

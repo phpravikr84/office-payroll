@@ -50,7 +50,7 @@
                     </div>
                     <!-- /.Notification Box -->
                     <div class="col-12 table-responsive">
-                        <table  class="table table-bordered table-striped">
+                        <table  id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>{{ __('SL#') }}</th>
@@ -68,7 +68,7 @@
                                 <tr>
                                     <td>{{ $sl++ }}</td>
                                     <td>{{ $leave_category['leave_category'] }}</td>
-                                    <td>{{ str_limit($leave_category['leave_category_description'], 65) }}</td>
+                                    <td>{{ \Illuminate\Support\Str::limit($leave_category['leave_category_description'], 65) }}</td>
                                     <td class="text-center">{{ $leave_category['name'] }}</td>
                                     <td class="text-center">{{ date("d F Y", strtotime($leave_category['created_at'])) }}</td>
                                     <td class="text-center">
@@ -79,7 +79,7 @@
                                     @endif
                                     </td>
                                     <td class="text-center">
-                                    <a href="{{ url('/setting/leave_categories/edit/' . $leave_category['id']) }}"><i class="icon fa fa-edit"></i> {{ __('Edit') }}</a>
+                                    <a href="{{ url('/setting/leave_categories/edit/' . $leave_category['id']) }}"><i class="icon fa fa-edit"></i> <i class="fas fa-edit"></i></a>
                                     </td>
                                 </tr>
                                 @endforeach

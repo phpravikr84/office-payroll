@@ -1358,11 +1358,16 @@ $(document).ready(function(){
                 $('#slip_electricity_allowance').text(data.electricity_allowance);
                 $('#slip_security_allowance').text(data.security_allowance);
                 $('#gross_salary').text(data.gross_salary);
-                $('#tax_deduction').text(data.gross_tax);
+                $('#tax_deduction_new').text(data.tax_deduction_new);
+                $('#tax_deduction').text(data.tax_deduction);
                 $('#slip_provident_fund_deduction').text(data.provident_fund_deduction);
                 $('#rebate').text(data.rebate);
                 $('#total_deduction').text(data.total_deduction);
                 $('#net_salary').text(data.net_salary);
+                $('#rebate_new').text(data.rebate_new);
+                $('#tax_after_rebate').text(data.tax_after_rebate);
+
+                
             },
             error: function(xhr) {
                 let errors = xhr.responseJSON?.errors || { general: ['Error calculating salary. Please check inputs.'] };

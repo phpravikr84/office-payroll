@@ -46,7 +46,7 @@
                 </div>
                 <!-- /.Notification Box -->
                 <div class="col-md-12 table-responsive">
-                    <table  class="table table-bordered table-striped">
+                    <table id="example1" id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>{{ __('SL#') }}</th>
@@ -75,7 +75,7 @@
                                 <td>{{ $employee_aword['award_title'] }}</td>
                                 <td>{{ $employee_aword['gift_item'] }}</td>
                                 <td>{{ date("d F Y", strtotime($employee_aword['select_month'])) }}</td>
-                                <td>{{str_limit($employee_aword['description'], 65)}}</td>
+                                <td>{{ \Illuminate\Support\Str::limit($employee_aword['description'], 65)}}</td>
                                 <td>{{ date("D d F Y h:ia", strtotime($employee_aword['created_at'])) }}</td>
                                 <td class="text-center">
                                   @if( $employee_aword['publication_status'] == 1)
@@ -86,7 +86,7 @@
 
                                 </td>
                                 <td class="text-center">
-                                   <a href="{{ url('/hrm/employee-awards/edit/' . $employee_aword['id']) }}"><i class="icon fa fa-edit"></i> {{ __('Edit') }}</a>
+                                   <a href="{{ url('/hrm/employee-awards/edit/' . $employee_aword['id']) }}"><i class="icon fa fa-edit"></i> <i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
                           @endforeach

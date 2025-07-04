@@ -30,7 +30,7 @@
                         @if ($message = Session::get('success'))
                             <div class="alert alert-success">{{ $message }}</div>
                         @endif
-                        <table class="table table-bordered">
+                        <table id="example1" class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>{{ __('Code') }}</th>
@@ -52,10 +52,10 @@
                                         <td>{{ $rate->hours_per_day }}</td>
                                         <td>{{ $rate->rate_per_pay_unit_hours }}</td>
                                         <td>
-                                            <a href="{{ route('period_defination_rates.edit', $rate->id) }}" class="btn btn-sm btn-info">{{ __('Edit') }}</a>
+                                            <a href="{{ route('period_defination_rates.edit', $rate->id) }}" class="btn-sm btn-info"><i class="fas fa-edit"></i></a>
                                             <form action="{{ route('period_defination_rates.destroy', $rate->id) }}" method="POST" style="display:inline;">
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-sm btn-danger">{{ __('Delete') }}</button>
+                                                <button type="submit" class="btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
                                             </form>
                                         </td>
                                     </tr>

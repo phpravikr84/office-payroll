@@ -57,7 +57,7 @@
               
 
 
-                <table  class="table table-bordered table-striped">
+                <table id="example1" id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>{{ __('SL') }}</th>
@@ -75,7 +75,7 @@
                             <td>EXP{{$expense->id}}</td>
                             <td>{{Auth::user()->name}}</td>
                             <td>{{$expense->exp_name}}</td>
-                            <td><a href="{{url('/hrm/expence/category/edit/'.$expense->id)}}" class="btn btn-success">{{ __('Edit') }}</a></td>
+                            <td><a href="{{url('/hrm/expence/category/edit/'.$expense->id)}}" class="btn btn-success"><i class="fas fa-edit"></i></a></td>
                            
 
                         </tr>

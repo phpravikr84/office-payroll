@@ -31,7 +31,7 @@
             <!-- Notification Box -->
             <div class="col-md-12 table-responsive">
              
-             <table class="table table-bordered table-striped">
+             <table id="example1" id="example1" class="table table-bordered table-striped">
               
                 <tr>
                   <td><b>{{ __('Employee Name:') }}</b></td>
@@ -161,7 +161,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <table class="table table-bordered">
+          <table id="example1" class="table table-bordered">
             <tr class="bg-info">
               <th>{{ __('sl#') }}</th>
               <th>{{ __('Item Name') }}</th>

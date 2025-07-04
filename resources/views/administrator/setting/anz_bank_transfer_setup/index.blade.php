@@ -131,8 +131,8 @@
                                                 <td>{{ $anzSettingBank->bank_name }}</td>
                                                 <td>{{ $anzSettingBank->transaction_fee ? $anzSettingBank->transaction_fee : 0 }}</td>
                                                 <td>
-                                                    <a href="#" class="btn btn-sm btn-primary pull-right anz-edit-btn">Edit</a>
-                                                    <a href="#" class="btn btn-sm btn-danger pull-right anz-remove-btn">Remove</a>
+                                                    <a href="#" class="btn-sm btn-primary pull-right anz-edit-btn"><i class="fas fa-edit"></i></a>
+                                                    <a href="#" class="btn-sm btn-danger pull-right anz-remove-btn"><i class="fas fa-trash-alt"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach

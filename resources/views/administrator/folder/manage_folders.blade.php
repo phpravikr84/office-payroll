@@ -49,7 +49,7 @@
                 </div>
                 <!-- /.Notification Box -->
                 <div class="col-md-12 table-responsive">
-                    <table class="table table-bordered table-striped">
+                    <table id="example1" id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>{{ __('SL#') }}</th>
@@ -65,7 +65,7 @@
                             <tr>
                                 <td>{{ $sl++ }}</td>
                                 <td><a href="{{ url('/files/'.$folder->id) }}">{{ $folder->folder_name }}</a></td>
-                                <td>{{str_limit($folder->folder_description, 65)}}</td>
+                                <td>{{ \Illuminate\Support\Str::limit($folder->folder_description, 65)}}</td>
                                 <td>{{ $folder->name }}</td>
                                 <td class="text-center">{{ date("d F Y", strtotime($folder->created_at)) }}</td>
                             </tr>

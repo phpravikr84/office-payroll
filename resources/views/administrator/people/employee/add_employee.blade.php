@@ -629,7 +629,7 @@
                                             <!-- /.box-header -->
                                             <div class="box-body">
                                                 <div class="table-responsive">
-                                                    <table class="table table-bordered">
+                                                    <table id="example1" class="table table-bordered">
                                                         <thead class="bg-primary text-white">
                                                             <tr>
                                                                 <th colspan="2" class="text-dark">{{ __('House Allowances') }}</th>
@@ -803,7 +803,7 @@
                                             <!-- /.box-header -->
                                             <div class="box-body">
                                                 <h5></h5>
-                                                <table class="table table-bordered">
+                                                <table id="example1" class="table table-bordered">
                                                     <thead class="thead-dark">
                                                         <tr>
                                                             <th class="text-dark">{{ __('Deductions & Rebate') }}</th>
@@ -939,7 +939,7 @@
                                             <div class="box-body">
                                                 <div class="row">
                                                     <div class="col-md-12 table-responsive">
-                                                        <table class="table table-bordered">
+                                                        <table id="example1" class="table table-bordered">
                                                             <thead class="thead-dark">
                                                                 <tr>
                                                                     <th class="text-dark">{{ __('Payroll Location') }} <span class="text-danger">*</span></th>
@@ -1165,7 +1165,7 @@
 
                                         <!-- Sick Leave, Annual Leave, Long Service Leave Section -->
                                         <div class="table-responsive">
-                                            <table class="table table-bordered">
+                                            <table id="example1" class="table table-bordered">
                                                 <thead class="thead-dark">
                                                     <tr>
                                                         <th class="text-dark">{{ __('Leave Category') }}</th>

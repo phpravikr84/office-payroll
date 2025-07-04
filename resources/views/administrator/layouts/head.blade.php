@@ -36,6 +36,15 @@
   color: #fff !important;
 }
 
+  .SidebarBg{
+    background: linear-gradient(-45deg, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+	height: auto;
+  color: #fff !important;
+}
+
+
 .sidebar .nav .nav-item .nav-link i.menu-icon {
     font-size: 1rem;
     line-height: 1;

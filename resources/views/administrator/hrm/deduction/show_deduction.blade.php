@@ -31,7 +31,7 @@
             <div  class="col-md-6">
                 <input type="text" id="myInput" class="form-control" placeholder="{{ __('Search..') }}">
             </div>
-            <table  class="table table-bordered table-striped">
+            <table id="example1" id="example1" class="table table-bordered table-striped">
                 <tbody id="myTable">
                     <tr>
                         <td>{{ __('Employee Name') }}</td>

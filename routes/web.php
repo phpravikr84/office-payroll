@@ -472,7 +472,7 @@ Route::group(['middleware' => 'auth'], function () {
 	});
 
 	// Loan Section
-	Route::prefix('hrm/loan_master')->name('loan_master.')->group(function () {
+	Route::prefix('hrm/loans')->name('loan_master.')->group(function () {
 		Route::get('/', [LoanController::class, 'index'])->name('index');
 		Route::get('/create', [LoanController::class, 'create'])->name('create');
 		Route::post('/store', [LoanController::class, 'store'])->name('store');
@@ -481,6 +481,16 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('/update/{id}', [LoanController::class, 'update'])->name('update');
 		Route::get('/delete/{id}', [LoanController::class, 'destroy'])->name('destroy');
 	});
+
+	Route::prefix('setting/loans')->name('loan_master.')->group(function () {
+		Route::get('/', [LoanMasterController::class, 'index'])->name('index');
+		Route::get('/create', [LoanMasterController::class, 'create'])->name('create');
+		Route::post('/store', [LoanMasterController::class, 'store'])->name('store');
+		Route::get('/edit/{id}', [LoanMasterController::class, 'edit'])->name('edit');
+		Route::post('/update/{id}', [LoanMasterController::class, 'update'])->name('update');
+	});
+
+
 
 	// Payment Section
 	Route::prefix('hrm/salary-payments')->name('salary.payments.')->group(function () {

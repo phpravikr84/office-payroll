@@ -46,7 +46,7 @@
                 </div>
                 <!-- /.Notification Box -->
                 <div  class="col-md-12 table-responsive">
-                    <table  class="table table-bordered table-striped">
+                    <table  id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>{{ __('SL#') }}</th>
@@ -66,7 +66,7 @@
                                 <td>{{ $sl++ }}</td>
                                 <td>{{ $designation['designation'] }}</td>
                                 <td>{{ $designation['department'] }}</td>
-                                <td>{{ str_limit($designation['designation_description'], 65) }}</td>
+                                <td>{{ \Illuminate\Support\Str::limit($designation['designation_description'], 65) }}</td>
                                 <td>{{ $designation['name'] }}</td>
                                 <td class="text-center">{{ date("d F Y", strtotime($designation['created_at'])) }}</td>
                                 <td class="text-center">
@@ -77,7 +77,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ url('/setting/designations/edit/' . $designation['id']) }}">{{ __('Edit') }}</a>
+                                    <a href="{{ url('/setting/designations/edit/' . $designation['id']) }}"><i class="fas fa-edit"></i></a>
                                 </td>
                             </tr>
                             @endforeach

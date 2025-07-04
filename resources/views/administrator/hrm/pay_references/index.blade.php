@@ -24,7 +24,7 @@
             @endif
 
             <div class="box-body">
-                <table class="table table-bordered table-striped">
+                <table id="example1" id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -69,7 +69,7 @@
                                     <!-- Uncomment below form if you need delete functionality
                                     <form action="{{ route('pay_references.destroy', $pay_reference->id) }}" method="POST" style="display:inline-block;">
                                         {{ csrf_field() }}
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('Are you sure you want to delete this pay reference?') }}')">{{ __('Delete') }}</button>
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('Are you sure you want to delete this pay reference?') }}')"><i class="fas fa-trash-alt"></i></button>
                                     </form>
                                     -->
                                 </td>

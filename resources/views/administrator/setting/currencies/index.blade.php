@@ -31,7 +31,7 @@
                             {{ session('success') }}
                         </div>
                         @endif
-                        <table class="table table-bordered table-striped">
+                        <table id="example1" id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>{{ __('Code') }}</th>
@@ -53,10 +53,10 @@
                                     <td>{{ $currency->last_er_update }}</td>
                                     <td>{{ $currency->status ? __('Active') : __('Inactive') }}</td>
                                     <td>
-                                        <a href="{{ route('currencies.edit', $currency->id) }}" class="btn btn-info">{{ __('Edit') }}</a>
+                                        <a href="{{ route('currencies.edit', $currency->id) }}" class="btn btn-info"><i class="fas fa-edit"></i></a>
                                         <form action="{{ route('currencies.destroy', $currency->id) }}" method="POST" style="display:inline-block;">
                                             {{ csrf_field() }}
-                                            <button type="submit" class="btn btn-danger" onclick="return confirm('{{ __('Are you sure?') }}')">{{ __('Delete') }}</button>
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('{{ __('Are you sure?') }}')"><i class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>
                                 </tr>

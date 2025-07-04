@@ -12,7 +12,7 @@
             <li><a href="{{ url('/dashboard') }}"><i class="fa fa-dashboard"></i> {{ __('Dashboard') }}</a></li>
             <li><a>{{ __('Setting') }}</a></li>
             <li><a href="{{ url('/setting/client-types') }}">{{ __('Client types') }}</a></li>
-            <li class="active">{{ __('Edit') }}</li>
+            <li class="active"><i class="fas fa-edit"></i></li>
         </ol>
     </section>
 
