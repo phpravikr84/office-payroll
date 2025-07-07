@@ -215,9 +215,9 @@ class PayrollController extends Controller {
 			if($rebate_amt > $rebate_amt2){
 				$rebate_amt = $rebate_amt2;
 			}
-			else if($rebate_amt < $rebate_amt1){
+			if($rebate_amt < $rebate_amt1){
 				$rebate_amt = $rebate_amt1;
-			} else {} 
+			} 
 		} else {
 			$rebate_amt = 0;
 		}
