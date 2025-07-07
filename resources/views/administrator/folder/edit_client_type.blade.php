@@ -91,7 +91,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <a href="{{ url('/setting/client-types') }}" class="btn btn-danger btn-flat"><i class="icon fa fa-close"></i> {{ __('Cancel') }}</a>
-                    <button type="submit" class="btn btn-primary btn-flat"><i class="icon fa fa-edit"></i> {{ __('pdate client type') }}U</button>
+                    <button type="submit" class="btn btn-primary btn-flat"><i class="icon fa fa-edit"></i> {{ __('pdate client type') }}</button>
                 </div>
             </form>
         </div>

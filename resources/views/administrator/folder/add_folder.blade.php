@@ -92,7 +92,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <a href="{{ url('/folders') }}" class="btn btn-danger btn-flat"><i class="icon fa fa-close"></i>{{ __('Cancel') }} </a>
-                    <button type="submit" class="btn btn-primary btn-flat"><i class="icon fa fa-plus"></i> {{ __('Add folder') }}</button>
+                    <button type="submit" class="btn btn-success btn-flat"><i class="icon fa fa-plus"></i> {{ __('Add folder') }}</button>
                 </div>
             </form>
         </div>

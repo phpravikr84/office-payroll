@@ -1366,6 +1366,29 @@ $(document).ready(function(){
                 $('#net_salary').text(data.net_salary);
                 $('#rebate_new').text(data.rebate_new);
                 $('#tax_after_rebate').text(data.tax_after_rebate);
+                //Match Badge
+                if (data.match == 1) {
+                    $('#tax_match_flag_A').removeClass('text-warning font-weight-bold');
+                    $('#tax_match_flag_B').removeClass('text-warning font-weight-bold');
+                    $('#tax_match_flag_A').addClass('text-success font-weight-bold');
+                    $('#tax_match_flag_B').addClass('text-success font-weight-bold');
+                   
+                    $('#match_badge')
+                        .removeClass('badge-warning badge px-3 py-3')
+                        .addClass('badge badge-success px-3 py-3')
+                        .html('Match <i class="bi bi-check-circle-fill ms-1"></i>');
+                } else {
+                    $('#match_badge')
+                        .removeClass('badge-success badge px-3 py-3')
+                        .addClass('badge badge-warning px-3 py-3')
+                        .html('Not Match <i class="bi bi-x-circle-fill ms-1"></i>');
+                    $('#tax_match_flag_A').removeClass('text-success font-weight-bold');
+                    $('#tax_match_flag_B').removeClass('text-success font-weight-bold');
+                    $('#tax_match_flag_A').addClass('text-warning font-weight-bold');
+                    $('#tax_match_flag_B').addClass('text-warning font-weight-bold');
+                }
+
+
 
                 
             },

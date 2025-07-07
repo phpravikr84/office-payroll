@@ -166,7 +166,7 @@
                                                 <tr>
                                                     <td><label for="hr_place_salcal" class="form-label">Place Name</label></td>
                                                     <td>
-                                                        <select name="hr_place" id="hr_place_salcal" class="form-select" required>
+                                                        <select name="hr_place" id="hr_place_salcal" class="form-select">
                                                             <option value="" selected disabled>Select place</option>
                                                             @foreach($loca_places as $place)
                                                                 <option value="{{ $place->id }}">{{ $place->places }}</option>
@@ -178,13 +178,13 @@
                                                 <tr>
                                                     <td><label for="hr_area" class="form-label">Area Name</label></td>
                                                     <td>
-                                                        <input type="text" name="hr_area" class="form-control" id="hr_area" readonly>
+                                                        <input type="text" name="hr_area" class="form-control" id="hr_area">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td><label for="hra_type" class="form-label">Housing Allowance Type</label></td>
                                                     <td>
-                                                        <select name="hra_type" id="hra_type" class="form-select" required>
+                                                        <select name="hra_type" id="hra_type" class="form-select">
                                                             <option value="" selected disabled>Select option</option>
                                                             <option value="1">Rental</option>
                                                             <option value="2">Kind</option>
@@ -203,7 +203,7 @@
                                                 <tr id="house_rent_allowance_row">
                                                     <td><label for="house_rent_allowance" class="form-label">Housing Allowance</label></td>
                                                     <td>
-                                                        <input type="number" name="house_rent_allowance" class="form-control" id="house_rent_allowance" readonly>
+                                                        <input type="number" name="house_rent_allowance" class="form-control" id="house_rent_allowance">
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -214,7 +214,7 @@
                                                 <tr>
                                                     <td><label for="va_type" class="form-label">Vehicle Allowance Type</label></td>
                                                     <td>
-                                                        <select name="va_type" id="va_type" class="form-select" required>
+                                                        <select name="va_type" id="va_type" class="form-select">
                                                             <option value="" selected disabled>Select option</option>
                                                             <option value="1">With Fuel</option>
                                                             <option value="2">Without Fuel</option>
@@ -226,7 +226,7 @@
                                                 <tr id="vehicle_allowance_row">
                                                     <td><label for="vehicle_allowance" class="form-label">Vehicle Allowance</label></td>
                                                     <td>
-                                                        <input type="number" name="vehicle_allowance" class="form-control" id="vehicle_allowance" readonly>
+                                                        <input type="number" name="vehicle_allowance" class="form-control" id="vehicle_allowance">
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -241,7 +241,7 @@
                                                             <input type="checkbox" name="meals_tag" id="meals_tag" value="1" class="form-check-input">
                                                             <label for="meals_tag" class="form-check-label">Enable</label>
                                                         </div>
-                                                        <input type="number" name="meals_allowance" class="form-control" id="meals_allowance" readonly>
+                                                        <input type="number" name="meals_allowance" class="form-control" id="meals_allowance">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -304,6 +304,17 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
+                                                    <td><label for="declaration" class="form-label">Declaration is lodged?</label></td>
+                                                    <td>
+                                                        <select name="declaration" class="form-select" id="declaration" required>
+                                                        <option value="">Select option</option>    
+                                                        <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                        </select>
+                                                        <div class="error-feedback" id="errors_no_of_dependent_frm"></div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td><label for="no_of_dependent_frm" class="form-label">Dependents</label></td>
                                                     <td>
                                                         <select name="no_of_dependent_frm" class="form-select" id="no_of_dependent_frm" required>
@@ -321,7 +332,7 @@
                                                 <tr>
                                                     <td><label for="superannuation_id" class="form-label">Superannuation</label></td>
                                                     <td>
-                                                        <select class="form-select" id="superannuation_id" name="superannuation_id" required>
+                                                        <select class="form-select" id="superannuation_id" name="superannuation_id">
                                                             <option value="" selected disabled>Select option</option>
                                                             @foreach($superannuations as $superannuation)
                                                                 <option value="{{ $superannuation->id }}" 
@@ -353,7 +364,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-calculator me-1"></i> Calculate</button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-calculator me-1"></i> Calculate</button>
                                 <a href="{{ url('/dashboard') }}" class="btn btn-secondary"><i class="fa fa-arrow-left me-1"></i> Back</a>
                             </div>
                         </form>
@@ -384,11 +395,8 @@
                                     <tr><td>Electricity Allowance</td><td id="slip_electricity_allowance"></td></tr>
                                     <tr><td>Security Allowance</td><td id="slip_security_allowance"></td></tr>
                                     <tr><td><strong>Gross Salary (Fortnight)</strong></td><td id="gross_salary"></td></tr>
-                                    <tr><td>Tax Deduction (Fortnight) A </td><td id="tax_deduction_new"></td></tr>
-                                    <tr><td>Tax Deduction After Rebate (Fortnight) A </td><td id="tax_after_rebate"></td></tr>
-                                    <tr><td>Tax Deduction (Fortnight) B </td><td id="tax_deduction"></td></tr>
+                                    <tr id="tax_match_flag_B"><td>Tax Deduction (Fortnight) B </td><td id="tax_deduction"></td></tr>
                                     <tr><td>Superannuation Deduction</td><td id="slip_provident_fund_deduction"></td></tr>
-                                    <tr><td>Rebate for Dependents A </td><td id="rebate_new"></td></tr>
                                     <tr><td>Rebate for Dependents B </td><td id="rebate"></td></tr>
                                     <tr><td><strong>Total Deduction</strong></td><td id="total_deduction"></td></tr>
                                     <tr><td><strong>Net Salary (Fortnight)</strong></td><td id="net_salary"></td></tr>
@@ -396,6 +404,28 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Formula 1 Tax Separated -->
+                     <div class="card-header mt-5">
+                        <h4 class="card-title" class="text-dark">{{ __('RATES OF FORTNIGHTLY SALARY OR WAGES TAX DEDUCTION') }}
+                        </h4>
+                        <p id="match_badge"></p>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="payslipTable">
+                                <thead>
+                                    <tr><th class="text-dark">Description</th><th class="text-dark">Amount (K)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Tax Deduction (Fortnight) A </td><td id="tax_deduction_new"></td></tr>
+                                    <tr id="tax_match_flag_A"><td>Tax Deduction After Rebate (Fortnight) A </td><td id="tax_after_rebate"></td></tr>
+                                    <tr><td>Rebate for Dependents A </td><td id="rebate_new"></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

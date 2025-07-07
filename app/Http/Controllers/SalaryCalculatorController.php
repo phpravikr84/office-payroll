@@ -32,10 +32,10 @@ class SalaryCalculatorController extends Controller
             'basic_salary' => 'required|numeric|min:0',
             'annual_salary' => 'nullable|numeric|min:0',
             'hrly_salary_rate' => 'nullable|numeric|min:0',
-            'hr_place' => 'required|exists:hra_area_places,id',
-            'hra_type' => 'required|in:1,2,3',
+            //'hr_place' => 'required|exists:hra_area_places,id',
+            //'hra_type' => 'required|in:1,2,3',
             'hra_amount_per_week' => 'nullable|numeric|min:0',
-            'va_type' => 'required|in:1,2,3',
+            //'va_type' => 'required|in:1,2,3',
             'meals_tag' => 'nullable|in:1',
             'meals_allowance' => 'nullable|numeric|min:0',
             'medical_allowance' => 'nullable|numeric|min:0',
@@ -44,8 +44,9 @@ class SalaryCalculatorController extends Controller
             'electricity_allowance' => 'nullable|numeric|min:0',
             'security_allowance' => 'nullable|numeric|min:0',
             'no_of_dependent_frm' => 'required|integer|min:0|max:5',
-            'superannuation_id' => 'required|exists:superannuations,id',
+            //'superannuation_id' => 'required|exists:superannuations,id',
             'provident_fund_deduction' => 'nullable|numeric|min:0',
+            'declaration' => 'required'
         ]);
 
         // Assign and cast values
@@ -64,6 +65,7 @@ class SalaryCalculatorController extends Controller
         $otherAllowance = (float) ($request->other_allowance ?? 0);
         $electricityAllowance = (float) ($request->electricity_allowance ?? 0);
         $securityAllowance = (float) ($request->security_allowance ?? 0);
+        $declaration = $request->declaration;
         $dependents = (int) $request->no_of_dependent_frm;
         $superannuationId = (int) $request->superannuation_id;
         $providentFundDeductionInput = (float) ($request->provident_fund_deduction ?? 0);
@@ -120,8 +122,8 @@ class SalaryCalculatorController extends Controller
         $superannuation = Superannuation::find($superannuationId);
         $taxMethod = $superannuation ? $superannuation->tax_method_for_employee_contribution : null;
 
-        $employer_ctb_perct = $superannuation->employer_contribution_percentage ? $superannuation->employer_contribution_percentage : 6;
-        $employee_ctb_perct = $superannuation->employee_contrib_percent ? $superannuation->employee_contrib_percent : 8.4;
+        $employer_ctb_perct = isset($superannuation->employer_contribution_percentage) ? $superannuation->employer_contribution_percentage : 0;
+        $employee_ctb_perct = isset($superannuation->employee_contrib_percent) ? $superannuation->employee_contrib_percent : 0;
 
         // Calculate superannuation base (exclude optional allowances if not core)
         $superannuationBase = $grossFortnight - ($specialAllowance + $otherAllowance); // Exclude non-core allowances
@@ -199,10 +201,17 @@ class SalaryCalculatorController extends Controller
 
             $rebate_amt = round(($per_of_tax / 100) * $grossTax, 2);
 
-            $mid = ($rebate_amt1 + $rebate_amt2) / 2;
+            // $mid = ($rebate_amt1 + $rebate_amt2) / 2;
 
-            // If below midpoint, use min; otherwise, use max
-            $rebate = ($rebate_amt < $mid) ? $rebate_amt1 : $rebate_amt2;
+            // // If below midpoint, use min; otherwise, use max
+            // $rebate = ($rebate_amt < $mid) ? $rebate_amt1 : $rebate_amt2;
+
+            if($rebate_amt > $rebate_amt2){
+				$rebate_amt = $rebate_amt2;
+			}
+			if($rebate_amt < $rebate_amt1){
+				$rebate_amt = $rebate_amt1;
+			} 
 
             // return response()->json([
             //     'rebate_amt1' => $rebate_amt1,
@@ -211,6 +220,8 @@ class SalaryCalculatorController extends Controller
             //     'per_of_tax'  => $per_of_tax,
             // ]);
 
+        } else {
+            $rebate_amt = 0;
         }
 
 
@@ -218,7 +229,7 @@ class SalaryCalculatorController extends Controller
 
 
 
-        $netTax = $grossTax - $rebate;
+        $netTax = $grossTax - $rebate_amt;
         $taxPerFortnight = $netTax / 26;
 
         // Total deductions (reference: include tax and superannuation)
@@ -231,7 +242,32 @@ class SalaryCalculatorController extends Controller
         $netSalary = $grossFortnight - $totalDeduction;
 
         // Calculate Tax 
-        $data = $this->calculateTaxA($grossFortnight, $dependents, 'resident');
+        if ($residency == 1) {
+            $residentType = 'resident';
+        } else {
+            $residentType = 'non-resident';
+        }
+
+        $data = $this->calculateTaxA($grossFortnight, $dependents, $residentType, );
+
+
+        //Create TAX A & TAX B MATCH
+        $taxA = number_format($data['tax_after_rebate'], 2, '.', '');
+        $rebateAmt = number_format($taxPerFortnight, 2, '.', '');
+
+        $match = 0;
+        if($taxA > $rebateAmt){
+            $diff = $taxA - $rebateAmt;
+        } else {
+            $diff = $rebateAmt - $taxA;
+        }
+
+        if ($diff >= 0 && $diff <= 2) {
+            $match = 1;
+        } else {
+            $match = 0;
+        }
+
 
         // Return JSON response
         return response()->json([
@@ -243,7 +279,7 @@ class SalaryCalculatorController extends Controller
             'tax_after_rebate' => number_format($data['tax_after_rebate'], 2), //fixed key name
             'total_deduction' => number_format($totalDeduction, 2),
             'net_salary' => number_format($netSalary, 2),
-            'rebate' => number_format($rebate, 2),
+            'rebate' => number_format($rebate_amt, 2),
             'gross_tax' => number_format($grossTax / 26, 2), // Fortnightly gross tax
             'basic_salary' => number_format($basicSalary, 2),
             'house_rent_allowance' => number_format($houseRentAllowance, 2),
@@ -261,6 +297,7 @@ class SalaryCalculatorController extends Controller
             'tax_method' => $taxMethod,
             'superann' => $superannuationBase,
             'grossfor' => $grossFortnight,
+            'match'     => $match,
         ]);
     }
 
@@ -268,66 +305,305 @@ class SalaryCalculatorController extends Controller
      * Calculate TAX A
      */
 
-    public function calculateTaxA($fortnightlyIncome = 0, $dependents = 0, $residentType = 'resident')
+    // public function calculateTaxA($fortnightlyIncome = 0, $dependents = 0, $residentType = 'resident')
+    // {
+    //     $tax = 0.00;
+    //     $rebate = 0.00;
+
+    //     // Cap dependents at 3
+    //     $effectiveDependents = min((int)$dependents, 3);
+
+    //     if ($fortnightlyIncome <= 950) {
+    //         $taxRate = TaxRate::where('salary_min', '<=', $fortnightlyIncome)
+    //             ->where('salary_max', '>=', $fortnightlyIncome)
+    //             ->first();
+
+    //         if ($taxRate) {
+    //             // Select column name based on dependents
+    //             $taxColumn = match ($effectiveDependents) {
+    //                 0 => 'tax_none',
+    //                 1 => 'tax_one',
+    //                 2 => 'tax_two',
+    //                 default => 'tax_three_or_more',
+    //             };
+
+    //             $rebate = $taxRate->$taxColumn ?? 0.00;
+    //             $tax = 115.38;
+    //         }
+    //     } else {
+    //         // Income-based slab tax
+    //         if ($fortnightlyIncome <= 1276) {
+    //             $tax = 115.38 + 0.30 * ($fortnightlyIncome - 950);
+    //         } elseif ($fortnightlyIncome <= 2700) {
+    //             $tax = 213.46 + 0.35 * ($fortnightlyIncome - 1276);
+    //         } elseif ($fortnightlyIncome <= 9623) {
+    //             $tax = 711.54 + 0.40 * ($fortnightlyIncome - 2700);
+    //         } else {
+    //             $tax = 3480.77 + 0.42 * ($fortnightlyIncome - 9623);
+    //         }
+
+    //         $tax = max(0, round($tax, 2));
+
+    //         // Static rebate values
+    //         $rebate = match ($effectiveDependents) {
+    //             1 => 17.30,
+    //             2 => 28.85,
+    //             3 => 40.38,
+    //             default => 0.00,
+    //         };
+    //     }
+
+    //     $taxAfterRebate = max(0, round($tax - $rebate, 2));
+
+    //     // Return as array for internal use
+    //     return [
+    //         'fortnightly_income' => $fortnightlyIncome,
+    //         'dependents' => $dependents,
+    //         'resident_type' => $residentType,
+    //         'tax' => $tax,
+    //         'rebate' => $rebate,
+    //         'tax_after_rebate' => $taxAfterRebate,
+    //     ];
+    // }
+
+    // public function calculateTaxA($fortnightlyIncome = 0, $dependents = 0, $residentType = 'resident', $declaration = 'yes')
+    // {
+    //     $tax = 0.00;
+    //     $rebate = 0.00;
+
+    //     // Cap dependents at 3
+    //     $effectiveDependents = min((int)$dependents, 3);
+
+    //     // Use Formula 1: income ≤ 769.23 → use tax_rates table
+    //     if ($fortnightlyIncome <= 769.23) {
+
+    //         $taxRate = TaxRate::where('salary_min', '<=', $fortnightlyIncome)
+    //                         ->where('salary_max', '>=', $fortnightlyIncome)
+    //                         ->first();
+
+    //         if ($residentType === 'non-resident') {
+    //             $tax = $taxRate?->non_resident_taxrate ?? 0.00;
+
+    //         } elseif ($residentType === 'resident') {
+    //             if ($declaration === 'no') {
+    //                 $tax = $taxRate?->no_declaration_taxrate ?? 0.00;
+    //             } elseif ($declaration === 'yes') {
+    //                 if ($fortnightlyIncome <= 769.23) {
+    //                     // Use dependents-based tax from table
+    //                     $column = match ($effectiveDependents) {
+    //                         0 => 'tax_none',
+    //                         1 => 'tax_one',
+    //                         2 => 'tax_two',
+    //                         default => 'tax_three_or_more',
+    //                     };
+    //                     $tax = $taxRate?->$column ?? 0.00;
+    //                 }
+    //             }
+    //         }
+
+    //         // Rebate for Formula 1
+    //         $percentRebate = match ($effectiveDependents) {
+    //             1 => 0.10,
+    //             2 => 0.15,
+    //             3 => 0.35,
+    //             default => 0.00,
+    //         };
+
+    //         $maxRebate = match ($effectiveDependents) {
+    //             1 => 17.31,
+    //             2 => 28.85,
+    //             3 => 40.38,
+    //             default => 0.00,
+    //         };
+
+    //         $rebate = min($tax * $percentRebate, $maxRebate);
+    //     }
+
+    //     // Use Formula 2: income > 769.23
+    //     else {
+    //         if ($residentType === 'non-resident') {
+    //             if ($fortnightlyIncome <= 1269.23) {
+    //                 $tax = 169.23 + 0.30 * ($fortnightlyIncome - 769.23);
+    //             } elseif ($fortnightlyIncome <= 2692.31) {
+    //                 $tax = 319.22 + 0.35 * ($fortnightlyIncome - 1269.23);
+    //             } elseif ($fortnightlyIncome <= 9615.38) {
+    //                 $tax = 817.28 + 0.40 * ($fortnightlyIncome - 2692.31);
+    //             } else {
+    //                 $tax = 3586.38 + 0.42 * ($fortnightlyIncome - 9615.38);
+    //             }
+
+    //         } elseif ($residentType === 'resident') {
+    //             if ($declaration === 'no') {
+    //                 if ($fortnightlyIncome <= 900) {
+    //                     $tax = 0.30 * ($fortnightlyIncome - 769.23);
+    //                 } else {
+    //                     $tax = 322.98 + 0.42 * ($fortnightlyIncome - 900);
+    //                 }
+
+    //             } elseif ($declaration === 'yes') {
+    //                 if ($fortnightlyIncome <= 1269.23) {
+    //                     $tax = 0.30 * ($fortnightlyIncome - 769.23);
+    //                 } elseif ($fortnightlyIncome <= 2692.31) {
+    //                     $tax = 149.99 + 0.35 * ($fortnightlyIncome - 1269.23);
+    //                 } elseif ($fortnightlyIncome <= 9615.38) {
+    //                     $tax = 648.05 + 0.40 * ($fortnightlyIncome - 2692.31);
+    //                 } else {
+    //                     $tax = 3417.27 + 0.42 * ($fortnightlyIncome - 9615.38);
+    //                 }
+
+    //                 // Rebate only for declared residents
+    //                 $percentRebate = match ($effectiveDependents) {
+    //                     1 => 0.10,
+    //                     2 => 0.15,
+    //                     3 => 0.35,
+    //                     default => 0.00,
+    //                 };
+
+    //                 $maxRebate = match ($effectiveDependents) {
+    //                     1 => 17.31,
+    //                     2 => 28.85,
+    //                     3 => 40.38,
+    //                     default => 0.00,
+    //                 };
+
+    //                 $rebate = min($tax * $percentRebate, $maxRebate);
+    //             }
+    //         }
+    //     }
+
+    //     // Final adjustments
+    //     $tax = round(max(0, $tax), 2);
+    //     $rebate = round($rebate, 2);
+    //     $taxAfterRebate = round(max(0, $tax - $rebate), 2);
+
+    //     return [
+    //         'fortnightly_income' => $fortnightlyIncome,
+    //         'dependents' => $dependents,
+    //         'resident_type' => $residentType,
+    //         'declaration' => $declaration,
+    //         'tax' => $tax,
+    //         'rebate' => $rebate,
+    //         'tax_after_rebate' => $taxAfterRebate,
+    //     ];
+    // }
+
+    public function calculateTaxA($fortnightlyIncome = 0, $dependents = 0, $residentType = 'resident', $declaration = 'yes')
     {
         $tax = 0.00;
         $rebate = 0.00;
 
-        // Cap dependents at 3
         $effectiveDependents = min((int)$dependents, 3);
 
-        if ($fortnightlyIncome <= 950) {
-            $taxRate = TaxRate::where('salary_min', '<=', $fortnightlyIncome)
-                ->where('salary_max', '>=', $fortnightlyIncome)
-                ->first();
+        // Get dynamic upper bound for Formula 1 from tax_rates table
+        $formula1Threshold = TaxRate::max('salary_max'); // e.g., 1269.23
 
-            if ($taxRate) {
-                // Select column name based on dependents
-                $taxColumn = match ($effectiveDependents) {
-                    0 => 'tax_none',
-                    1 => 'tax_one',
-                    2 => 'tax_two',
-                    default => 'tax_three_or_more',
-                };
+        // Lookup rate row from tax table (used only in Formula 1)
+        $taxRate = TaxRate::where('salary_min', '<=', $fortnightlyIncome)
+                        ->where('salary_max', '>=', $fortnightlyIncome)
+                        ->first();
 
-                $rebate = $taxRate->$taxColumn ?? 0.00;
-                $tax = 115.38;
+        if ($fortnightlyIncome <= $formula1Threshold) {
+            //Formula 1 - from tax_rates table
+            if ($residentType === 'non-resident') {
+                $tax = $taxRate?->non_resident_taxrate ?? 0.00;
+
+            } elseif ($residentType === 'resident') {
+                if ($declaration === 'no') {
+                    $tax = $taxRate?->no_declaration_taxrate ?? 0.00;
+
+                } elseif ($declaration === 'yes') {
+                    $column = match ($effectiveDependents) {
+                        0 => 'tax_none',
+                        1 => 'tax_one',
+                        2 => 'tax_two',
+                        default => 'tax_three_or_more',
+                    };
+                    $tax = $taxRate?->$column ?? 0.00;
+                }
             }
-        } else {
-            // Income-based slab tax
-            if ($fortnightlyIncome <= 1276) {
-                $tax = 115.38 + 0.30 * ($fortnightlyIncome - 950);
-            } elseif ($fortnightlyIncome <= 2700) {
-                $tax = 213.46 + 0.35 * ($fortnightlyIncome - 1276);
-            } elseif ($fortnightlyIncome <= 9623) {
-                $tax = 711.54 + 0.40 * ($fortnightlyIncome - 2700);
-            } else {
-                $tax = 3480.77 + 0.42 * ($fortnightlyIncome - 9623);
-            }
 
-            $tax = max(0, round($tax, 2));
+            // Apply rebate logic for Formula 1
+            $percentRebate = match ($effectiveDependents) {
+                1 => 0.10,
+                2 => 0.15,
+                3 => 0.35,
+                default => 0.00,
+            };
 
-            // Static rebate values
-            $rebate = match ($effectiveDependents) {
-                1 => 17.30,
+            $maxRebate = match ($effectiveDependents) {
+                1 => 17.31,
                 2 => 28.85,
                 3 => 40.38,
                 default => 0.00,
             };
+
+            $rebate = min($tax * $percentRebate, $maxRebate);
+        }
+        else {
+            // Formula 2 - calculated manually
+            if ($residentType === 'non-resident') {
+                if ($fortnightlyIncome <= 2692.31) {
+                    $tax = 319.22 + 0.35 * ($fortnightlyIncome - 1269.23);
+                } elseif ($fortnightlyIncome <= 9615.38) {
+                    $tax = 817.28 + 0.40 * ($fortnightlyIncome - 2692.31);
+                } else {
+                    $tax = 3586.38 + 0.42 * ($fortnightlyIncome - 9615.38);
+                }
+
+            } elseif ($residentType === 'resident') {
+                if ($declaration === 'no') {
+                    if ($fortnightlyIncome <= 900) {
+                        $tax = 0.30 * ($fortnightlyIncome - 769.23);
+                    } else {
+                        $tax = 322.98 + 0.42 * ($fortnightlyIncome - 900);
+                    }
+
+                } elseif ($declaration === 'yes') {
+                    if ($fortnightlyIncome <= 2692.31) {
+                        $tax = 149.99 + 0.35 * ($fortnightlyIncome - 1269.23);
+                    } elseif ($fortnightlyIncome <= 9615.38) {
+                        $tax = 648.05 + 0.40 * ($fortnightlyIncome - 2692.31);
+                    } else {
+                        $tax = 3417.27 + 0.42 * ($fortnightlyIncome - 9615.38);
+                    }
+
+                    // Rebate for declaration = yes
+                    $percentRebate = match ($effectiveDependents) {
+                        1 => 0.10,
+                        2 => 0.15,
+                        3 => 0.35,
+                        default => 0.00,
+                    };
+
+                    $maxRebate = match ($effectiveDependents) {
+                        1 => 17.31,
+                        2 => 28.85,
+                        3 => 40.38,
+                        default => 0.00,
+                    };
+
+                    $rebate = min($tax * $percentRebate, $maxRebate);
+                }
+            }
         }
 
-        $taxAfterRebate = max(0, round($tax - $rebate, 2));
+        // Final calculations
+        $tax = round(max(0, $tax), 2);
+        $rebate = round($rebate, 2);
+        $taxAfterRebate = round(max(0, $tax - $rebate), 2);
 
-        // Return as array for internal use
         return [
             'fortnightly_income' => $fortnightlyIncome,
             'dependents' => $dependents,
             'resident_type' => $residentType,
+            'declaration' => $declaration,
             'tax' => $tax,
             'rebate' => $rebate,
             'tax_after_rebate' => $taxAfterRebate,
         ];
     }
+
+
 
 
     public function hra_area_name($hra_area_id)

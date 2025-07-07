@@ -27,6 +27,7 @@
 
       <!-- Font Awesome for calendar icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <style>
     .loginBg{
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
@@ -37,9 +38,7 @@
 }
 
   .SidebarBg{
-    background: linear-gradient(-45deg, #23a6d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
+  background: #2f323e;
 	height: auto;
   color: #fff !important;
 }

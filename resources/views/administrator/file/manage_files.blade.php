@@ -24,7 +24,7 @@
             </div>
             <div class="box-body">
                 <div  class="col-md-6"> 
-                    <a href="{{ url('files/create/'. $folder_id) }}" class="btn btn-primary btn-flat"><i class="fa fa-plus"></i> {{ __('Add file') }}</a>
+                    <a href="{{ url('files/create/'. $folder_id) }}" class="btn btn-success btn-flat"><i class="fa fa-plus"></i> {{ __('Add file') }}</a>
                 </div>
 
                 <div  class="col-md-6">  <input type="text" id="myInput" class="form-control" placeholder="{{ __('Search..') }}"></div>
