@@ -44,7 +44,7 @@
     }
 
     .btn-primary {
-      background: linear-gradient(to right, #23d5ab, #137a9f);
+      background: linear-gradient(to right, #FF5541, #E55A53);
       border: none;
       color: #fff;
       font-weight: 600;
@@ -52,11 +52,11 @@
     }
 
     .btn-primary:hover {
-      background: linear-gradient(to right, #137a9f, #23d5ab);
+      background: linear-gradient(to right, #E55A53, #FF5541);
     }
 
     .btn-link {
-      color: #137a9f;
+      color: #000;
       text-decoration: underline;
     }
 
@@ -73,7 +73,7 @@
     h4 {
       text-align: center;
       margin-bottom: 25px;
-      color: #fff;
+      color: #0222A4;
     }
   </style>
 </head>
@@ -84,7 +84,7 @@
       <div class="brand-logo">
         <!-- <img src="{{ asset('backend/images/logo.svg') }}" width="150" alt="logo"/> -->
       </div>
-      <h4>Login</h4>
+      <h4>Sign In</h4>
       <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -99,7 +99,7 @@
         @endif
 
         <div class="form-group">
-          <label for="email" class="text-light">{{ __('E-Mail Address') }}</label>
+          <label for="email" class="text-dark">{{ __('E-Mail Address') }}</label>
           <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
           @if ($errors->has('email'))
           <span class="help-block">{{ $errors->first('email') }}</span>
@@ -107,7 +107,7 @@
         </div>
 
         <div class="form-group">
-          <label for="password" class="text-light">{{ __('Password') }}</label>
+          <label for="password" class="text-dark">{{ __('Password') }}</label>
           <input id="password" type="password" class="form-control" name="password" required>
           @if ($errors->has('password'))
           <span class="help-block">{{ $errors->first('password') }}</span>
@@ -116,7 +116,7 @@
 
         <div class="form-group form-check">
           <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-          <label class="form-check-label text-light" for="remember">{{ __('Remember Me') }}</label>
+          <label class="form-check-label text-dark" for="remember">{{ __('Remember Me') }}</label>
         </div>
 
         <div class="form-group">
