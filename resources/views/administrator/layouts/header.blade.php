@@ -65,11 +65,15 @@
                         <i class="ti-settings text-primary"></i>
                         {{ __('Profile') }}
                     </a>
-                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <!-- <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="ti-power-off text-primary"></i>
                         {{ __('Sign out') }}
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form> -->
+                     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-lock text-purple"></i> <span>{{ __('Logout') }}</span></a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
                         {{ csrf_field() }}
                     </form>
                 </div>

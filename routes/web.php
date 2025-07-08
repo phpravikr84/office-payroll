@@ -79,7 +79,7 @@ header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Autho
 // Auth::routes(['login' => false]);
 //Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 //Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+//Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
