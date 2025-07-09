@@ -1176,40 +1176,40 @@ $(document).ready(function() {
 
 //
 $(document).ready(function () {
-    $('#cost_center').change(function () {
-        var costCenterId = $(this).val();
+    // $('#cost_center').change(function () {
+    //     var costCenterId = $(this).val();
         
-        if (costCenterId) {
-            $.ajax({
-                url: '/get-departments-by-cost-center/' + costCenterId,  // Adjust the URL based on your route
-                method: 'GET',
-                success: function (response) {
-                    var departmentSelect = $('#department');
-                    departmentSelect.empty(); // Clear previous departments
-                    response.departments.forEach(function (department) {
-                        departmentSelect.append(new Option(department.department, department.id));
-                    });
+    //     if (costCenterId) {
+    //         $.ajax({
+    //             url: window.Laravel.routes.GetDepartmentsByCostCenter+'/' + costCenterId,  // Adjust the URL based on your route
+    //             method: 'GET',
+    //             success: function (response) {
+    //                 var departmentSelect = $('#department');
+    //                 departmentSelect.empty(); // Clear previous departments
+    //                 response.departments.forEach(function (department) {
+    //                     departmentSelect.append(new Option(department.department, department.id));
+    //                 });
 
-                    // Handle the dynamic creation of share percentage fields
-                    var sharePercentages = response.sharePercentages;
-                    var sharePercentageFields = $('#share_percentage_fields');
-                    sharePercentageFields.empty(); // Clear any previous fields
+    //                 // Handle the dynamic creation of share percentage fields
+    //                 var sharePercentages = response.sharePercentages;
+    //                 var sharePercentageFields = $('#share_percentage_fields');
+    //                 sharePercentageFields.empty(); // Clear any previous fields
 
-                    // Generate input fields for each department's share percentage
-                    response.departments.forEach(function (department) {
-                        var sharePercentage = sharePercentages[department.id] || '';
-                        var fieldHtml = `
-                            <div class="form-group">
-                                <label for="share_percentage_${department.id}">${department.department} Share Percentage</label>
-                                <input type="text" class="form-control" name="cost_center_share_percentage[${department.id}]" id="share_percentage_${department.id}" value="${sharePercentage}" />
-                            </div>
-                        `;
-                        sharePercentageFields.append(fieldHtml);
-                    });
-                }
-            });
-        }
-    });
+    //                 // Generate input fields for each department's share percentage
+    //                 response.departments.forEach(function (department) {
+    //                     var sharePercentage = sharePercentages[department.id] || '';
+    //                     var fieldHtml = `
+    //                         <div class="form-group">
+    //                             <label for="share_percentage_${department.id}">${department.department} Share Percentage</label>
+    //                             <input type="text" class="form-control" name="cost_center_share_percentage[${department.id}]" id="share_percentage_${department.id}" value="${sharePercentage}" />
+    //                         </div>
+    //                     `;
+    //                     sharePercentageFields.append(fieldHtml);
+    //                 });
+    //             }
+    //         });
+    //     }
+    // });
 });
 
 //Salary Calculator

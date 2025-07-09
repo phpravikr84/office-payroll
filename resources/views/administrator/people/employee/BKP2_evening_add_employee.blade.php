@@ -2,6 +2,17 @@
 @section('title', __('Add Employee'))
 
 @section('main_content')
+<!-- Include Bootstrap 4 CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <div class="content-wrapper">
     <section class="content-header">
         <h1>{{ __('Add Employee') }}</h1>
@@ -746,29 +757,16 @@
                                         </td>
                                         <td>
                                             <select name="department[]" id="department" class="form-control" multiple required>
-                                                <option value="" disabled>{{ __('Select one or more') }}</option>
-                                                @if(isset($departments))
-                                                    @foreach($departments as $dept)
-                                                        <option value="{{ $dept->id }}" {{ in_array($dept->id, session('employee_data.costcenter.department', old('department', []))) ? 'selected' : '' }}>{{ $dept->department }}</option>
-                                                    @endforeach
-                                                @endif
+                                                <option value="" {{ !session('employee_data.costcenter.department', old('department')) ? 'selected' : '' }}>{{ __('Select one or more') }}</option>
+                                                <!-- Assume departments are populated dynamically -->
                                             </select>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
                                             <div id="share_percentage_fields">
-                                                @if(isset($departments) && session('employee_data.costcenter.department', old('department', [])))
-                                                    @foreach(session('employee_data.costcenter.department', old('department', [])) as $deptId)
-                                                        @php $dept = collect($departments)->firstWhere('id', $deptId); @endphp
-                                                        <div class="form-group">
-                                                            <label for="share_percentage_{{ $deptId }}">{{ $dept ? $dept->department : 'Department' }} Share Percentage</label>
-                                                            <input type="number" class="form-control" name="cost_center_share_percentage[{{ $deptId }}]" id="share_percentage_{{ $deptId }}" value="{{ session('employee_data.costcenter.cost_center_share_percentage.' . $deptId, old('cost_center_share_percentage.' . $deptId)) ?? '' }}" min="0" max="100" step="0.01" required>
-                                                            <div class="error-message"></div>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
+                                                <input type="number" name="cost_center_share_percentage" class="form-control" value="{{ session('employee_data.costcenter.cost_center_share_percentage', old('cost_center_share_percentage')) }}" required>
                                             </div>
-                                            <div class="error-message" id="general_percentage_error"></div>
+                                            <div class="error-message"></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -785,7 +783,7 @@
 
         <!-- Contact Information -->
         <div class="form-step" data-step="contact">
-            <form id="contactForm" method="post" action="{{ url('/people/employees/employee_contacts_add') }}">
+            <form id="contactInfoForm" method="post" action="{{ url('/employee_contacts/update/') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="contact">
                 <div class="box-body">
@@ -798,21 +796,21 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <label for="employee_contact_address">{{ __('Address') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_address">{{ __('Address') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_address" id="employee_contact_address" class="form-control" value="{{ session('employee_data.contact.employee_contact_address', old('employee_contact_address')) }}" placeholder="{{ __('Enter contact address..') }}" required>
                                 <div class="error-message"></div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <label for="employee_contact_phone">{{ __('Phone') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_phone">{{ __('Phone') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_phone" id="employee_contact_phone" class="form-control" value="{{ session('employee_data.contact.employee_contact_phone', old('employee_contact_phone')) }}" placeholder="{{ __('Enter phone no..') }}" required>
                                 <div class="error-message"></div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <label for="employee_contact_mobile">{{ __('Mobile') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_mobile">{{ __('Mobile') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_mobile" id="employee_contact_mobile" class="form-control" value="{{ session('employee_data.contact.employee_contact_mobile', old('employee_contact_mobile')) }}" placeholder="{{ __('Enter mobile no..') }}" required>
                                 <div class="error-message"></div>
@@ -826,7 +824,7 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <label for="employee_contact_relationship">{{ __('Relation') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_relationship">{{ __('Relation') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_relationship" id="employee_contact_relationship" class="form-control" value="{{ session('employee_data.contact.employee_contact_relationship', old('employee_contact_relationship')) }}" placeholder="{{ __('Enter relation..') }}" required>
                                 <div class="error-message"></div>
@@ -843,18 +841,18 @@
 
         <!-- Leave Details -->
         <div class="form-step" data-step="leave">
-            <form id="leaveForm" method="post" action="{{ url('/people/employees/leave_store') }}">
+            <form id="leaveDetailsForm" method="post" action="{{ url('people/employees/leave_store') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="leave">
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-bordered">
-                            <thead style="background-color: #343a40; color: #fff;">
+                            <thead style="background-color: #343a40; color: #000;">
                                 <tr>
                                     <th>{{ __('Leave Category') }}</th>
                                     <th>{{ __('Leave Count') }}</th>
                                     <th>{{ __('Leave Type') }}</th>
-                                    <th>{{ __('Active') }}</th>
+                                    <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -864,16 +862,13 @@
                                             <input type="hidden" name="leave_category_id[]" value="{{ $leave->id }}">
                                         </td>
                                         <td>
-                                            <input type="number" id="leave_balance_{{ $leave->id }}" name="leave_balance[]" class="form-control" value="{{ session('employee_data.leave.' . $leave->id . '.leave_balance', old('leave_balance.' . $leave->id, $leave->qty)) }}" readonly>
-                                            <div class="error-message"></div>
+                                            <input type="number" id="leave_balance_{{ $leave->id }}" name="leave_balance[]" class="form-control" value="{{ session('employee_data.leave.' . $leave->id . '.leave_balance', $leave->qty) }}" readonly>
                                         </td>
                                         <td>
-                                            <input type="text" id="leave_type_{{ $leave->id }}" name="leave_type[]" class="form-control" value="{{ session('employee_data.leave.' . $leave->id . '.leave_type', old('leave_type.' . $leave->id, $leave->type_of_leave)) }}" readonly>
-                                            <div class="error-message"></div>
+                                            <input type="text" id="leave_type_{{ $leave->id }}" name="leave_type[]" class="form-control" value="{{ session('employee_data.leave.' . $leave->id . '.leave_type', $leave->type_of_leave) }}" readonly>
                                         </td>
                                         <td>
-                                            <input type="checkbox" id="leave_active_{{ $leave->id }}" name="leave_active[]" value="{{ $leave->id }}" class="form-control" {{ session('employee_data.leave.' . $leave->id . '.leave_active', old('leave_active.' . $leave->id, $leave->active)) ? 'checked' : '' }}>
-                                            <div class="error-message"></div>
+                                            <input type="checkbox" id="leave_active_{{ $leave->id }}" name="leave_active[]" value="{{ $leave->id }}" class="form-control" {{ session('employee_data.leave.' . $leave->id . '.leave_active', $leave->active) ? 'checked' : '' }}>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -890,13 +885,13 @@
 
         <!-- Superannuation -->
         <div class="form-step" data-step="superannuation">
-            <form id="superannuationForm" method="post" action="{{ url('/people/employees/submit_superannuation') }}">
+            <form id="superannuationForm" method="post" action="{{ route('employees.submit_superannuation') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="superannuation">
                 <div class="box-body">
                     <div class="mb-3">
-                        <label for="superannuation_id" class="form-label">{{ __('Superannuation') }} <span class="text-danger">*</span></label>
-                        <select name="superannuation_id" id="superannuation_id" class="form-control" required>
+                        <label for="superannuation_id" class="form-label">{{ __('Superannuation') }}</label>
+                        <select name="superannuation_id" id="empl_superannuation_id" class="form-control" required>
                             <option value="" {{ !session('employee_data.superannuation.superannuation_id', old('superannuation_id')) ? 'selected' : '' }}>{{ __('Select Superannuation') }}</option>
                             @foreach($superannuations as $superannuation)
                                 <option value="{{ $superannuation->id }}" data-superannuation="{{ json_encode($superannuation) }}" {{ session('employee_data.superannuation.superannuation_id', old('superannuation_id')) == $superannuation->id ? 'selected' : '' }}>
@@ -909,30 +904,25 @@
                     <div class="mb-3">
                         <label for="employer_contribution_percentage" class="form-label">{{ __('Employer Contribution (%)') }}</label>
                         <input type="text" id="employer_contribution_percentage" name="employer_contribution_percentage" value="{{ session('employee_data.superannuation.employer_contribution_percentage', old('employer_contribution_percentage')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="employer_contribution_fixed_amount" class="form-label">{{ __('Employer Fixed Contribution') }}</label>
                         <input type="text" id="employer_contribution_fixed_amount" name="employer_contribution_fixed_amount" value="{{ session('employee_data.superannuation.employer_contribution_fixed_amount', old('employer_contribution_fixed_amount')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_name" class="form-label">{{ __('Bank Name') }}</label>
                         <input type="text" id="bank_name" name="bank_name" value="{{ session('employee_data.superannuation.bank_name', old('bank_name')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_address" class="form-label">{{ __('Bank Address') }}</label>
                         <input type="text" id="bank_address" name="bank_address" value="{{ session('employee_data.superannuation.bank_address', old('bank_address')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_account_number" class="form-label">{{ __('Bank Account Number') }}</label>
                         <input type="text" id="bank_account_number" name="bank_account_number" value="{{ session('employee_data.superannuation.bank_account_number', old('bank_account_number')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="employer_superannuation_no" class="form-label">{{ __('Employer Superannuation No') }} <span class="text-danger">*</span></label>
+                        <label for="employer_superannuation_no" class="form-label">{{ __('Employer Superannuation No') }}</label>
                         <select id="employer_superannuation_no" name="employer_superannuation_no" class="form-control" required>
                             <option value="" {{ !session('employee_data.superannuation.employer_superannuation_no', old('employer_superannuation_no')) ? 'selected' : '' }}>{{ __('Select one') }}</option>
                             @if($companies)
@@ -953,7 +943,7 @@
 
         <!-- Bank Credits -->
         <div class="form-step" data-step="bank">
-            <form id="bankForm" method="post" action="{{ url('/people/employees/bank_store') }}">
+            <form id="bankCreditsForm" method="post" action="{{ url('people/employees/bank_store') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="bank">
                 <div class="box-body">
@@ -961,7 +951,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <strong class="d-block mb-2">{{ __('Select Bank') }} <span class="text-danger">*</span></strong>
+                                    <strong class="d-block mb-2">{{ __('Select Bank') }}</strong>
                                     @if($bankLists)
                                         <select class="form-control mb-3" name="bank_id" id="bank_id" required>
                                             <option value="" {{ !session('employee_data.bank.bank_id', old('bank_id')) ? 'selected' : '' }}>{{ __('Select one') }}</option>
@@ -973,32 +963,27 @@
                                     @endif
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_no" id="acct_no" value="{{ session('employee_data.bank.acct_no', old('acct_no')) }}" placeholder="{{ __('Account No') }}" required>
+                                    <input type="text" class="form-control" name="acct_no" id="acct_no" value="{{ session('employee_data.bank.acct_no', old('acct_no', '1000234569')) }}" placeholder="{{ __('Account No') }}" required>
                                     <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="swift_code" id="swift_code" value="{{ session('employee_data.bank.swift_code', old('swift_code')) }}" placeholder="{{ __('Swift Code') }}" required>
-                                    <div class="error-message"></div>
+                                    <input type="text" class="form-control" name="swift_code" id="swift_code" value="{{ session('employee_data.bank.swift_code', old('swift_code', 'Swift Code')) }}" placeholder="{{ __('Swift Code') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_name" id="acct_name" value="{{ session('employee_data.bank.acct_name', old('acct_name')) }}" placeholder="{{ __('Account Name') }}" required>
+                                    <input type="text" class="form-control" name="acct_name" id="acct_name" value="{{ session('employee_data.bank.acct_name', old('acct_name', 'S Mathew')) }}" placeholder="{{ __('Account Name') }}" required>
                                     <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="text" class="form-control" name="acct_add" id="acct_add" value="{{ session('employee_data.bank.acct_add', old('acct_add')) }}" placeholder="{{ __('Address') }}">
-                                    <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="text" class="form-control" name="acct_city" id="acct_city" value="{{ session('employee_data.bank.acct_city', old('acct_city')) }}" placeholder="{{ __('City') }}">
-                                    <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="email" class="form-control" name="acct_email" id="acct_email" value="{{ session('employee_data.bank.acct_email', old('acct_email')) }}" placeholder="{{ __('Email Address') }}">
-                                    <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="text" class="form-control" maxlength="3" name="acct_ccode" id="acct_ccode" value="{{ session('employee_data.bank.acct_ccode', old('acct_ccode')) }}" placeholder="{{ __('Country Code') }}">
-                                    <div class="error-message"></div>
                                 </div>
                             </div>
                         </div>
@@ -1012,17 +997,6 @@
         </div>
     </section>
 </div>
-@endsection
-<!-- Include Bootstrap 4 CSS and JS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 <style>
     .form-step {
@@ -1323,97 +1297,6 @@
         const step = $(this).data('step');
         updateStep(step);
     });
-
-
-     // Dynamic department population based on cost_center
-    $('#cost_center').on('change', function () {
-        const costCenterId = $(this).val();
-        const selectedDepartments = @json(session('employee_data.costcenter.department', old('department', [])));
-        const $department = $('#department');
-        $department.empty().append('<option value="" disabled>Select one or more</option>');
-
-        if (costCenterId) {
-            $.ajax({
-                url: window.Laravel.routes.GetDepartmentsByCostCenter + '/' + costCenterId,
-                method: 'GET',
-                dataType: 'json',
-                success: function (response) {
-                    const departments = response.departments || [];
-                    departments.forEach(function (department) {
-                        $department.append(new Option(department.department, department.id, false, selectedDepartments.includes(department.id.toString())));
-                    });
-
-                    const sharePercentages = response.sharePercentages || {};
-                    const sharePercentageFields = $('#share_percentage_fields');
-                    sharePercentageFields.empty();
-
-                    departments.forEach(function (department) {
-                        const sharePercentage = sharePercentages[department.id] || '';
-                        sharePercentageFields.append(`
-                            <div class="form-group">
-                                <label for="share_percentage_${department.id}">${department.department} Share Percentage</label>
-                                <input type="number" class="form-control" name="cost_center_share_percentage[${department.id}]" id="share_percentage_${department.id}" value="${sharePercentage}" min="0" max="100" step="0.01" required>
-                                <div class="error-message"></div>
-                            </div>
-                        `);
-                    });
-                },
-                error: function (xhr) {
-                    console.error('Error fetching departments:', xhr.responseText);
-                    $department.append('<option value="">No departments available</option>');
-                }
-            });
-        } else {
-            $('#share_percentage_fields').empty();
-        }
-    });
-
-    // Dynamic cost_center_share_percentage fields based on department selection
-    // $('#department').on('change', function () {
-    //     const selectedDepartments = $(this).val() || [];
-    //     const $percentageFields = $('#share_percentage_fields');
-    //     const existingPercentages = @json(session('employee_data.costcenter.cost_center_share_percentage', old('cost_center_share_percentage', [])));
-    //     $percentageFields.empty();
-
-    //     if (selectedDepartments.length) {
-    //         $.ajax({
-    //             url: window.Laravel.routes.PeopleGetDepartment,
-    //             method: 'GET',
-    //             data: { ids: selectedDepartments },
-    //             dataType: 'json',
-    //             success: function (departments) {
-    //                 departments.forEach(dept => {
-    //                     const percentage = existingPercentages[dept.id] || '';
-    //                     $percentageFields.append(`
-    //                         <div class="form-group">
-    //                             <label for="share_percentage_${dept.id}">${dept.name} Share Percentage</label>
-    //                             <input type="number" class="form-control" name="cost_center_share_percentage[${dept.id}]" id="share_percentage_${dept.id}" value="${percentage}" min="0" max="100" step="0.01" required>
-    //                             <div class="error-message"></div>
-    //                         </div>
-    //                     `);
-    //                 });
-    //             },
-    //             error: function () {
-    //                 selectedDepartments.forEach(id => {
-    //                     const percentage = existingPercentages[id] || '';
-    //                     $percentageFields.append(`
-    //                         <div class="form-group">
-    //                             <label for="share_percentage_${id}">Department ${id} Share Percentage</label>
-    //                             <input type="number" class="form-control" name="cost_center_share_percentage[${id}]" id="share_percentage_${id}" value="${percentage}" min="0" max="100" step="0.01" required>
-    //                             <div class="error-message"></div>
-    //                         </div>
-    //                     `);
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
-
-    // Trigger initial population
-    if ($('#cost_center').val()) {
-        $('#cost_center').trigger('change');
-    } else if ($('#department').val()) {
-        $('#department').trigger('change');
-    }
 });
 </script>
+@endsection

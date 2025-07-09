@@ -10,19 +10,18 @@
                         url: window.Laravel.routes.EmplPayrollHRAAreaSrc + "/" + hra_place_id,
                         success: function(response) {
                             console.log('response'+response);
-                            $("#hr_area").val(response);
-                            $('#hr_area').attr('value', response);
-                            //console.log('HRA Area: '+hra_area1);
+                            let hra_area1 = response[0] || ''; // get first item from array
+                            $("#hr_area").val(hra_area1);
                             if(hra_area1 == "" || hra_area1 == 'Area 3') {
-                              $('#hra_amount_per_week').attr('readonly', true);
-                              $('#hra_type').attr('readonly', true);
-                              $('#hra_amount_per_week').val('');
-                              $('#house_rent_allowance').val('');
+                                $('#hra_amount_per_week').attr('readonly', true);
+                                $('#hra_type').attr('readonly', true);
+                                $('#hra_amount_per_week').val('');
+                                $('#house_rent_allowance').val('');
                             }else{
-                              $('#hra_amount_per_week').attr('readonly', false);
-                              $('#hra_type').attr('readonly', false);                  
-                              $('#hra_amount_per_week').val('');
-                              $('#house_rent_allowance').val('');
+                                $('#hra_amount_per_week').attr('readonly', false);
+                                $('#hra_type').attr('readonly', false);                  
+                                $('#hra_amount_per_week').val('');
+                                $('#house_rent_allowance').val('');
                             }
                         },
                         error:function(err){
@@ -161,10 +160,10 @@
 
             // No of Dependent click
             //When page load
-            let dep = $('#no_of_dependent_frm').val();
+            let dep = $('#no_of_dependent').val();
             $('#no_of_dependent').val(dep);
             //if change value 
-            $('#no_of_dependent_frm').on("change", function () {
+            $('#no_of_dependent').on("change", function () {
                 // Get dependent value
                 let dep = $(this).val();
                 $('#no_of_dependent').val(dep);
@@ -227,7 +226,7 @@
     
     var gross_salary = +basic_salary + +house_rent_allowance + +medical_allowance + +special_allowance + +other_allowance + +vehicle_allowance + +meals_allowance + +electricity_allowance + +security_allowance;
     //var gross_salary = basic_salary + house_rent_allowance + medical_allowance + special_allowance + other_allowance + vehicle_allowance + meals_allowance + electricity_allowance + security_allowance;
-    console.log('gross_salary222: '+gross_salary);
+    //console.log('gross_salary222: '+gross_salary);
     //var total_deduction = parseFloat(+tax_deduction + +provident_fund_deduction + +other_deduction);
     var total_deduction = +tax_deduction_a + +provident_fund_deduction;
 

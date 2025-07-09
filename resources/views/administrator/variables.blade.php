@@ -73,6 +73,10 @@
             SalaryCalculatorVehicle: '{{ url("/salary-calculator/vehicle") }}',
             SalaryCalculatorMeals: '{{ url("/salary-calculator/meals") }}',
 
+            //Cost Center
+            GetDepartmentsByCostCenter: '{{ url("/setting/costcenters/get-departments-by-cost-center") }}',
+            PeopleGetDepartment: '{{ url("people/employees/getDepartmentLists") }}',
+
         }
     };
 </script>

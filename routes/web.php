@@ -356,6 +356,9 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('/superannuation_update/{employee_id?}', [EmplController::class, 'updateSuperannuation'])->name('update_superannuation');
 		Route::post('/bank_store/{employee_id?}', [EmplController::class, 'bank_store'])->name('bank_store');
 		Route::post('/bank_update/{employee_id?}', [EmplController::class, 'updateBankDetails'])->name('update_bank_details');
+		Route::post('/cost_store', [EmplController::class, 'cost_store'])->name('cost_store');
+		Route::post('/getDepartmentLists', [EmplController::class, 'getDepartments'])->name('getDepartmentLists');
+		Route::post('/employee_contacts_add', [EmplController::class, 'employeeContactsAdd'])->name('employee_contacts_add');
 	});
 
 	// Folder
@@ -639,8 +642,9 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('/edit/{id}', [CostCenterController::class, 'edit'])->name('edit');
 		Route::post('/update/{id}', [CostCenterController::class, 'update'])->name('update');
 		Route::delete('/delete/{id}', [CostCenterController::class, 'destroy'])->name('destroy');
+		Route::get('/get-departments-by-cost-center/{costCenterId}', [CostCenterController::class, 'getDepartmentsByCostCenter']);
 	});
-	Route::get('/get-departments-by-cost-center/{costCenterId}', [CostCenterController::class, 'getDepartmentsByCostCenter']);
+	
 
 	
 

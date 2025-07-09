@@ -2,6 +2,9 @@
 @section('title', __('Add Employee'))
 
 @section('main_content')
+<!-- Include Bootstrap 4 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
 <div class="content-wrapper">
     <section class="content-header">
         <h1>{{ __('Add Employee') }}</h1>
@@ -134,9 +137,9 @@
                                             <label for="date_of_birth">{{ __('Date of Birth') }}</label>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" name="date_of_birth" class="form-control datepicker" value="{{ session('employee_data.personal.date_of_birth', old('date_of_birth')) }}" id="datepicker">
+                                                    <input type="text" name="date_of_birth" class="form-control" value="{{ session('employee_data.personal.date_of_birth', old('date_of_birth')) }}" id="datepicker">
                                                     <div class="input-group-append">
-                                                        <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
+                                                        <span class="input-group-text calendar-icon" id="date_picker_icon"><i class="fa fa-calendar"></i></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -173,18 +176,18 @@
                                             <label for="joining_date">{{ __('Joining Date') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <div class="input-group date">
-                                                    <input type="text" name="joining_date" class="form-control datepicker" id="datepicker4" value="{{ session('employee_data.personal.joining_date', old('joining_date')) }}" placeholder="{{ __('yyyy-mm-dd') }}" required>
-                                                    <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" name="joining_date" class="form-control" id="datepicker4" value="{{ session('employee_data.personal.joining_date', old('joining_date')) }}" placeholder="{{ __('yyyy-mm-dd') }}" required>
+                                                    <span class="input-group-text calendar-icon" id="date_picker_icon4"><i class="fa fa-calendar"></i></span>
                                                 </div>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label for="end_date">{{ __('End Date') }}<span class="text-danger"></span></label>
+                                            <label for="end_date">{{ __('End Date') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <div class="input-group date">
-                                                    <input type="text" name="end_date" class="form-control datepicker" id="datepicker5" value="{{ session('employee_data.personal.end_date', old('end_date')) }}" placeholder="{{ __('yyyy-mm-dd') }}">
-                                                    <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" name="end_date" class="form-control" id="datepicker5" value="{{ session('employee_data.personal.end_date', old('end_date')) }}" placeholder="{{ __('yyyy-mm-dd') }}" required>
+                                                    <span class="input-group-text calendar-icon" id="date_picker_icon5"><i class="fa fa-calendar"></i></span>
                                                 </div>
                                                 <div class="error-message"></div>
                                             </div>
@@ -231,7 +234,7 @@
                                         <div class="col-md-4">
                                             <label for="resident_status">{{ __('Resident Status') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
-                                                <select name="resident_status" id="resident_status" class="form-control" required>
+                                                <select name="resident_status" id="resident_status_emp" class="form-control" required>
                                                     <option value="" {{ !session('employee_data.personal.resident_status', old('resident_status')) ? 'selected' : '' }}>{{ __('Select Resident/Non-Resident') }}</option>
                                                     <option value="1" {{ session('employee_data.personal.resident_status', old('resident_status')) == '1' ? 'selected' : '' }}>{{ __('Resident') }}</option>
                                                     <option value="2" {{ session('employee_data.personal.resident_status', old('resident_status')) == '2' ? 'selected' : '' }}>{{ __('Non-Resident') }}</option>
@@ -420,12 +423,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="btn-group d-flex justify-content-between">
+                <div class="btn-group">
                     <a href="{{ url('/people/employees') }}" class="btn btn-danger">{{ __('Cancel') }}</a>
-                    <div>
-                        <button type="button" class="btn btn-secondary prev-step" data-prev="personal" disabled>{{ __('Previous') }}</button>
-                        <button type="button" class="btn btn-primary next-step" data-next="payroll">{{ __('Next') }}</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary next-step" data-next="payroll">{{ __('Next') }}</button>
                 </div>
             </form>
         </div>
@@ -452,7 +452,7 @@
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
-                                        <thead style="background-color: #343a40; color: #000;">
+                                        <thead style="background-color: #343a40; color: white;">
                                             <tr>
                                                 <th>{{ __('Period Definition') }}</th>
                                                 <th>{{ __('Annual Salary') }}</th>
@@ -535,7 +535,7 @@
                                             <tr>
                                                 <td><label for="house_rent_allowance">{{ __('Housing Allowance') }}</label></td>
                                                 <td>
-                                                    <input type="number" name="house_rent_allowance" id="house_rent_allowance" value="{{ session('employee_data.payroll.house_rent_allowance', old('house_rent_allowance')) }}" class="form-control" placeholder="0" readonly>
+                                                    <input type="number" name="house_rent_allowance" id="house_rent_allowance" value="{{ session('employee_data.payroll.house_rent_allows', old('house_rent_allowance')) }}" class="form-control" placeholder="0" readonly>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -618,7 +618,7 @@
                                 </div>
                                 <div class="box-body">
                                     <table class="table table-bordered">
-                                        <thead style="background-color: #343a40; color: #000;">
+                                        <thead style="background-color: #343a40; color: white;">
                                             <tr>
                                                 <th>{{ __('Deductions & Rebate') }}</th>
                                                 <th></th>
@@ -634,8 +634,8 @@
                                             <tr>
                                                 <td>{{ __('Dependents') }}</td>
                                                 <td>
-                                                    <select name="no_of_dependent" id="no_of_dependent" class="form-control">
-                                                        @for ($i = 0; $i <= 5; $i++)
+                                                    <select name="no_of_dependent" id="no_of_dependent_frm" class="form-control">
+                                                        @for ($i = 1; $i <= 5; $i++)
                                                             <option value="{{ $i }}" {{ session('employee_data.payroll.no_of_dependent', old('no_of_dependent')) == $i ? 'selected' : '' }}>{{ $i }}</option>
                                                         @endfor
                                                     </select>
@@ -688,9 +688,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="btn-group d-flex justify-content-between">
+                <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="personal">{{ __('Previous') }}</button>
-                    <button type="button" class="btn btn-primary next-step" data-next="costcenter">{{ __('Next') }}</button>
+                    <button type="submit" class="btn btn-primary next-step" data-next="costcenter">{{ __('Next') }}</button>
                 </div>
             </form>
         </div>
@@ -704,7 +704,7 @@
                     <div class="row">
                         <div class="col-md-12 table-responsive">
                             <table class="table table-bordered">
-                                <thead style="background-color: #343a40; color: #000;">
+                                <thead style="background-color: #343a40; color: white;">
                                     <tr>
                                         <th>{{ __('Payroll Location') }} <span class="text-danger">*</span></th>
                                         <th>{{ __('Pay Batch Number') }} <span class="text-danger">*</span></th>
@@ -746,29 +746,16 @@
                                         </td>
                                         <td>
                                             <select name="department[]" id="department" class="form-control" multiple required>
-                                                <option value="" disabled>{{ __('Select one or more') }}</option>
-                                                @if(isset($departments))
-                                                    @foreach($departments as $dept)
-                                                        <option value="{{ $dept->id }}" {{ in_array($dept->id, session('employee_data.costcenter.department', old('department', []))) ? 'selected' : '' }}>{{ $dept->department }}</option>
-                                                    @endforeach
-                                                @endif
+                                                <option value="" {{ !session('employee_data.costcenter.department', old('department')) ? 'selected' : '' }}>{{ __('Select one or more') }}</option>
+                                                <!-- Assume departments are populated dynamically -->
                                             </select>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
                                             <div id="share_percentage_fields">
-                                                @if(isset($departments) && session('employee_data.costcenter.department', old('department', [])))
-                                                    @foreach(session('employee_data.costcenter.department', old('department', [])) as $deptId)
-                                                        @php $dept = collect($departments)->firstWhere('id', $deptId); @endphp
-                                                        <div class="form-group">
-                                                            <label for="share_percentage_{{ $deptId }}">{{ $dept ? $dept->department : 'Department' }} Share Percentage</label>
-                                                            <input type="number" class="form-control" name="cost_center_share_percentage[{{ $deptId }}]" id="share_percentage_{{ $deptId }}" value="{{ session('employee_data.costcenter.cost_center_share_percentage.' . $deptId, old('cost_center_share_percentage.' . $deptId)) ?? '' }}" min="0" max="100" step="0.01" required>
-                                                            <div class="error-message"></div>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
+                                                <input type="number" name="cost_center_share_percentage" class="form-control" value="{{ session('employee_data.costcenter.cost_center_share_percentage', old('cost_center_share_percentage')) }}" required>
                                             </div>
-                                            <div class="error-message" id="general_percentage_error"></div>
+                                            <div class="error-message"></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -776,16 +763,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="btn-group d-flex justify-content-between">
+                <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="payroll">{{ __('Previous') }}</button>
-                    <button type="button" class="btn btn-primary next-step" data-next="contact">{{ __('Next') }}</button>
+                    <button type="submit" class="btn btn-primary next-step" data-next="contact">{{ __('Next') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Contact Information -->
         <div class="form-step" data-step="contact">
-            <form id="contactForm" method="post" action="{{ url('/people/employees/employee_contacts_add') }}">
+            <form id="contactInfoForm" method="post" action="{{ url('/employee_contacts/update/') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="contact">
                 <div class="box-body">
@@ -798,21 +785,21 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <label for="employee_contact_address">{{ __('Address') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_address">{{ __('Address') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_address" id="employee_contact_address" class="form-control" value="{{ session('employee_data.contact.employee_contact_address', old('employee_contact_address')) }}" placeholder="{{ __('Enter contact address..') }}" required>
                                 <div class="error-message"></div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <label for="employee_contact_phone">{{ __('Phone') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_phone">{{ __('Phone') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_phone" id="employee_contact_phone" class="form-control" value="{{ session('employee_data.contact.employee_contact_phone', old('employee_contact_phone')) }}" placeholder="{{ __('Enter phone no..') }}" required>
                                 <div class="error-message"></div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <label for="employee_contact_mobile">{{ __('Mobile') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_mobile">{{ __('Mobile') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_mobile" id="employee_contact_mobile" class="form-control" value="{{ session('employee_data.contact.employee_contact_mobile', old('employee_contact_mobile')) }}" placeholder="{{ __('Enter mobile no..') }}" required>
                                 <div class="error-message"></div>
@@ -821,12 +808,12 @@
                         <div class="col-6">
                             <label for="employee_contact_email">{{ __('Employee Contact Email') }} <span class="text-danger">*</span></label>
                             <div class="form-group">
-                                <input type="email" name="employee_contact_email" id="employee_contact_email" class="form-control" value="{{ session('employee_data.contact.employee_contact_email', old('employee_contact_email')) }}" placeholder="{{ __('Enter personal email address..') }}" required>
+                                <input type="email" name="employee_contact_email" id="employee_contact_email" class="form-control" value="{{ session('employee_data.contact.employee_contact_email', old('employee_contact_email')) }}" placeholder="{{ __('Enter employee_contact_email address..') }}" required>
                                 <div class="error-message"></div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <label for="employee_contact_relationship">{{ __('Relation') }} <span class="text-danger">*</span></label>
+                            <label for="employee_contact_relationship">{{ __('Relation') }}<span class="text-danger">*</span></label>
                             <div class="form-group">
                                 <input type="text" name="employee_contact_relationship" id="employee_contact_relationship" class="form-control" value="{{ session('employee_data.contact.employee_contact_relationship', old('employee_contact_relationship')) }}" placeholder="{{ __('Enter relation..') }}" required>
                                 <div class="error-message"></div>
@@ -834,27 +821,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="btn-group d-flex justify-content-between">
+                <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="costcenter">{{ __('Previous') }}</button>
-                    <button type="button" class="btn btn-primary next-step" data-next="leave">{{ __('Next') }}</button>
+                    <button type="submit" class="btn btn-primary next-step" data-next="leave">{{ __('Next') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Leave Details -->
         <div class="form-step" data-step="leave">
-            <form id="leaveForm" method="post" action="{{ url('/people/employees/leave_store') }}">
+            <form id="leaveDetailsForm" method="post" action="{{ url('people/employees/leave_store') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="leave">
                 <div class="box-body">
                     <div class="table-responsive">
                         <table class="table table-bordered">
-                            <thead style="background-color: #343a40; color: #fff;">
+                            <thead style="background-color: #343a40; color: white;">
                                 <tr>
                                     <th>{{ __('Leave Category') }}</th>
                                     <th>{{ __('Leave Count') }}</th>
                                     <th>{{ __('Leave Type') }}</th>
-                                    <th>{{ __('Active') }}</th>
+                                    <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -864,16 +851,13 @@
                                             <input type="hidden" name="leave_category_id[]" value="{{ $leave->id }}">
                                         </td>
                                         <td>
-                                            <input type="number" id="leave_balance_{{ $leave->id }}" name="leave_balance[]" class="form-control" value="{{ session('employee_data.leave.' . $leave->id . '.leave_balance', old('leave_balance.' . $leave->id, $leave->qty)) }}" readonly>
-                                            <div class="error-message"></div>
+                                            <input type="number" id="leave_balance_{{ $leave->id }}" name="leave_balance[]" class="form-control" value="{{ session('employee_data.leave.leave_balance.' . $leave->id, $leave->qty) }}" readonly>
                                         </td>
                                         <td>
-                                            <input type="text" id="leave_type_{{ $leave->id }}" name="leave_type[]" class="form-control" value="{{ session('employee_data.leave.' . $leave->id . '.leave_type', old('leave_type.' . $leave->id, $leave->type_of_leave)) }}" readonly>
-                                            <div class="error-message"></div>
+                                            <input type="text" id="leave_type_{{ $leave->id }}" name="leave_type[]" class="form-control" value="{{ session('employee_data.leave.leave_type.' . $leave->id, $leave->type_of_leave) }}" readonly>
                                         </td>
                                         <td>
-                                            <input type="checkbox" id="leave_active_{{ $leave->id }}" name="leave_active[]" value="{{ $leave->id }}" class="form-control" {{ session('employee_data.leave.' . $leave->id . '.leave_active', old('leave_active.' . $leave->id, $leave->active)) ? 'checked' : '' }}>
-                                            <div class="error-message"></div>
+                                            <input type="checkbox" id="leave_active_{{ $leave->id }}" name="leave_active[]" value="{{ $leave->id }}" class="form-control" {{ session('employee_data.leave.leave_active.' . $leave->id, $leave->active) ? 'checked' : '' }}>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -881,22 +865,22 @@
                         </table>
                     </div>
                 </div>
-                <div class="btn-group d-flex justify-content-between">
+                <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="contact">{{ __('Previous') }}</button>
-                    <button type="button" class="btn btn-primary next-step" data-next="superannuation">{{ __('Next') }}</button>
+                    <button type="submit" class="btn btn-primary next-step" data-next="superannuation">{{ __('Next') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Superannuation -->
         <div class="form-step" data-step="superannuation">
-            <form id="superannuationForm" method="post" action="{{ url('/people/employees/submit_superannuation') }}">
+            <form id="superannuationForm" method="post" action="{{ route('employees.submit_superannuation') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="superannuation">
                 <div class="box-body">
                     <div class="mb-3">
-                        <label for="superannuation_id" class="form-label">{{ __('Superannuation') }} <span class="text-danger">*</span></label>
-                        <select name="superannuation_id" id="superannuation_id" class="form-control" required>
+                        <label for="superannuation_id" class="form-label">{{ __('Superannuation') }}</label>
+                        <select name="superannuation_id" id="empl_superannuation_id" class="form-control" required>
                             <option value="" {{ !session('employee_data.superannuation.superannuation_id', old('superannuation_id')) ? 'selected' : '' }}>{{ __('Select Superannuation') }}</option>
                             @foreach($superannuations as $superannuation)
                                 <option value="{{ $superannuation->id }}" data-superannuation="{{ json_encode($superannuation) }}" {{ session('employee_data.superannuation.superannuation_id', old('superannuation_id')) == $superannuation->id ? 'selected' : '' }}>
@@ -909,30 +893,25 @@
                     <div class="mb-3">
                         <label for="employer_contribution_percentage" class="form-label">{{ __('Employer Contribution (%)') }}</label>
                         <input type="text" id="employer_contribution_percentage" name="employer_contribution_percentage" value="{{ session('employee_data.superannuation.employer_contribution_percentage', old('employer_contribution_percentage')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="employer_contribution_fixed_amount" class="form-label">{{ __('Employer Fixed Contribution') }}</label>
                         <input type="text" id="employer_contribution_fixed_amount" name="employer_contribution_fixed_amount" value="{{ session('employee_data.superannuation.employer_contribution_fixed_amount', old('employer_contribution_fixed_amount')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_name" class="form-label">{{ __('Bank Name') }}</label>
                         <input type="text" id="bank_name" name="bank_name" value="{{ session('employee_data.superannuation.bank_name', old('bank_name')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_address" class="form-label">{{ __('Bank Address') }}</label>
                         <input type="text" id="bank_address" name="bank_address" value="{{ session('employee_data.superannuation.bank_address', old('bank_address')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_account_number" class="form-label">{{ __('Bank Account Number') }}</label>
                         <input type="text" id="bank_account_number" name="bank_account_number" value="{{ session('employee_data.superannuation.bank_account_number', old('bank_account_number')) }}" class="form-control" readonly>
-                        <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="employer_superannuation_no" class="form-label">{{ __('Employer Superannuation No') }} <span class="text-danger">*</span></label>
+                        <label for="employer_superannuation_no" class="form-label">{{ __('Employer Superannuation No') }}</label>
                         <select id="employer_superannuation_no" name="employer_superannuation_no" class="form-control" required>
                             <option value="" {{ !session('employee_data.superannuation.employer_superannuation_no', old('employer_superannuation_no')) ? 'selected' : '' }}>{{ __('Select one') }}</option>
                             @if($companies)
@@ -944,16 +923,16 @@
                         <div class="error-message"></div>
                     </div>
                 </div>
-                <div class="btn-group d-flex justify-content-between">
+                <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="leave">{{ __('Previous') }}</button>
-                    <button type="button" class="btn btn-primary next-step" data-next="bank">{{ __('Next') }}</button>
+                    <button type="submit" class="btn btn-primary next-step" data-next="bank">{{ __('Next') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Bank Credits -->
         <div class="form-step" data-step="bank">
-            <form id="bankForm" method="post" action="{{ url('/people/employees/bank_store') }}">
+            <form id="bankCreditsForm" method="post" action="{{ url('people/employees/bank_store') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="bank">
                 <div class="box-body">
@@ -961,7 +940,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <strong class="d-block mb-2">{{ __('Select Bank') }} <span class="text-danger">*</span></strong>
+                                    <strong class="d-block mb-2">{{ __('Select Bank') }}</strong>
                                     @if($bankLists)
                                         <select class="form-control mb-3" name="bank_id" id="bank_id" required>
                                             <option value="" {{ !session('employee_data.bank.bank_id', old('bank_id')) ? 'selected' : '' }}>{{ __('Select one') }}</option>
@@ -973,56 +952,40 @@
                                     @endif
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_no" id="acct_no" value="{{ session('employee_data.bank.acct_no', old('acct_no')) }}" placeholder="{{ __('Account No') }}" required>
+                                    <input type="text" class="form-control" name="acct_no" id="acct_no" value="{{ session('employee_data.bank.acct_no', old('acct_no', '1000234569')) }}" placeholder="{{ __('Account No') }}" required>
                                     <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="swift_code" id="swift_code" value="{{ session('employee_data.bank.swift_code', old('swift_code')) }}" placeholder="{{ __('Swift Code') }}" required>
-                                    <div class="error-message"></div>
+                                    <input type="text" class="form-control" name="swift_code" id="swift_code" value="{{ session('employee_data.bank.swift_code', old('swift_code', 'Swift Code')) }}" placeholder="{{ __('Swift Code') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_name" id="acct_name" value="{{ session('employee_data.bank.acct_name', old('acct_name')) }}" placeholder="{{ __('Account Name') }}" required>
+                                    <input type="text" class="form-control" name="acct_name" id="acct_name" value="{{ session('employee_data.bank.acct_name', old('acct_name', 'S Mathew')) }}" placeholder="{{ __('Account Name') }}" required>
                                     <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="text" class="form-control" name="acct_add" id="acct_add" value="{{ session('employee_data.bank.acct_add', old('acct_add')) }}" placeholder="{{ __('Address') }}">
-                                    <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="text" class="form-control" name="acct_city" id="acct_city" value="{{ session('employee_data.bank.acct_city', old('acct_city')) }}" placeholder="{{ __('City') }}">
-                                    <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="email" class="form-control" name="acct_email" id="acct_email" value="{{ session('employee_data.bank.acct_email', old('acct_email')) }}" placeholder="{{ __('Email Address') }}">
-                                    <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <input type="text" class="form-control" maxlength="3" name="acct_ccode" id="acct_ccode" value="{{ session('employee_data.bank.acct_ccode', old('acct_ccode')) }}" placeholder="{{ __('Country Code') }}">
-                                    <div class="error-message"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="btn-group d-flex justify-content-between">
+                <div class="btn-group">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="superannuation">{{ __('Previous') }}</button>
-                    <button type="submit" class="btn btn-success">{{ __('Submit') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ __('Save Employee') }}</button>
                 </div>
             </form>
         </div>
     </section>
 </div>
-@endsection
-<!-- Include Bootstrap 4 CSS and JS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 <style>
     .form-step {
@@ -1115,305 +1078,199 @@
 
   
 </style>
+
+<!-- Include Bootstrap 4 JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).ready(function () {
-    // Initialize datepicker
-    $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy', // Changed to match controller validation (d/m/Y)
-        autoclose: true,
-        todayHighlight: true
+$(document).ready(function() {
+    // Initialize datepickers
+    $('#datepicker, #datepicker4, #datepicker5').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
     });
 
-    // Define steps in order
-    const steps = ['personal', 'payroll', 'costcenter', 'contact', 'leave', 'superannuation', 'bank'];
-
-    // Function to update step visibility
-    function updateStep(currentStep) {
-        $('.form-step').removeClass('active');
-        $(`.form-step[data-step="${currentStep}"]`).addClass('active');
-        $('.step').removeClass('active');
-        $(`.step[data-step="${currentStep}"]`).addClass('active');
-
-        // Enable/Disable Previous button
-        if (currentStep === 'personal') {
+    // Function to update Previous button state
+    function updatePreviousButtonState() {
+        if ($('.form-step.active').data('step') === 'personal') {
             $('.prev-step').prop('disabled', true);
         } else {
             $('.prev-step').prop('disabled', false);
         }
-
-        // Update Next button to Submit on last step
-        if (currentStep === 'bank') {
-            $('.next-step').hide();
-        } else {
-            $('.next-step').show();
-        }
     }
 
-    // Handle Next button click
-    $('.next-step').on('click', function (e) {
-        e.preventDefault();
-        const currentForm = $(this).closest('form');
-        const currentStep = currentForm.find('input[name="step"]').val();
-        const nextStep = $(this).data('next');
+    // Initial check for Previous button state
+    updatePreviousButtonState();
 
-        // Clear previous error messages
-        currentForm.find('.error-message').empty();
-        currentForm.find('.form-control').removeClass('error');
+    // Form validation and submission
+    $('form').each(function() {
+        $(this).on('submit', function(e) {
+            e.preventDefault();
+            let form = $(this);
+            let isValid = true;
+            let errors = [];
+            let firstErrorField = null;
 
-        // Perform AJAX submission
-        $.ajax({
-            url: currentForm.attr('action'),
-            method: 'POST',
-            data: currentForm.serialize(),
-            dataType: 'json', // Ensure JSON response
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        // Move to next step
-                        updateStep(nextStep);
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message || 'An unexpected error occurred.',
-                    });
+            // Clear previous errors
+            form.find('.error').removeClass('error');
+            form.find('.error-message').text('');
+
+            // Open all accordions in Personal Details step to validate all fields
+            if (form.attr('id') === 'personalDetailsForm') {
+                $('#personalAccordion .collapse').collapse('show');
+            }
+
+            // Validate required fields
+            form.find('[required]').each(function() {
+                let field = $(this);
+
+                if (!field.is(':visible')) return; // Skip hidden fields (e.g. in collapsed accordion)
+
+                let value = field.val()?.trim();
+                let fieldName = field.prev('label').text() || field.attr('name');
+
+                if (!value || (field.is('select') && value === '')) {
+                    isValid = false;
+                    field.addClass('error');
+                    field.closest('.form-group').find('.error-message').text(`${fieldName} is required`);
+                    errors.push(`${fieldName} is required`);
+                    if (!firstErrorField) {
+                        firstErrorField = field;
+                    }
                 }
-            },
-            error: function (xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors || {};
-                    $.each(errors, function (key, messages) {
-                        const field = currentForm.find(`[name="${key}"]`);
-                        if (field.length) {
-                            field.addClass('error');
-                            field.next('.error-message').html(messages.join('<br>'));
-                        }
-                        // Open relevant accordion if in personal step
-                        if (currentStep === 'personal') {
-                            if (['name', 'gender', 'marital_status', 'date_of_birth'].includes(key)) {
-                                $('#collapsePersonal').collapse('show');
-                            } else if (['designation_id', 'joining_date', 'end_date', 'branch', 'role', 'employee_type', 'resident_status'].includes(key)) {
-                                $('#collapseEmployment').collapse('show');
-                            } else if (['academic_qualification', 'professional_qualification', 'experience'].includes(key)) {
-                                $('#collapseQualifications').collapse('show');
-                            } else if (['present_address', 'city_pr', 'state_pr', 'postcode_pr', 'country_pr', 'permanent_address', 'city', 'state', 'postcode', 'country'].includes(key)) {
-                                $('#collapseResidential').collapse('show');
-                            } else if (['email', 'contact_no_one', 'emergency_contact'].includes(key)) {
-                                $('#collapseContact').collapse('show');
-                            } else if (['passport_number', 'visa_number'].includes(key)) {
-                                $('#collapsePassport').collapse('show');
+            });
+
+
+
+            // Validate email fields
+            form.find('input[type="email"]').each(function() {
+                let email = $(this);
+                let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                let fieldName = email.prev('label').text() || email.attr('name');
+                if (email.val() && !emailRegex.test(email.val())) {
+                    isValid = false;
+                    email.addClass('error');
+                    email.closest('.form-group').find('.error-message').text('Invalid email format');
+                    errors.push(`Invalid email format for ${fieldName}`);
+                    if (!firstErrorField) {
+                        firstErrorField = email;
+                    }
+                }
+            });
+
+            // Scroll to first error field
+            if (firstErrorField) {
+                $('html, body').animate({
+                    scrollTop: firstErrorField.offset().top - 100
+                }, 500);
+            }
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    html: errors.join('<br>'),
+                });
+                return;
+            }
+
+            // Submit form via AJAX
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                        }).then(() => {
+                            let nextStep = form.find('.next-step').data('next');
+                            if (nextStep) {
+                                $('.form-step').removeClass('active');
+                                $(`.form-step[data-step="${nextStep}"]`).addClass('active');
+                                $('.step').removeClass('active');
+                                $(`.step[data-step="${nextStep}"]`).addClass('active');
+                                $('html, body').animate({
+                                    scrollTop: $(`.form-step[data-step="${nextStep}"]`).offset().top
+                                }, 500);
+                                updatePreviousButtonState();
+                            } else {
+                                window.location.href = '{{ url('/people/employees') }}';
                             }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message || 'An error occurred while saving.',
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    let errors = xhr.responseJSON?.errors || {};
+                    let errorMessages = [];
+                    let firstErrorField = null;
+
+                    for (let field in errors) {
+                        errorMessages.push(errors[field][0]);
+                        let $field = form.find(`[name="${field}"]`);
+                        $field.addClass('error');
+                        $field.closest('.form-group').find('.error-message').text(errors[field][0]);
+                        if (!firstErrorField) {
+                            firstErrorField = $field;
                         }
-                    });
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: 'Please correct the errors in the form.',
-                    });
-                } else {
+                    }
+
+                    if (firstErrorField) {
+                        // Open the accordion containing the error field
+                        let $accordionContent = firstErrorField.closest('.collapse');
+                        if ($accordionContent.length) {
+                            $accordionContent.collapse('show');
+                        }
+                        $('html, body').animate({
+                            scrollTop: firstErrorField.offset().top - 100
+                        }, 500);
+                    }
+
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
+                        html: errorMessages.join('<br>'),
                     });
                 }
-            }
+            });
         });
     });
 
-    // Handle Previous button click
-    $('.prev-step').on('click', function (e) {
-        e.preventDefault();
-        const prevStep = $(this).data('prev');
-        updateStep(prevStep);
-    });
-
-    // Handle form submission for the final step
-    $('#bankCreditsForm').on('submit', function (e) {
-        e.preventDefault();
-        const form = $(this);
-
-        // Clear previous error messages
-        form.find('.error-message').empty();
-        form.find('.form-control').removeClass('error');
-
-        $.ajax({
-            url: form.attr('action'),
-            method: 'POST',
-            data: form.serialize(),
-            dataType: 'json',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = response.redirect || '{{ url("/people/employees") }}';
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message || 'An unexpected error occurred.',
-                    });
-                }
-            },
-            error: function (xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors || {};
-                    $.each(errors, function (key, messages) {
-                        const field = form.find(`[name="${key}"]`);
-                        if (field.length) {
-                            field.addClass('error');
-                            field.next('.error-message').html(messages.join('<br>'));
-                        }
-                    });
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validation Error',
-                        text: 'Please correct the errors in the form.',
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON?.message || 'An error occurred. Please try again.',
-                    });
-                }
-            }
-        });
+    // Previous step navigation
+    $('.prev-step').on('click', function() {
+        let prevStep = $(this).data('prev');
+        $('.form-step').removeClass('active');
+        $(`.form-step[data-step="${prevStep}"]`).addClass('active');
+        $('.step').removeClass('active');
+        $(`.step[data-step="${prevStep}"]`).addClass('active');
+        $('html, body').animate({
+            scrollTop: $(`.form-step[data-step="${prevStep}"]`).offset().top
+        }, 500);
+        updatePreviousButtonState();
     });
 
     // Handle superannuation selection
-    $('#empl_superannuation_id').on('change', function () {
-        const selectedOption = $(this).find('option:selected');
-        const superannuationData = selectedOption.data('superannuation');
-        if (superannuationData) {
-            $('#employer_contribution_percentage').val(superannuationData.employer_contribution_percentage || '');
-            $('#employer_contribution_fixed_amount').val(superannuationData.employer_contribution_fixed_amount || '');
-            $('#bank_name').val(superannuationData.bank_name || '');
-            $('#bank_address').val(superannuationData.bank_address || '');
-            $('#bank_account_number').val(superannuationData.employment_account_number || '');
-        } else {
-            $('#employer_contribution_percentage').val('');
-            $('#employer_contribution_fixed_amount').val('');
-            $('#bank_name').val('');
-            $('#bank_address').val('');
-            $('#bank_account_number').val('');
+    $('#empl_superannuation_id').on('change', function() {
+        let selectedOption = $(this).find('option:selected');
+        let superannuation = selectedOption.data('superannuation');
+        if (superannuation) {
+            $('#employer_contribution_percentage').val(superannuation.employer_contribution_percentage || '');
+            $('#employer_contribution_fixed_amount').val(superannuation.employer_contribution_fixed_amount || '');
+            $('#bank_name').val(superannuation.bank_name || '');
+            $('#bank_address').val(superannuation.bank_address || '');
+            $('#bank_account_number').val(superannuation.bank_account_number || '');
         }
     });
-
-    // Initialize superannuation fields if pre-selected
-    if ($('#empl_superannuation_id').val()) {
-        $('#empl_superannuation_id').trigger('change');
-    }
-
-    // Handle step indicator click to navigate
-    $('.step').on('click', function () {
-        const step = $(this).data('step');
-        updateStep(step);
-    });
-
-
-     // Dynamic department population based on cost_center
-    $('#cost_center').on('change', function () {
-        const costCenterId = $(this).val();
-        const selectedDepartments = @json(session('employee_data.costcenter.department', old('department', [])));
-        const $department = $('#department');
-        $department.empty().append('<option value="" disabled>Select one or more</option>');
-
-        if (costCenterId) {
-            $.ajax({
-                url: window.Laravel.routes.GetDepartmentsByCostCenter + '/' + costCenterId,
-                method: 'GET',
-                dataType: 'json',
-                success: function (response) {
-                    const departments = response.departments || [];
-                    departments.forEach(function (department) {
-                        $department.append(new Option(department.department, department.id, false, selectedDepartments.includes(department.id.toString())));
-                    });
-
-                    const sharePercentages = response.sharePercentages || {};
-                    const sharePercentageFields = $('#share_percentage_fields');
-                    sharePercentageFields.empty();
-
-                    departments.forEach(function (department) {
-                        const sharePercentage = sharePercentages[department.id] || '';
-                        sharePercentageFields.append(`
-                            <div class="form-group">
-                                <label for="share_percentage_${department.id}">${department.department} Share Percentage</label>
-                                <input type="number" class="form-control" name="cost_center_share_percentage[${department.id}]" id="share_percentage_${department.id}" value="${sharePercentage}" min="0" max="100" step="0.01" required>
-                                <div class="error-message"></div>
-                            </div>
-                        `);
-                    });
-                },
-                error: function (xhr) {
-                    console.error('Error fetching departments:', xhr.responseText);
-                    $department.append('<option value="">No departments available</option>');
-                }
-            });
-        } else {
-            $('#share_percentage_fields').empty();
-        }
-    });
-
-    // Dynamic cost_center_share_percentage fields based on department selection
-    // $('#department').on('change', function () {
-    //     const selectedDepartments = $(this).val() || [];
-    //     const $percentageFields = $('#share_percentage_fields');
-    //     const existingPercentages = @json(session('employee_data.costcenter.cost_center_share_percentage', old('cost_center_share_percentage', [])));
-    //     $percentageFields.empty();
-
-    //     if (selectedDepartments.length) {
-    //         $.ajax({
-    //             url: window.Laravel.routes.PeopleGetDepartment,
-    //             method: 'GET',
-    //             data: { ids: selectedDepartments },
-    //             dataType: 'json',
-    //             success: function (departments) {
-    //                 departments.forEach(dept => {
-    //                     const percentage = existingPercentages[dept.id] || '';
-    //                     $percentageFields.append(`
-    //                         <div class="form-group">
-    //                             <label for="share_percentage_${dept.id}">${dept.name} Share Percentage</label>
-    //                             <input type="number" class="form-control" name="cost_center_share_percentage[${dept.id}]" id="share_percentage_${dept.id}" value="${percentage}" min="0" max="100" step="0.01" required>
-    //                             <div class="error-message"></div>
-    //                         </div>
-    //                     `);
-    //                 });
-    //             },
-    //             error: function () {
-    //                 selectedDepartments.forEach(id => {
-    //                     const percentage = existingPercentages[id] || '';
-    //                     $percentageFields.append(`
-    //                         <div class="form-group">
-    //                             <label for="share_percentage_${id}">Department ${id} Share Percentage</label>
-    //                             <input type="number" class="form-control" name="cost_center_share_percentage[${id}]" id="share_percentage_${id}" value="${percentage}" min="0" max="100" step="0.01" required>
-    //                             <div class="error-message"></div>
-    //                         </div>
-    //                     `);
-    //                 });
-    //             }
-    //         });
-    //     }
-    // });
-
-    // Trigger initial population
-    if ($('#cost_center').val()) {
-        $('#cost_center').trigger('change');
-    } else if ($('#department').val()) {
-        $('#department').trigger('change');
-    }
 });
 </script>
+@endsection
