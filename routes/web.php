@@ -352,7 +352,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('/update/{id}', [EmplController::class, 'update'])->name('update');
 		Route::get('/delete/{id}', [EmplController::class, 'destroy'])->name('destroy');
 		Route::post('/leave_store/{employee_id?}', [EmplController::class, 'leave_store'])->name('leave_store');
-		Route::post('/superannuation_store/{employee_id?}', [EmplController::class, 'submitSuperannuation'])->name('submit_superannuation');
+		Route::post('/submit_superannuation', [EmplController::class, 'submitSuperannuation'])->name('submit_superannuation');
 		Route::post('/superannuation_update/{employee_id?}', [EmplController::class, 'updateSuperannuation'])->name('update_superannuation');
 		Route::post('/bank_store/{employee_id?}', [EmplController::class, 'bank_store'])->name('bank_store');
 		Route::post('/bank_update/{employee_id?}', [EmplController::class, 'updateBankDetails'])->name('update_bank_details');

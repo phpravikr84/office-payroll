@@ -78,7 +78,7 @@ class PayReferenceController extends Controller
      * Payref Status Enquiry
      */
     public function payrefStatusEnquiry(Request $request){
-        dd($request->all());
+        //dd($request->all());
         $pay_references = PayReference::leftJoin('branches', 'pay_references.branch_id', '=', 'branches.id')
         ->leftJoin('pay_batch_numbers', 'pay_references.payroll_number', '=', 'pay_batch_numbers.id')
         ->select('pay_references.*', 'branches.branch_name as branch_name', 'pay_batch_numbers.pay_batch_number_name as payroll_number')

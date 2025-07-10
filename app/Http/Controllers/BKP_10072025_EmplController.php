@@ -22,8 +22,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Log;
-
 
 
 class EmplController extends Controller {
@@ -40,10 +38,9 @@ class EmplController extends Controller {
 			->whereBetween('users.access_label', [2, 3])
 			->where('users.deletion_status', 0)
 			->select('employee_id', 'users.id', 'users.name', 'users.contact_no_one', 'users.created_at', 'users.activation_status', 'designations.designation')
-			->orderBy('users.employee_id', 'DESC')
+			->orderBy('users.employee_id', 'ASC')
 			->get()
 			->toArray();
-        //dd($employees);
 		
 		// Fetch all leave categories
 		$leaveCategories = LeaveCategory::where('publication_status', 1)->get();
@@ -111,11 +108,10 @@ class EmplController extends Controller {
             ->select('companies.*', 'superannuations.code', 'superannuations.name')
             ->get();
         $costcenters = DB::table('cost_centers')->get();
-        
 
-		// $data = Session::get('employee_data.bank');
+		//$data = Session::get('employee_data.costcenter');
 
-		// dd($data);
+		//dd($data);
 
         return view('administrator.people.employee.add_employee', compact(
             'designations', 'roles', 'loca_places', 'employees', 'leaveCategories',
@@ -956,6 +952,7 @@ class EmplController extends Controller {
             'acct_ccode.max' => 'Country code cannot exceed 3 characters.',
         ]);
 
+        // If validation fails, return JSON response for AJAX
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -979,20 +976,13 @@ class EmplController extends Controller {
 
         // Store in session
         session()->put('employee_data.bank', $bankData);
-        Log::info('bank_store: Stored bank data in session', ['bank_data' => $bankData]);
 
-        // Save all session data to database
-        $result = $this->storeEmployee($request);
-        if ($result === true) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Your employee application saved successfully.',
-                'redirect' => url('/people/employees'),
-            ]);
-        }
-
-        // If storeEmployee returns a response (error case), pass it through
-        return $result;
+        // Return JSON response for AJAX
+        return response()->json([
+            'success' => true,
+            'message' => 'Bank details saved successfully.',
+            'redirect' => url('/people/employees'),
+        ]);
     }
 
 	/**
@@ -1225,310 +1215,5 @@ class EmplController extends Controller {
             'success' => true,
             'message' => 'Contact details saved successfully.',
         ]);
-    }
-
-	/**
-	 *  New code for Insert Employee Personal Details, Payroll, Bank, Superannuation, Cost Center, Contacts
-	 *  and Leave Details
-	 * This function is used to insert employee personal details like meals tag, meals allowance,	
-	 */
-
-    public function storeEmployee(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            // Retrieve session data
-            $employeeData = session('employee_data', []);
-            Log::info('storeEmployee: Retrieved session data', ['employee_data' => $employeeData]);
-
-            // Validate required personal data
-            if (!isset($employeeData['personal'])) {
-                Log::error('storeEmployee: Personal data missing from session');
-                throw new \Exception('Personal data missing from session.');
-            }
-
-            $personal = $employeeData['personal'];
-            // Validate required personal fields
-            $requiredFields = ['name', 'email', 'gender', 'marital_status', 'date_of_birth', 'designation_id', 'joining_date', 'branch', 'role', 'employee_type', 'resident_status', 'present_address', 'city_pr', 'state_pr', 'postcode_pr', 'country_pr', 'contact_no_one'];
-            foreach ($requiredFields as $field) {
-                if (!isset($personal[$field]) || is_null($personal[$field])) {
-                    Log::error("storeEmployee: Missing or null required personal field: $field", ['value' => $personal[$field] ?? null]);
-                    throw new \Exception("Missing or null required personal field: $field");
-                }
-            }
-
-            // Verify designation_id exists
-            if (DB::table('designations')->where('id', $personal['designation_id'])->doesntExist()) {
-                Log::error('storeEmployee: Invalid designation_id', ['designation_id' => $personal['designation_id']]);
-                throw new \Exception('Invalid designation_id');
-            }
-
-            // Insert into users table
-            $userId = DB::table('users')->insertGetId([
-                'name' => $personal['name'],
-                'gender' => $personal['gender'],
-                'marital_status' => $personal['marital_status'],
-                'date_of_birth' => $personal['date_of_birth'],
-                'designation_id' => $personal['designation_id'],
-                'joining_date' => $personal['joining_date'],
-                'end_date' => $personal['end_date'] ?? null,
-                'branch' => $personal['branch'],
-                'employee_type' => $personal['employee_type'],
-                'resident_status' => $personal['resident_status'],
-                'academic_qualification' => $personal['academic_qualification'] ?? null,
-                'professional_qualification' => $personal['professional_qualification'] ?? null,
-                'experience' => $personal['experience'] ?? null,
-                'present_address' => $personal['present_address'],
-                'permanent_address' => $personal['permanent_address'] ?? null,
-                'email' => $personal['email'],
-                'password' => bcrypt('12345678'),
-                'access_label' => 3, // Default access label for employees
-                'contact_no_one' => $personal['contact_no_one'],
-                'emergency_contact' => $personal['emergency_contact'] ?? null,
-                'user_type' => $personal['role'] ?? 2, // Default to 2 if not set
-                'passport_number' => $personal['passport_number'] ?? null,
-                'visa_number' => $personal['visa_number'] ?? null,
-                'created_by' => auth()->check() ? auth()->user()->id : 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-            Log::info('storeEmployee: Inserted into users table', ['user_id' => $userId]);
-
-            // Update employee_id in users table
-            DB::table('users')->where('id', $userId)->update(['employee_id' => $userId]);
-            Log::info('storeEmployee: Updated employee_id in users table', ['user_id' => $userId]);
-
-            // Insert into user_details table
-            DB::table('user_details')->insert([
-                'user_id' => $userId,
-                'present_address' => $personal['present_address'],
-                'city_pr' => $personal['city_pr'],
-                'state_pr' => $personal['state_pr'],
-                'postcode_pr' => $personal['postcode_pr'],
-                'country_pr' => $personal['country_pr'],
-                'permanent_address' => $personal['permanent_address'] ?? null,
-                'city' => $personal['city'] ?? null,
-                'state' => $personal['state'] ?? null,
-                'postcode' => $personal['postcode'] ?? null,
-                'country' => $personal['country'] ?? null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-            Log::info('storeEmployee: Inserted into user_details table', ['user_id' => $userId]);
-
-          
-            //Insert into user_roles table
-            DB::table('role_user')->insert([
-                'user_id' => $userId,
-                'role_id' => $personal['role'],
-            ]);
-
-            Log::info('storeEmployee: Inserted into User Role table', ['employee_id' => $userId]);
-
-            
-            // Insert into employee_relations table
-            if (isset($employeeData['costcenter']) && !empty($employeeData['costcenter']['department'])) {
-                $costcenter = $employeeData['costcenter'];
-                $departmentId = $costcenter['department'][0] ?? null;
-                if ($departmentId && DB::table('departments')->where('id', $departmentId)->exists()) {
-                    $existingRelation = DB::table('employee_relations')
-                        ->where('emp_id', $userId)
-                        ->where('department_id', $departmentId)
-                        ->where('branch_id', $costcenter['branch'] ?? $personal['branch'])
-                        ->where('payroll_location_id', $costcenter['payroll_location'] ?? null)
-                        ->where('payroll_batch_id', $costcenter['pay_batch_number'] ?? null)
-                        ->first();
-
-                    if (!$existingRelation) {
-                        DB::table('employee_relations')->insert([
-                            'emp_id' => $userId,
-                            'department_id' => $departmentId,
-                            'branch_id' => $costcenter['branch'] ?? $personal['branch'],
-                            'payroll_location_id' => $costcenter['payroll_location'] ?? null,
-                            'payroll_batch_id' => $costcenter['pay_batch_number'] ?? null,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                        Log::info('storeEmployee: Inserted into employee_relations table', ['employee_id' => $userId, 'department_id' => $departmentId]);
-                    }
-                } else {
-                    Log::warning('storeEmployee: Invalid or missing department_id in costcenter', ['department_id' => $departmentId]);
-                }
-            }
-
-            // Insert payroll data
-            if (isset($employeeData['payroll']) && !empty($employeeData['payroll'])) {
-                $payroll = $employeeData['payroll'];
-                $requiredPayrollFields = ['basic_salary', 'annual_salary', 'hr_place', 'hr_area', 'hra_type', 'va_type'];
-                foreach ($requiredPayrollFields as $field) {
-                    if (!isset($payroll[$field]) || is_null($payroll[$field])) {
-                        Log::error("storeEmployee: Missing or null required payroll field: $field", ['value' => $payroll[$field] ?? null]);
-                        throw new \Exception("Missing or null required payroll field: $field");
-                    }
-                }
-                $payrollId = DB::table('payrolls')->insertGetId([
-                    'user_id' => $userId,
-                    'employee_type' => $personal['employee_type'],
-                    'basic_salary' => $payroll['basic_salary'],
-                    'annual_salary' => $payroll['annual_salary'],
-                    'resident_status' => $personal['resident_status'],
-                    'hr_place' => $payroll['hr_place'],
-                    'hr_area' => $payroll['hr_area'],
-                    'hra_type' => $payroll['hra_type'],
-                    'va_type' => $payroll['va_type'],
-                    'created_by' => auth()->check() ? auth()->user()->id : 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-                DB::table('users')->where('id', $userId)->update(['user_payroll_rel_id' => $payrollId]);
-                Log::info('storeEmployee: Inserted into payrolls table', ['payroll_id' => $payrollId]);
-            }
-
-            // Insert cost center data
-            if (isset($employeeData['costcenter']) && !empty($employeeData['costcenter']['department'])) {
-                $costcenter = $employeeData['costcenter'];
-                if (!isset($costcenter['cost_center']) || !DB::table('cost_centers')->where('id', $costcenter['cost_center'])->exists()) {
-                    Log::error('storeEmployee: Invalid or missing cost_center', ['cost_center' => $costcenter['cost_center'] ?? null]);
-                    throw new \Exception('Invalid or missing cost_center');
-                }
-                foreach ($costcenter['department'] as $index => $departmentId) {
-                    if (DB::table('departments')->where('id', $departmentId)->exists()) {
-                        DB::table('employee_cost_centers')->insert([
-                            'employee_id' => $userId,
-                            'cost_center_id' => $costcenter['cost_center'],
-                            'department_id' => $departmentId,
-                            'share_percentage' => $costcenter['cost_center_share_percentage'][$departmentId] ?? null,
-                            'payroll_location_id' => $costcenter['payroll_location'] ?? null,
-                            'payroll_batch_id' => $costcenter['pay_batch_number'] ?? null,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                        Log::info('storeEmployee: Inserted into employee_cost_centers table', ['employee_id' => $userId, 'department_id' => $departmentId]);
-                    } else {
-                        Log::error('storeEmployee: Invalid department_id in costcenter', ['department_id' => $departmentId]);
-                        throw new \Exception('Invalid department_id: ' . $departmentId);
-                    }
-                }
-            }
-
-            // Insert contact data
-            if (isset($employeeData['contact']) && !empty($employeeData['contact'])) {
-                $contact = $employeeData['contact'];
-                $requiredContactFields = ['employee_contact_name', 'employee_contact_address', 'employee_contact_phone', 'employee_contact_mobile', 'employee_contact_email', 'employee_contact_relationship'];
-                foreach ($requiredContactFields as $field) {
-                    if (!isset($contact[$field]) || is_null($contact[$field])) {
-                        Log::error("storeEmployee: Missing or null required contact field: $field", ['value' => $contact[$field] ?? null]);
-                        throw new \Exception("Missing or null required contact field: $field");
-                    }
-                }
-                DB::table('employee_contacts')->insert([
-                    'employee_id' => $userId,
-                    'employee_contact_name' => $contact['employee_contact_name'],
-                    'employee_contact_address' => $contact['employee_contact_address'],
-                    'employee_contact_phone' => $contact['employee_contact_phone'],
-                    'employee_contact_mobile' => $contact['employee_contact_mobile'],
-                    'employee_contact_email' => $contact['employee_contact_email'],
-                    'employee_contact_relationship' => $contact['employee_contact_relationship'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-                Log::info('storeEmployee: Inserted into employee_contacts table', ['employee_id' => $userId]);
-            }
-
-            // Insert leave data
-            if (isset($employeeData['leave']) && !empty($employeeData['leave'])) {
-                foreach ($employeeData['leave'] as $leaveCategoryId => $leaveData) {
-                    if ($leaveData['leave_active'] && DB::table('leave_categories')->where('id', $leaveCategoryId)->exists()) {
-                        DB::table('employee_leave_msts')->insert([
-                            'emp_id' => $userId,
-                            'leave_category_id' => $leaveCategoryId,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                        Log::info('storeEmployee: Inserted into employee_leave_msts table', ['employee_id' => $userId, 'leave_category_id' => $leaveCategoryId]);
-                    } else {
-                        Log::warning('storeEmployee: Invalid leave_category_id or inactive leave', ['leave_category_id' => $leaveCategoryId]);
-                    }
-                }
-            }
-
-            // Insert superannuation data
-            if (isset($employeeData['superannuation']) && !empty($employeeData['superannuation'])) {
-                $superannuation = $employeeData['superannuation'];
-                if (!isset($superannuation['superannuation_id']) || !DB::table('superannuations')->where('id', $superannuation['superannuation_id'])->exists()) {
-                    Log::error('storeEmployee: Invalid or missing superannuation_id', ['superannuation_id' => $superannuation['superannuation_id'] ?? null]);
-                    throw new \Exception('Invalid or missing superannuation_id');
-                }
-                $superannuationDtls = DB::table('superannuations')
-                    ->where('id', $superannuation['superannuation_id'])
-                    ->first();
-                $employerSuperannuation = isset($superannuation['employer_superannuation_no'])
-                    ? DB::table('companies')->where('superannuation_number', $superannuation['employer_superannuation_no'])->first()
-                    : null;
-                DB::table('empl_superannuation_rels')->insert([
-                    'employee_id' => $userId,
-                    'superannuation_id' => $superannuation['superannuation_id'],
-                    'employer_contribution_percentage' => $superannuation['employer_contribution_percentage'] ?? null,
-                    'employer_contribution_fixed_amount' => $superannuation['employer_contribution_fixed_amount'] ?? null,
-                    'bank_name' => $superannuation['bank_name'] ?? null,
-                    'bank_address' => $superannuation['bank_address'] ?? null,
-                    'bank_account_number' => $superannuation['bank_account_number'] ?? null,
-                    'employer_superannuation_no' => $superannuation['employer_superannuation_no'] ?? null,
-                    'employer_superannuation_id' => $employerSuperannuation ? $employerSuperannuation->superannuation_id : 0,
-                    'employer_superannuation_code' => $superannuationDtls ? $superannuationDtls->code : null,
-                    'employer_superannuation_name' => $superannuationDtls ? $superannuationDtls->name : null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-                Log::info('storeEmployee: Inserted into empl_superannuation_rels table', ['employee_id' => $userId]);
-            }
-
-            // Insert bank data
-            if (isset($employeeData['bank']) && $employeeData['bank']['bank_id']!=0 && !empty(($employeeData['bank']))) {
-                $bank = $employeeData['bank'];
-                if (isset($bank['bank_id']) && $bank['bank_id'] && !DB::table('banks')->where('id', $bank['bank_id'])->exists()) {
-                    Log::error('storeEmployee: Invalid bank_id', ['bank_id' => $bank['bank_id']]);
-                    throw new \Exception('Invalid bank_id');
-                }
-                DB::table('employee_bank_rels')->insert([
-                    'emp_id' => $userId,
-                    'bank_id' => $bank['bank_id'] ?? null,
-                    'swift_code' => $bank['swift_code'] ?? null,
-                    'account_no' => $bank['acct_no'] ?? null,
-                    'bank_code' => $bank['bank_code'] ?? null,
-                    'account_holder_name' => $bank['acct_name'] ?? null,
-                    'address' => $bank['acct_add'] ?? null,
-                    'city' => $bank['acct_city'] ?? null,
-                    'email_address' => $bank['acct_email'] ?? null,
-                    'country_code' => $bank['acct_ccode'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-                Log::info('storeEmployee: Inserted into employee_bank_rels table', ['employee_id' => $userId]);
-            }
-
-            DB::commit();
-            Log::info('storeEmployee: Transaction committed successfully');
-
-            // Clear session data after successful save
-            session()->forget('employee_data');
-            Log::info('storeEmployee: Session data cleared');
-
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('storeEmployee: Failed to save employee data', [
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'employee_data' => $employeeData
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to save employee data: ' . $e->getMessage(),
-            ], 500);
-        }
     }
 }

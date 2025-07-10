@@ -78,7 +78,12 @@
                             <td class="text-center">{{ date("d F Y", strtotime($employee['created_at'])) }}</td>
                            
                             <td class="text-center">
-                               <a href="{{ url('/people/employees/manage/' . $employee['id']) }}"><i class="icon fa fa-edit"></i> <i class="fas fa-edit"></i></a>
+                               <a href="{{ url('/people/employees/edit/' . $employee['id']) }}" class="tip btn btn-warning tip btn-flat" title="" data-original-title="Edit Product">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url('/people/employees/delete/' . $employee['id']) }}" class="tip btn btn-danger btn-flat" data-toggle="tooltip" data-original-title="Click to delete" onclick="return confirm('Are you sure to delete this ?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
                             </td>
                         </tr>
                         @endforeach

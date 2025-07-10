@@ -136,7 +136,7 @@
                                                 <div class="input-group">
                                                     <input type="text" name="date_of_birth" class="form-control datepicker" value="{{ session('employee_data.personal.date_of_birth', old('date_of_birth')) }}" id="datepicker">
                                                     <div class="input-group-append">
-                                                        <!-- <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span> -->
+                                                        <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -173,8 +173,8 @@
                                             <label for="joining_date">{{ __('Joining Date') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <div class="input-group date">
-                                                    <input type="text" name="joining_date" class="form-control datepicker" id="datepicker4" value="{{ session('employee_data.personal.joining_date', old('joining_date')) }}" placeholder="{{ __('dd/mm/yyyy') }}" required>
-                                                    <!-- <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span> -->
+                                                    <input type="text" name="joining_date" class="form-control datepicker" id="datepicker4" value="{{ session('employee_data.personal.joining_date', old('joining_date')) }}" placeholder="{{ __('yyyy-mm-dd') }}" required>
+                                                    <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
                                                 </div>
                                                 <div class="error-message"></div>
                                             </div>
@@ -183,8 +183,8 @@
                                             <label for="end_date">{{ __('End Date') }}<span class="text-danger"></span></label>
                                             <div class="form-group">
                                                 <div class="input-group date">
-                                                    <input type="text" name="end_date" class="form-control datepicker" id="datepicker5" value="{{ session('employee_data.personal.end_date', old('end_date')) }}" placeholder="{{ __('dd/mm/yyyy') }}">
-                                                    <!-- <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span> -->
+                                                    <input type="text" name="end_date" class="form-control datepicker" id="datepicker5" value="{{ session('employee_data.personal.end_date', old('end_date')) }}" placeholder="{{ __('yyyy-mm-dd') }}">
+                                                    <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span>
                                                 </div>
                                                 <div class="error-message"></div>
                                             </div>
@@ -208,7 +208,7 @@
                                                 <select name="role" id="role" class="form-control" required>
                                                     <option value="" {{ !session('employee_data.personal.role', old('role')) ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                     @foreach($roles as $role)
-                                                    <option value="{{ $role->id }}" {{ session('employee_data.personal.role', old('role')) == $role->id ? 'selected' : '' }}>{{ $role->display_name }}</option>
+                                                    <option value="{{ $role->name }}" {{ session('employee_data.personal.role', old('role')) == $role->name ? 'selected' : '' }}>{{ $role->display_name }}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="error-message"></div>
@@ -442,7 +442,7 @@
                     <div class="row">
                         <div class="col-12 mb-4">
                             <div class="card">
-                                <div class="card-header" style="background-color: #007bff; color: #fff; padding: 10px;">
+                                <div class="card-header" style="background-color: #007bff; color: white; padding: 10px;">
                                     <h5>{{ __('Basic Salary') }}</h5>
                                     <div style="text-align: right;">
                                         <label for="tax_residency">{{ __('Select Tax Residency') }}</label>
@@ -493,7 +493,7 @@
                                 </div>
                                 <div class="box-body">
                                     <table class="table table-bordered">
-                                        <thead style="background-color: #007bff; color: #000;">
+                                        <thead style="background-color: #007bff; color: white;">
                                             <tr>
                                                 <th colspan="2">{{ __('House Allowances') }}</th>
                                             </tr>
@@ -542,7 +542,7 @@
                                                 </td>
                                             </tr>
                                         </tbody>
-                                        <thead style="background-color: #007bff; color: #000;">
+                                        <thead style="background-color: #007bff; color: white;">
                                             <tr>
                                                 <th colspan="2">{{ __('Vehicle Allowances') }}</th>
                                             </tr>
@@ -566,7 +566,7 @@
                                                 </td>
                                             </tr>
                                         </tbody>
-                                        <thead style="background-color: #007bff; color: #000;">
+                                        <thead style="background-color: #007bff; color: white;">
                                             <tr>
                                                 <th colspan="2">{{ __('Other Allowances') }}</th>
                                             </tr>
@@ -691,7 +691,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between mt-2">
+                <div class="d-flex justify-content-between">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="personal">{{ __('Previous') }}</button>
                     <button type="button" class="btn btn-primary next-step" data-next="costcenter">{{ __('Next') }}</button>
                 </div>
@@ -989,11 +989,11 @@
                                     <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="swift_code" id="swift_code" value="{{ session('employee_data.bank.swift_code', old('swift_code')) }}" placeholder="{{ __('Swift Code') }}">
+                                    <input type="text" class="form-control" name="swift_code" id="swift_code" value="{{ session('employee_data.bank.swift_code', old('swift_code')) }}" placeholder="{{ __('Swift Code') }}" required>
                                     <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_name" id="acct_name" value="{{ session('employee_data.bank.acct_name', old('acct_name')) }}" placeholder="{{ __('Account Name') }}">
+                                    <input type="text" class="form-control" name="acct_name" id="acct_name" value="{{ session('employee_data.bank.acct_name', old('acct_name')) }}" placeholder="{{ __('Account Name') }}" required>
                                     <div class="error-message"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -1128,15 +1128,12 @@
   
 </style>
 <script>
-$(document).ready(function () {
-    // Initialize datepicker with consistent format
+    $(document).ready(function () {
+    // Initialize datepicker
     $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
+        format: 'dd/mm/yyyy', // Changed to match controller validation (d/m/Y)
         autoclose: true,
         todayHighlight: true
-    }).on('changeDate', function (e) {
-        // Ensure date is formatted correctly for submission
-        $(this).val(e.format('dd/mm/yyyy'));
     });
 
     // Define steps in order
@@ -1156,88 +1153,13 @@ $(document).ready(function () {
             $('.prev-step').prop('disabled', false);
         }
 
-        // Update Next button visibility
+        // Update Next button to Submit on last step
         if (currentStep === 'bank') {
             $('.next-step').hide();
         } else {
             $('.next-step').show();
         }
-
-        // Trigger department change for cost center step
-        if (currentStep === 'costcenter' && $('#department').val()) {
-            $('#department').trigger('change');
-        }
-
-        // Trigger superannuation population
-        if (currentStep === 'superannuation' && $('#superannuation_id').val()) {
-            $('#superannuation_id').trigger('change');
-        }
-
-        // Reinitialize datepicker for personal step after refresh
-        if (currentStep === 'personal') {
-            $('#joining_date').datepicker('update');
-        }
     }
-
-    // Client-side validation for cost center form
-    function validateCostCenterForm(form) {
-        const $form = $(form);
-        const $percentageFields = $form.find('input[name^="cost_center_share_percentage["]');
-        const selectedDepartments = $form.find('#department').val() || [];
-        const errors = [];
-
-        // Only validate percentages if more than one department is selected
-        if (selectedDepartments.length > 1) {
-            let totalPercentage = 0;
-            const percentageKeys = [];
-
-            // Calculate sum of percentages and collect keys
-            $percentageFields.each(function () {
-                const value = parseFloat($(this).val()) || 0;
-                totalPercentage += value;
-                const key = $(this).attr('name').match(/\[(\d+)\]/)[1];
-                percentageKeys.push(key);
-            });
-
-            // Check if sum equals 100
-            if (Math.abs(totalPercentage - 100) > 0.01) {
-                errors.push('The sum of cost center share percentages must equal 100%.');
-                $form.find('#general_percentage_error').html('The sum of cost center share percentages must equal 100%.');
-            } else {
-                $form.find('#general_percentage_error').empty();
-            }
-
-            // Check if department IDs match percentage keys
-            const departments = selectedDepartments.map(String);
-            const missingPercentageKeys = departments.filter(id => !percentageKeys.includes(id));
-            const extraPercentageKeys = percentageKeys.filter(id => !departments.includes(id));
-
-            if (missingPercentageKeys.length || extraPercentageKeys.length) {
-                errors.push('Each selected department must have a corresponding share percentage, and vice versa.');
-                $form.find('#general_percentage_error').append('<br>Each selected department must have a corresponding share percentage, and vice versa.');
-            }
-        }
-
-        // Validate individual percentage fields
-        $percentageFields.each(function () {
-            const value = $(this).val();
-            if (value === '' || isNaN(value) || parseFloat(value) < 0 || parseFloat(value) > 100) {
-                $(this).addClass('error');
-                $(this).next('.error-message').html('Percentage must be a number between 0 and 100.');
-                errors.push('Invalid percentage value.');
-            }
-        });
-
-        return errors.length === 0;
-    }
-
-    // Handle superannuation selection to populate readonly fields
-    $('#superannuation_id').on('change', function () {
-        const selectedOption = $(this).find('option:selected');
-        const superannuationData = selectedOption.data('superannuation') || {};
-        $('#employer_contribution_percentage_sup').val(superannuationData.employer_contribution_percentage || '');
-        $('#employer_contribution_fixed_amount_sup').val(superannuationData.employer_contribution_fixed_amount || '');
-    });
 
     // Handle Next button click
     $('.next-step').on('click', function (e) {
@@ -1250,25 +1172,24 @@ $(document).ready(function () {
         currentForm.find('.error-message').empty();
         currentForm.find('.form-control').removeClass('error');
 
-        // Run client-side validation for cost center step
-        if (currentStep === 'costcenter' && !validateCostCenterForm(currentForm)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Please correct the errors in the form.',
-            });
-            return;
-        }
-
         // Perform AJAX submission
         $.ajax({
             url: currentForm.attr('action'),
             method: 'POST',
             data: currentForm.serialize(),
-            dataType: 'json',
+            dataType: 'json', // Ensure JSON response
             success: function (response) {
                 if (response.success) {
-                    updateStep(nextStep); // Move to next step without SweetAlert
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        // Move to next step
+                        updateStep(nextStep);
+                    });
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -1281,26 +1202,7 @@ $(document).ready(function () {
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors || {};
                     $.each(errors, function (key, messages) {
-                        let field;
-                        if (key.includes('cost_center_share_percentage.')) {
-                            const index = key.split('.').pop();
-                            field = currentForm.find(`[name="cost_center_share_percentage[${index}]"]`);
-                        } else if (key.includes('department.')) {
-                            field = currentForm.find('[name="department[]"]');
-                        } else if (key === 'cost_center_share_percentage') {
-                            field = currentForm.find('#general_percentage_error');
-                        } else if (key.includes('leave_balance.')) {
-                            const index = key.split('.').pop();
-                            field = currentForm.find(`[name="leave_balance[]"]:eq(${index})`);
-                        } else if (key.includes('leave_type.')) {
-                            const index = key.split('.').pop();
-                            field = currentForm.find(`[name="leave_type[]"]:eq(${index})`);
-                        } else if (key.includes('leave_active.')) {
-                            const index = key.split('.').pop();
-                            field = currentForm.find(`[name="leave_active[]"]:eq(${index})`);
-                        } else {
-                            field = currentForm.find(`[name="${key}"], [name="${key}[]"]`);
-                        }
+                        const field = currentForm.find(`[name="${key}"]`);
                         if (field.length) {
                             field.addClass('error');
                             field.next('.error-message').html(messages.join('<br>'));
@@ -1345,8 +1247,8 @@ $(document).ready(function () {
         updateStep(prevStep);
     });
 
-    // Handle form submission for the bank step
-    $('#bankForm').on('submit', function (e) {
+    // Handle form submission for the final step
+    $('#bankCreditsForm').on('submit', function (e) {
         e.preventDefault();
         const form = $(this);
 
@@ -1364,7 +1266,7 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: 'Your employee application saved successfully.',
+                        text: response.message,
                         timer: 1500,
                         showConfirmButton: false
                     }).then(() => {
@@ -1382,7 +1284,7 @@ $(document).ready(function () {
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors || {};
                     $.each(errors, function (key, messages) {
-                        const field = form.find(`[name="${key}"], [name="${key}[]"]`);
+                        const field = form.find(`[name="${key}"]`);
                         if (field.length) {
                             field.addClass('error');
                             field.next('.error-message').html(messages.join('<br>'));
@@ -1404,7 +1306,38 @@ $(document).ready(function () {
         });
     });
 
-    // Dynamic department population based on cost_center
+    // Handle superannuation selection
+    $('#empl_superannuation_id').on('change', function () {
+        const selectedOption = $(this).find('option:selected');
+        const superannuationData = selectedOption.data('superannuation');
+        if (superannuationData) {
+            $('#employer_contribution_percentage').val(superannuationData.employer_contribution_percentage || '');
+            $('#employer_contribution_fixed_amount').val(superannuationData.employer_contribution_fixed_amount || '');
+            $('#bank_name').val(superannuationData.bank_name || '');
+            $('#bank_address').val(superannuationData.bank_address || '');
+            $('#bank_account_number').val(superannuationData.employment_account_number || '');
+        } else {
+            $('#employer_contribution_percentage').val('');
+            $('#employer_contribution_fixed_amount').val('');
+            $('#bank_name').val('');
+            $('#bank_address').val('');
+            $('#bank_account_number').val('');
+        }
+    });
+
+    // Initialize superannuation fields if pre-selected
+    if ($('#empl_superannuation_id').val()) {
+        $('#empl_superannuation_id').trigger('change');
+    }
+
+    // Handle step indicator click to navigate
+    $('.step').on('click', function () {
+        const step = $(this).data('step');
+        updateStep(step);
+    });
+
+
+     // Dynamic department population based on cost_center
     $('#cost_center').on('change', function () {
         const costCenterId = $(this).val();
         const selectedDepartments = @json(session('employee_data.costcenter.department', old('department', [])));
@@ -1418,64 +1351,75 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (response) {
                     const departments = response.departments || [];
-                    departments.forEach(dept => {
-                        $department.append(`<option value="${dept.id}" ${selectedDepartments.includes(dept.id.toString()) ? 'selected' : ''}>${dept.department}</option>`);
+                    departments.forEach(function (department) {
+                        $department.append(new Option(department.department, department.id, false, selectedDepartments.includes(department.id.toString())));
                     });
-                    $department.trigger('change');
+
+                    const sharePercentages = response.sharePercentages || {};
+                    const sharePercentageFields = $('#share_percentage_fields');
+                    sharePercentageFields.empty();
+
+                    departments.forEach(function (department) {
+                        const sharePercentage = sharePercentages[department.id] || '';
+                        sharePercentageFields.append(`
+                            <div class="form-group">
+                                <label for="share_percentage_${department.id}">${department.department} Share Percentage</label>
+                                <input type="number" class="form-control" name="cost_center_share_percentage[${department.id}]" id="share_percentage_${department.id}" value="${sharePercentage}" min="0" max="100" step="0.01" required>
+                                <div class="error-message"></div>
+                            </div>
+                        `);
+                    });
                 },
                 error: function (xhr) {
                     console.error('Error fetching departments:', xhr.responseText);
                     $department.append('<option value="">No departments available</option>');
-                    $department.trigger('change');
                 }
             });
         } else {
-            $department.trigger('change');
+            $('#share_percentage_fields').empty();
         }
     });
 
     // Dynamic cost_center_share_percentage fields based on department selection
-    $('#department').on('change', function () {
-        const selectedDepartments = $(this).val() || [];
-        const $percentageFields = $('#share_percentage_fields');
-        const existingPercentages = @json(session('employee_data.costcenter.cost_center_share_percentage', old('cost_center_share_percentage', [])));
-        $percentageFields.empty();
+    // $('#department').on('change', function () {
+    //     const selectedDepartments = $(this).val() || [];
+    //     const $percentageFields = $('#share_percentage_fields');
+    //     const existingPercentages = @json(session('employee_data.costcenter.cost_center_share_percentage', old('cost_center_share_percentage', [])));
+    //     $percentageFields.empty();
 
-        if (selectedDepartments.length) {
-            $.ajax({
-                url: window.Laravel.routes.PeopleGetDepartment,
-                method: 'GET',
-                data: { ids: selectedDepartments },
-                dataType: 'json',
-                success: function (response) {
-                    const departments = response.departments || [];
-                    departments.forEach(dept => {
-                        const percentage = existingPercentages[dept.id] || '';
-                        $percentageFields.append(`
-                            <div class="form-group">
-                                <label for="share_percentage_${dept.id}">${dept.department} Share Percentage</label>
-                                <input type="number" class="form-control" name="cost_center_share_percentage[${dept.id}]" id="share_percentage_${dept.id}" value="${percentage}" min="0" max="100" step="0.01" ${selectedDepartments.length > 1 ? 'required' : ''}>
-                                <div class="error-message"></div>
-                            </div>
-                        `);
-                    });
-                },
-                error: function (xhr) {
-                    console.error('Error fetching department names:', xhr.responseText);
-                    selectedDepartments.forEach(id => {
-                        const percentage = existingPercentages[id] || '';
-                        $percentageFields.append(`
-                            <div class="form-group">
-                                <label for="share_percentage_${id}">Department ${id} Share Percentage</label>
-                                <input type="number" class="form-control" name="cost_center_share_percentage[${id}]" id="share_percentage_${id}" value="${percentage}" min="0" max="100" step="0.01" ${selectedDepartments.length > 1 ? 'required' : ''}>
-                                <div class="error-message"></div>
-                            </div>
-                        `);
-                    });
-                }
-            });
-        }
-    });
+    //     if (selectedDepartments.length) {
+    //         $.ajax({
+    //             url: window.Laravel.routes.PeopleGetDepartment,
+    //             method: 'GET',
+    //             data: { ids: selectedDepartments },
+    //             dataType: 'json',
+    //             success: function (departments) {
+    //                 departments.forEach(dept => {
+    //                     const percentage = existingPercentages[dept.id] || '';
+    //                     $percentageFields.append(`
+    //                         <div class="form-group">
+    //                             <label for="share_percentage_${dept.id}">${dept.name} Share Percentage</label>
+    //                             <input type="number" class="form-control" name="cost_center_share_percentage[${dept.id}]" id="share_percentage_${dept.id}" value="${percentage}" min="0" max="100" step="0.01" required>
+    //                             <div class="error-message"></div>
+    //                         </div>
+    //                     `);
+    //                 });
+    //             },
+    //             error: function () {
+    //                 selectedDepartments.forEach(id => {
+    //                     const percentage = existingPercentages[id] || '';
+    //                     $percentageFields.append(`
+    //                         <div class="form-group">
+    //                             <label for="share_percentage_${id}">Department ${id} Share Percentage</label>
+    //                             <input type="number" class="form-control" name="cost_center_share_percentage[${id}]" id="share_percentage_${id}" value="${percentage}" min="0" max="100" step="0.01" required>
+    //                             <div class="error-message"></div>
+    //                         </div>
+    //                     `);
+    //                 });
+    //             }
+    //         });
+    //     }
+    // });
 
     // Trigger initial population
     if ($('#cost_center').val()) {
@@ -1484,9 +1428,18 @@ $(document).ready(function () {
         $('#department').trigger('change');
     }
 
-    // Trigger superannuation population
-    if ($('#superannuation_id').val()) {
-        $('#superannuation_id').trigger('change');
-    }
+    //Superannuation field change event
+    $('#superannuation_id').on('change', function () {
+        const selectedOption = $(this).find('option:selected');
+        const superannuationData = selectedOption.data('superannuation');
+        console.log('percentage' +superannuationData.employer_contribution_percentage);
+        if (superannuationData) {
+            $('#employer_contribution_percentage_sup').val(superannuationData.employer_contribution_percentage);
+            $('#employer_contribution_fixed_amount_sup').val(superannuationData.employer_contribution_fixed_amount);
+        } else {
+            $('#employer_contribution_percentage_sup').val('');
+            $('#employer_contribution_fixed_amount_sup').val('');
+        }
+    });
 });
 </script>
