@@ -1,3 +1,4 @@
+```blade
 @extends('administrator.master')
 @section('title', __('Edit Employee'))
 
@@ -47,13 +48,13 @@
 
         <!-- Personal Details -->
         <div class="form-step active" data-step="personal">
-            <form id="personalDetailsForm" method="post" action="{{ url('/people/employees/update/' . $user->id) }}" novalidate>
+            <form id="editEmployeeForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}" novalidate>
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="personal">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <p style="color: #ffc107">{{ __('Update team member details. All (*) fields are required.') }}</p>
+                            <p style="color: #ffc107">{{ __('Edit team member details. All (*) fields are required.') }}</p>
                         </div>
                     </div>
                     <!-- Bootstrap 4 Accordion -->
@@ -73,42 +74,42 @@
                                         <div class="col-md-3">
                                             <label for="employee_id">{{ __('ID') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
-                                                <input type="hidden" name="employee_id" value="{{ $user->employee_id }}">
-                                                <input type="text" class="form-control" value="{{ __('EMPID') }}{{ $user->employee_id }}" disabled>
+                                                <input type="hidden" name="employee_id" value="{{ $employee->employee_id }}">
+                                                <input type="text" class="form-control" value="{{ __('EMPID') }}{{ $employee->employee_id }}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="name">{{ __('Name') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
-                                                <input type="text" name="name" id="name" class="form-control" value="{{ $user->name }}" placeholder="{{ __('Enter name..') }}" required>
+                                                <input type="text" name="name" id="name" class="form-control" value="{{ $employee->name }}" placeholder="{{ __('Enter name..') }}" required>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="father_name">{{ __('Fathers Name') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="father_name" id="father_name" class="form-control" value="{{ $user->father_name ?? '' }}" placeholder="{{ __('Enter fathers name..') }}">
+                                                <input type="text" name="father_name" id="father_name" class="form-control" value="{{ $employee->father_name ?? '' }}" placeholder="{{ __('Enter fathers name..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="mother_name">{{ __('Mothers Name') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="mother_name" id="mother_name" class="form-control" value="{{ $user->mother_name ?? '' }}" placeholder="{{ __('Enter mothers name..') }}">
+                                                <input type="text" name="mother_name" id="mother_name" class="form-control" value="{{ $employee->mother_name ?? '' }}" placeholder="{{ __('Enter mothers name..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="spouse_name">{{ __('Spouse Name') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="spouse_name" id="spouse_name" class="form-control" value="{{ $user->spouse_name ?? '' }}" placeholder="{{ __('Enter spouse name..') }}">
+                                                <input type="text" name="spouse_name" id="spouse_name" class="form-control" value="{{ $employee->spouse_name ?? '' }}" placeholder="{{ __('Enter spouse name..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="gender">{{ __('Gender') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <select name="gender" id="gender" class="form-control" required>
-                                                    <option value="" {{ !$user->gender ? 'selected' : '' }}>{{ __('Select one') }}</option>
-                                                    <option value="m" {{ $user->gender == 'm' ? 'selected' : '' }}>{{ __('Male') }}</option>
-                                                    <option value="f" {{ $user->gender == 'f' ? 'selected' : '' }}>{{ __('Female') }}</option>
+                                                    <option value="" {{ !$employee->gender ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                    <option value="m" {{ $employee->gender == 'm' ? 'selected' : '' }}>{{ __('Male') }}</option>
+                                                    <option value="f" {{ $employee->gender == 'f' ? 'selected' : '' }}>{{ __('Female') }}</option>
                                                 </select>
                                                 <div class="error-message"></div>
                                             </div>
@@ -117,12 +118,12 @@
                                             <label for="marital_status">{{ __('Marital Status') }}</label>
                                             <div class="form-group">
                                                 <select name="marital_status" id="marital_status" class="form-control">
-                                                    <option value="" {{ !$user->marital_status ? 'selected' : '' }}>{{ __('Select one') }}</option>
-                                                    <option value="1" {{ $user->marital_status == '1' ? 'selected' : '' }}>{{ __('Married') }}</option>
-                                                    <option value="2" {{ $user->marital_status == '2' ? 'selected' : '' }}>{{ __('Single') }}</option>
-                                                    <option value="3" {{ $user->marital_status == '3' ? 'selected' : '' }}>{{ __('Divorced') }}</option>
-                                                    <option value="4" {{ $user->marital_status == '4' ? 'selected' : '' }}>{{ __('Separated') }}</option>
-                                                    <option value="5" {{ $user->marital_status == '5' ? 'selected' : '' }}>{{ __('Widowed') }}</option>
+                                                    <option value="" {{ !$employee->marital_status ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                    <option value="1" {{ $employee->marital_status == '1' ? 'selected' : '' }}>{{ __('Married') }}</option>
+                                                    <option value="2" {{ $employee->marital_status == '2' ? 'selected' : '' }}>{{ __('Single') }}</option>
+                                                    <option value="3" {{ $employee->marital_status == '3' ? 'selected' : '' }}>{{ __('Divorced') }}</option>
+                                                    <option value="4" {{ $employee->marital_status == '4' ? 'selected' : '' }}>{{ __('Separated') }}</option>
+                                                    <option value="5" {{ $employee->marital_status == '5' ? 'selected' : '' }}>{{ __('Widowed') }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -130,7 +131,7 @@
                                             <label for="date_of_birth">{{ __('Date of Birth') }}</label>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" name="date_of_birth" class="form-control datepicker" value="{{ $user->date_of_birth ? \Carbon\Carbon::parse($user->date_of_birth)->format('d/m/Y') : '' }}" id="datepicker">
+                                                    <input type="text" name="date_of_birth" class="form-control datepicker" value="{{ $employee->date_of_birth ? \Carbon\Carbon::parse($employee->date_of_birth)->format('d/m/Y') : '' }}" id="datepicker">
                                                 </div>
                                             </div>
                                         </div>
@@ -154,9 +155,9 @@
                                             <label for="designation_id">{{ __('Designation') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <select name="designation_id" id="designation_id" class="form-control" required>
-                                                    <option value="" {{ !$user->designation_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                    <option value="" {{ !$employee->designation_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                     @foreach($designations as $designation)
-                                                        <option value="{{ $designation['id'] }}" {{ $user->designation_id == $designation['id'] ? 'selected' : '' }}>{{ $designation['designation'] }}</option>
+                                                    <option value="{{ $designation['id'] }}" {{ $employee->designation_id == $designation['id'] ? 'selected' : '' }}>{{ $designation['designation'] }}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="error-message"></div>
@@ -166,16 +167,16 @@
                                             <label for="joining_date">{{ __('Joining Date') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <div class="input-group date">
-                                                    <input type="text" name="joining_date" class="form-control datepicker" id="datepicker4" value="{{ $user->joining_date ? \Carbon\Carbon::parse($user->joining_date)->format('d/m/Y') : '' }}" placeholder="{{ __('dd/mm/yyyy') }}" required>
+                                                    <input type="text" name="joining_date" class="form-control datepicker" id="datepicker4" value="{{ $employee->joining_date ? \Carbon\Carbon::parse($employee->joining_date)->format('d/m/Y') : '' }}" placeholder="{{ __('dd/mm/yyyy') }}" required>
                                                 </div>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <label for="end_date">{{ __('End Date') }}</label>
+                                            <label for="end_date">{{ __('End Date') }}<span class="text-danger"></span></label>
                                             <div class="form-group">
                                                 <div class="input-group date">
-                                                    <input type="text" name="end_date" class="form-control datepicker" id="datepicker5" value="{{ $user->end_date ? \Carbon\Carbon::parse($user->end_date)->format('d/m/Y') : '' }}" placeholder="{{ __('dd/mm/yyyy') }}">
+                                                    <input type="text" name="end_date" class="form-control datepicker" id="datepicker5" value="{{ $employee->end_date ? \Carbon\Carbon::parse($employee->end_date)->format('d/m/Y') : '' }}" placeholder="{{ __('dd/mm/yyyy') }}">
                                                 </div>
                                                 <div class="error-message"></div>
                                             </div>
@@ -185,9 +186,9 @@
                                             <label for="branch">{{ __('Branch') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <select name="branch" id="branch" class="form-control" required>
-                                                    <option value="" {{ !$user->branch ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                    <option value="" {{ !$employee->branch ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                     @foreach(\App\Models\Branch::all() as $branch)
-                                                        <option value="{{ $branch->id }}" {{ $user->branch == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
+                                                    <option value="{{ $branch->id }}" {{ $employee->branch == $branch->id ? 'selected' : '' }}>{{ $branch->branch_name }}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="error-message"></div>
@@ -197,9 +198,9 @@
                                             <label for="role">{{ __('Role') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <select name="role" id="role" class="form-control" required>
-                                                    <option value="" {{ !$user->user_type ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                    <option value="" {{ !$employee->user_type ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                     @foreach($roles as $role)
-                                                        <option value="{{ $role->id }}" {{ $user->user_type == $role->id ? 'selected' : '' }}>{{ $role->display_name }}</option>
+                                                    <option value="{{ $role->id }}" {{ $employee->user_type == $role->id ? 'selected' : '' }}>{{ $role->display_name }}</option>
                                                     @endforeach
                                                 </select>
                                                 <div class="error-message"></div>
@@ -209,12 +210,12 @@
                                             <label for="employee_type">{{ __('Employee Type') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <select name="employee_type" id="employee_type" class="form-control" required>
-                                                    <option value="" {{ !$user->employee_type ? 'selected' : '' }}>{{ __('Select One') }}</option>
-                                                    <option value="1" {{ $user->employee_type == '1' ? 'selected' : '' }}>{{ __('Provision') }}</option>
-                                                    <option value="2" {{ $user->employee_type == '2' ? 'selected' : '' }}>{{ __('Permanent') }}</option>
-                                                    <option value="3" {{ $user->employee_type == '3' ? 'selected' : '' }}>{{ __('Full Time') }}</option>
-                                                    <option value="4" {{ $user->employee_type == '4' ? 'selected' : '' }}>{{ __('Part Time') }}</option>
-                                                    <option value="5" {{ $user->employee_type == '5' ? 'selected' : '' }}>{{ __('Adhoc') }}</option>
+                                                    <option value="" {{ !$employee->employee_type ? 'selected' : '' }}>{{ __('Select One') }}</option>
+                                                    <option value="1" {{ $employee->employee_type == '1' ? 'selected' : '' }}>{{ __('Provision') }}</option>
+                                                    <option value="2" {{ $employee->employee_type == '2' ? 'selected' : '' }}>{{ __('Permanent') }}</option>
+                                                    <option value="3" {{ $employee->employee_type == '3' ? 'selected' : '' }}>{{ __('Full Time') }}</option>
+                                                    <option value="4" {{ $employee->employee_type == '4' ? 'selected' : '' }}>{{ __('Part Time') }}</option>
+                                                    <option value="5" {{ $employee->employee_type == '5' ? 'selected' : '' }}>{{ __('Adhoc') }}</option>
                                                 </select>
                                                 <div class="error-message"></div>
                                             </div>
@@ -223,9 +224,9 @@
                                             <label for="resident_status">{{ __('Resident Status') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <select name="resident_status" id="resident_status" class="form-control" required>
-                                                    <option value="" {{ !$user->resident_status ? 'selected' : '' }}>{{ __('Select Resident/Non-Resident') }}</option>
-                                                    <option value="1" {{ $user->resident_status == '1' ? 'selected' : '' }}>{{ __('Resident') }}</option>
-                                                    <option value="2" {{ $user->resident_status == '2' ? 'selected' : '' }}>{{ __('Non-Resident') }}</option>
+                                                    <option value="" {{ !$employee->resident_status ? 'selected' : '' }}>{{ __('Select Resident/Non-Resident') }}</option>
+                                                    <option value="1" {{ $employee->resident_status == '1' ? 'selected' : '' }}>{{ __('Resident') }}</option>
+                                                    <option value="2" {{ $employee->resident_status == '2' ? 'selected' : '' }}>{{ __('Non-Resident') }}</option>
                                                 </select>
                                                 <div class="error-message"></div>
                                             </div>
@@ -249,19 +250,19 @@
                                         <div class="col-md-6">
                                             <label for="academic_qualification">{{ __('Academic Qualification') }}</label>
                                             <div class="form-group">
-                                                <textarea name="academic_qualification" id="academic_qualification" class="form-control textarea" placeholder="{{ __('Enter academic qualification..') }}">{{ $user->academic_qualification ?? '' }}</textarea>
+                                                <textarea name="academic_qualification" id="academic_qualification" class="form-control textarea" placeholder="{{ __('Enter academic qualification..') }}">{{ $employee->academic_qualification ?? '' }}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="professional_qualification">{{ __('Professional Qualification') }}</label>
                                             <div class="form-group">
-                                                <textarea name="professional_qualification" id="professional_qualification" class="form-control textarea" placeholder="{{ __('Enter professional qualification..') }}">{{ $user->professional_qualification ?? '' }}</textarea>
+                                                <textarea name="professional_qualification" id="professional_qualification" class="form-control textarea" placeholder="{{ __('Enter professional qualification..') }}">{{ $employee->professional_qualification ?? '' }}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <label for="experience">{{ __('Experience') }}</label>
                                             <div class="form-group">
-                                                <textarea name="experience" id="experience" class="form-control textarea" placeholder="{{ __('Enter experience..') }}">{{ $user->experience ?? '' }}</textarea>
+                                                <textarea name="experience" id="experience" class="form-control textarea" placeholder="{{ __('Enter experience..') }}">{{ $employee->experience ?? '' }}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -283,62 +284,62 @@
                                         <div class="col-md-12">
                                             <label for="present_address">{{ __('Present Address') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
-                                                <input type="text" name="present_address" id="present_address" class="form-control" value="{{ $userDetail->present_address ?? '' }}" placeholder="{{ __('Enter present address..') }}" required>
+                                                <input type="text" name="present_address" id="present_address" class="form-control" value="{{ $user_details->present_address ?? '' }}" placeholder="{{ __('Enter present address..') }}" required>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="city_pr">{{ __('City') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="city_pr" id="city_pr" class="form-control" value="{{ $userDetail->city_pr ?? '' }}" placeholder="{{ __('Enter city..') }}">
+                                                <input type="text" name="city_pr" id="city_pr" class="form-control" value="{{ $user_details->city_pr ?? '' }}" placeholder="{{ __('Enter city..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="state_pr">{{ __('State') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="state_pr" id="state_pr" class="form-control" value="{{ $userDetail->state_pr ?? '' }}" placeholder="{{ __('Enter state.') }}">
+                                                <input type="text" name="state_pr" id="state_pr" class="form-control" value="{{ $user_details->state_pr ?? '' }}" placeholder="{{ __('Enter state.') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="postcode_pr">{{ __('Postcode') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="postcode_pr" id="postcode_pr" class="form-control" value="{{ $userDetail->postcode_pr ?? '' }}" placeholder="{{ __('Enter postcode..') }}">
+                                                <input type="text" name="postcode_pr" id="postcode_pr" class="form-control" value="{{ $user_details->postcode_pr ?? '' }}" placeholder="{{ __('Enter postcode..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="country_pr">{{ __('Country') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="country_pr" id="country_pr" class="form-control" value="{{ $userDetail->country_pr ?? '' }}" placeholder="{{ __('Enter country..') }}">
+                                                <input type="text" name="country_pr" id="country_pr" class="form-control" value="{{ $user_details->country_pr ?? '' }}" placeholder="{{ __('Enter country..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <label for="permanent_address">{{ __('Permanent Address') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="permanent_address" id="permanent_address" class="form-control" value="{{ $userDetail->permanent_address ?? '' }}" placeholder="{{ __('Enter permanent address..') }}">
+                                                <input type="text" name="permanent_address" id="permanent_address" class="form-control" value="{{ $user_details->permanent_address ?? '' }}" placeholder="{{ __('Enter permanent address..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="city">{{ __('City') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="city" id="city" class="form-control" value="{{ $userDetail->city ?? '' }}" placeholder="{{ __('Enter city..') }}">
+                                                <input type="text" name="city" id="city" class="form-control" value="{{ $user_details->city ?? '' }}" placeholder="{{ __('Enter city..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="state">{{ __('State') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="state" id="state" class="form-control" value="{{ $userDetail->state ?? '' }}" placeholder="{{ __('Enter state.') }}">
+                                                <input type="text" name="state" id="state" class="form-control" value="{{ $user_details->state ?? '' }}" placeholder="{{ __('Enter state.') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="postcode">{{ __('Postcode') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="postcode" id="postcode" class="form-control" value="{{ $userDetail->postcode ?? '' }}" placeholder="{{ __('Enter postcode..') }}">
+                                                <input type="text" name="postcode" id="postcode" class="form-control" value="{{ $user_details->postcode ?? '' }}" placeholder="{{ __('Enter postcode..') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="country">{{ __('Country') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="country" id="country" class="form-control" value="{{ $userDetail->country ?? '' }}" placeholder="{{ __('Enter country..') }}">
+                                                <input type="text" name="country" id="country" class="form-control" value="{{ $user_details->country ?? '' }}" placeholder="{{ __('Enter country..') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -360,21 +361,21 @@
                                         <div class="col-md-4">
                                             <label for="email">{{ __('Email') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
-                                                <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}" placeholder="{{ __('Enter email address..') }}" required>
+                                                <input type="email" name="email" id="email" class="form-control" value="{{ $employee->email }}" placeholder="{{ __('Enter email address..') }}" required>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <label for="contact_no_one">{{ __('Contact No') }} <span class="text-danger">*</span></label>
                                             <div class="form-group">
-                                                <input type="text" name="contact_no_one" id="contact_no_one" class="form-control" value="{{ $user->contact_no_one ?? '' }}" placeholder="{{ __('Enter contact no..') }}" required>
+                                                <input type="text" name="contact_no_one" id="contact_no_one" class="form-control" value="{{ $employee->contact_no_one }}" placeholder="{{ __('Enter contact no..') }}" required>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <label for="emergency_contact">{{ __('Emergency Contact') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="emergency_contact" id="emergency_contact" class="form-control" value="{{ $user->emergency_contact ?? '' }}" placeholder="{{ __('Enter emergency contact no..') }}">
+                                                <input type="text" name="emergency_contact" id="emergency_contact" class="form-control" value="{{ $employee->emergency_contact ?? '' }}" placeholder="{{ __('Enter emergency contact no..') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -396,13 +397,13 @@
                                         <div class="col-md-6">
                                             <label for="passport_number">{{ __('Passport Number') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="passport_number" id="passport_number" class="form-control" value="{{ $user->passport_number ?? '' }}" placeholder="{{ __('Enter passport number...') }}">
+                                                <input type="text" name="passport_number" id="passport_number" class="form-control" value="{{ $employee->passport_number ?? '' }}" placeholder="{{ __('Enter passport number...') }}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="visa_number">{{ __('Visa Number') }}</label>
                                             <div class="form-group">
-                                                <input type="text" name="visa_number" id="visa_number" class="form-control" value="{{ $user->visa_number ?? '' }}" placeholder="{{ __('Enter visa number...') }}">
+                                                <input type="text" name="visa_number" id="visa_number" class="form-control" value="{{ $employee->visa_number ?? '' }}" placeholder="{{ __('Enter visa number...') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -418,14 +419,13 @@
                     <button type="button" class="btn btn-primary next-step" data-next="payroll">
                         {{ __('Next') }}
                     </button>
-                    <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Payroll Details -->
         <div class="form-step" data-step="payroll">
-            <form id="payrollDetailsForm" method="post" action="{{ url('/people/employees/update/' . $user->id) }}">
+            <form id="payrollDetailsForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="payroll">
                 <div class="box-body">
@@ -437,8 +437,8 @@
                                     <div style="text-align: right;">
                                         <label for="tax_residency">{{ __('Select Tax Residency') }}</label>
                                         <select name="tax_residency" id="tax_residency" class="form-control" required>
-                                            <option value="1" {{ $payroll->resident_status == '1' ? 'selected' : '' }}>Residential</option>
-                                            <option value="2" {{ $payroll->resident_status == '2' ? 'selected' : '' }}>Non-Resident</option>
+                                                    <option value="1" {{ $employee->resident_status == '1' ? 'selected' : '' }}>{{ __('Resident') }}</option>
+                                                    <option value="2" {{ $employee->resident_status == '2' ? 'selected' : '' }}>{{ __('Non-Resident') }}</option>
                                         </select>
                                         <div class="error-message"></div>
                                     </div>
@@ -493,10 +493,10 @@
                                                 <td><label for="hr_place">{{ __('Place Name') }}</label></td>
                                                 <td>
                                                     <select name="hr_place" id="hr_place" class="form-control">
-                                                        <option value="" {{ !$payroll->hr_place ? 'selected' : '' }}>{{ __('Select place for house allowance') }}</option>
-                                                        @if(isset($loca_places))
+                                                        <option value="" {{ isset($payroll->hr_place) && !$payroll->hr_place ? 'selected' : '' }}>{{ __('Select place for house allowance') }}</option>
+                                                        @if(isset($loca_places) && isset( $payroll->hr_place ))
                                                             @foreach($loca_places as $item)
-                                                                <option value="{{ $item['id'] }}" {{ $payroll->hr_place == $item['id'] ? 'selected' : '' }}>{{ $item['places'] }}</option>
+                                                                <option value="{{ $item->id }}" {{ $payroll->hr_place == $item->id ? 'selected' : '' }}>{{ $item->places }}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
@@ -512,10 +512,10 @@
                                                 <td><label for="hra_type">{{ __('Housing Allowance Type') }}</label></td>
                                                 <td>
                                                     <select name="hra_type" id="hra_type" class="form-control">
-                                                        <option value="" selected>{{ __('Select One') }}</option>
-                                                        <option value="1" {{ $payroll->hra_type == '1' ? 'selected' : '' }}>{{ __('Rental') }}</option>
-                                                        <option value="2" {{ $payroll->hra_type == '2' ? 'selected' : '' }}>{{ __('Kind') }}</option>
-                                                        <option value="3" {{ $payroll->hra_type == '3' ? 'selected' : '' }}>{{ __('Not Applicable') }}</option>
+                                                        <option value="" {{ isset($payroll->hra_type) && !$payroll->hra_type ? 'selected' : '' }}>{{ __('Select One') }}</option>
+                                                        <option value="1" {{ isset($payroll->hra_type) &&  $payroll->hra_type == '1' ? 'selected' : '' }}>{{ __('Rental') }}</option>
+                                                        <option value="2" {{ isset($payroll->hra_type) && $payroll->hra_type == '2' ? 'selected' : '' }}>{{ __('Kind') }}</option>
+                                                        <option value="3" {{ isset($payroll->hra_type) &&  $payroll->hra_type == '3' ? 'selected' : '' }}>{{ __('Not Applicable') }}</option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -542,10 +542,10 @@
                                                 <td><label for="va_type">{{ __('Vehicle Allowance Type') }}</label></td>
                                                 <td>
                                                     <select name="va_type" id="va_type" class="form-control">
-                                                        <option value="" selected>{{ __('Select One') }}</option>
-                                                        <option value="1" {{ $payroll->va_type == '1' ? 'selected' : '' }}>{{ __('With Fuel') }}</option>
-                                                        <option value="2" {{ $payroll->va_type == '2' ? 'selected' : '' }}>{{ __('Without Fuel') }}</option>
-                                                        <option value="3" {{ $payroll->va_type == '3' ? 'selected' : '' }}>{{ __('Not Applicable') }}</option>
+                                                        <option value="" {{ isset($payroll->va_type) && !$payroll->va_type ? 'selected' : '' }}>{{ __('Select One') }}</option>
+                                                        <option value="1" {{ isset($payroll->va_type) && $payroll->va_type == '1' ? 'selected' : '' }}>{{ __('With Fuel') }}</option>
+                                                        <option value="2" {{ isset($payroll->va_type) && $payroll->va_type == '2' ? 'selected' : '' }}>{{ __('Without Fuel') }}</option>
+                                                        <option value="3" {{ isset($payroll->va_type) && $payroll->va_type == '3' ? 'selected' : '' }}>{{ __('Not Applicable') }}</option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -565,7 +565,7 @@
                                             <tr>
                                                 <td><label for="meals_allowance">{{ __('Meals (Messing) Allowance') }}</label></td>
                                                 <td>
-                                                    <input type="checkbox" name="meals_tag" id="meals_tag" value="1" {{ $payroll->meals_tag ? 'checked' : '' }}>
+                                                    <input type="checkbox" name="meals_tag" id="meals_tag" value="1" {{ isset($payroll->meals_tag) && $payroll->meals_tag ? 'checked' : '' }}>
                                                     <input type="number" name="meals_allowance" id="meals_allowance" value="{{ $payroll->meals_allowance ?? '' }}" class="form-control" placeholder="0" readonly>
                                                 </td>
                                             </tr>
@@ -666,15 +666,15 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="gross_salary">{{ __('Gross Salary') }}</label>
-                                        <input type="number" disabled class="form-control" id="gross_salary" value="{{ $payroll->gross_salary ?? '' }}">
+                                        <input type="number" disabled class="form-control" id="gross_salary">
                                     </div>
                                     <div class="form-group">
                                         <label for="total_deduction">{{ __('Total Deduction') }}</label>
-                                        <input type="number" disabled class="form-control" id="total_deduction" value="{{ $payroll->total_deduction ?? '' }}">
+                                        <input type="number" disabled class="form-control" id="total_deduction">
                                     </div>
                                     <div class="form-group">
                                         <label for="net_salary">{{ __('Net Salary') }}</label>
-                                        <input type="number" disabled class="form-control" id="net_salary" value="{{ $payroll->net_salary ?? '' }}">
+                                        <input type="number" disabled class="form-control" id="net_salary">
                                     </div>
                                 </div>
                             </div>
@@ -684,14 +684,13 @@
                 <div class="d-flex justify-content-between mt-2">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="personal">{{ __('Previous') }}</button>
                     <button type="button" class="btn btn-primary next-step" data-next="costcenter">{{ __('Next') }}</button>
-                    <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Cost Center -->
         <div class="form-step" data-step="costcenter">
-            <form id="costCenterForm" method="post" action="{{ url('/people/employees/update/' . $user->id) }}">
+            <form id="costCenterForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="costcenter">
                 <div class="box-body">
@@ -711,28 +710,28 @@
                                     <tr>
                                         <td>
                                             <select name="payroll_location" id="payroll_location" class="form-control" required>
-                                                <option value="" {{ !$costcenter->payroll_location_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                <option value="" {{ !$cost_center->payroll_location_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                 @foreach(\App\Models\PayLocation::all() as $location)
-                                                    <option value="{{ $location->id }}" {{ $costcenter->payroll_location_id == $location->id ? 'selected' : '' }}>{{ $location->payroll_location_name }}</option>
+                                                    <option value="{{ $location->id }}" {{ $cost_center->payroll_location_id == $location->id ? 'selected' : '' }}>{{ $location->payroll_location_name }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
                                             <select name="pay_batch_number" id="pay_batch_number" class="form-control" required>
-                                                <option value="" {{ !$costcenter->payroll_batch_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                <option value="" {{ !$cost_center->payroll_batch_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                 @foreach(\App\Models\PayBatchNumber::all() as $batch)
-                                                    <option value="{{ $batch->id }}" {{ $costcenter->payroll_batch_id == $batch->id ? 'selected' : '' }}>{{ $batch->pay_batch_number_name }}</option>
+                                                    <option value="{{ $batch->id }}" {{ $cost_center->payroll_batch_id == $batch->id ? 'selected' : '' }}>{{ $batch->pay_batch_number_name }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
                                             <select name="cost_center" id="cost_center" class="form-control" required>
-                                                <option value="" {{ !$costcenter->cost_center_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                                <option value="" {{ !$cost_center->cost_center_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                 @if(isset($costcenters))
-                                                    @foreach($costcenters as $costcenter_item)
-                                                        <option value="{{ $costcenter_item->id }}" {{ $costcenter->cost_center_id == $costcenter_item->id ? 'selected' : '' }}>{{ $costcenter_item->name }} - {{ $costcenter_item->cost_center_code }}</option>
+                                                    @foreach($costcenters as $costcenter)
+                                                        <option value="{{ $costcenter->id }}" {{ $cost_center->cost_center_id == $costcenter->id ? 'selected' : '' }}>{{ $costcenter->name }} - {{ $costcenter->cost_center_code }}</option>
                                                     @endforeach
                                                 @endif
                                             </select>
@@ -743,7 +742,7 @@
                                                 <option value="" disabled>{{ __('Select one or more') }}</option>
                                                 @if(isset($departments))
                                                     @foreach($departments as $dept)
-                                                        <option value="{{ $dept->id }}" {{ in_array($dept->id, $costcenter->department_ids ?? []) ? 'selected' : '' }}>{{ $dept->department }}</option>
+                                                        <option value="{{ $dept->id }}" {{ in_array($dept->id, $cost_center->department_ids ?? []) ? 'selected' : '' }}>{{ $dept->department }}</option>
                                                     @endforeach
                                                 @endif
                                             </select>
@@ -751,12 +750,12 @@
                                         </td>
                                         <td>
                                             <div id="share_percentage_fields">
-                                                @if(isset($departments) && $costcenter->department_ids)
-                                                    @foreach($costcenter->department_ids as $deptId)
+                                                @if(isset($cost_center->department_ids) && $cost_center->department_ids)
+                                                    @foreach($cost_center->department_ids as $deptId)
                                                         @php $dept = collect($departments)->firstWhere('id', $deptId); @endphp
                                                         <div class="form-group">
                                                             <label for="share_percentage_{{ $deptId }}">{{ $dept ? $dept->department : 'Department' }} Share Percentage</label>
-                                                            <input type="number" class="form-control" name="cost_center_share_percentage[{{ $deptId }}]" id="share_percentage_{{ $deptId }}" value="{{ $costcenter->share_percentage[$deptId] ?? '' }}" min="0" max="100" step="0.01" required>
+                                                            <input type="number" class="form-control" name="cost_center_share_percentage[{{ $deptId }}]" id="share_percentage_{{ $deptId }}" value="{{ $cost_center->share_percentage[$deptId] ?? '' }}" min="0" max="100" step="0.01" required>
                                                             <div class="error-message"></div>
                                                         </div>
                                                     @endforeach
@@ -773,14 +772,13 @@
                 <div class="d-flex justify-content-between">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="payroll">{{ __('Previous') }}</button>
                     <button type="button" class="btn btn-primary next-step" data-next="contact">{{ __('Next') }}</button>
-                    <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Contact Information -->
         <div class="form-step" data-step="contact">
-            <form id="contactForm" method="post" action="{{ url('/people/employees/update/' . $user->id) }}">
+            <form id="contactForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="contact">
                 <div class="box-body">
@@ -832,14 +830,13 @@
                 <div class="d-flex justify-content-between mt-2">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="costcenter">{{ __('Previous') }}</button>
                     <button type="button" class="btn btn-primary next-step" data-next="leave">{{ __('Next') }}</button>
-                    <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Leave Details -->
         <div class="form-step" data-step="leave">
-            <form id="leaveForm" method="post" action="{{ url('/people/employees/update/' . $user->id) }}">
+            <form id="leaveForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="leave">
                 <div class="box-body">
@@ -855,20 +852,21 @@
                             </thead>
                             <tbody>
                                 @foreach ($leaveCategories as $leave)
+                                    @php $employee_leave = isset($leaves[$leave->id]) ? $leaves[$leave->id] : null; @endphp
                                     <tr>
                                         <td>{{ $leave->leave_category }}
                                             <input type="hidden" name="leave_category_id[]" value="{{ $leave->id }}">
                                         </td>
                                         <td>
-                                            <input type="number" id="leave_balance_{{ $leave->id }}" name="leave_balance[]" class="form-control" value="{{ $leaves[$leave->id]->leave_balance ?? $leave->qty }}" readonly>
+                                            <input type="number" id="leave_balance_{{ $leave->id }}" name="leave_balance[]" class="form-control" value="{{ $employee_leave->leave_balance ?? $leave->qty }}" readonly>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
-                                            <input type="text" id="leave_type_{{ $leave->id }}" name="leave_type[]" class="form-control" value="{{ $leaves[$leave->id]->leave_type ?? $leave->type_of_leave }}" readonly>
+                                            <input type="text" id="leave_type_{{ $leave->id }}" name="leave_type[]" class="form-control" value="{{ $employee_leave->leave_type ?? $leave->type_of_leave }}" readonly>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
-                                            <input type="checkbox" id="leave_active_{{ $leave->id }}" name="leave_active[]" value="{{ $leave->id }}" class="form-control" {{ isset($leaves[$leave->id]) && $leaves[$leave->id]->leave_active ? 'checked' : '' }}>
+                                            <input type="checkbox" id="leave_active_{{ $leave->id }}" name="leave_active[]" value="{{ $leave->id }}" class="form-control" {{ $employee_leave && $employee_leave->leave_active ? 'checked' : '' }}>
                                             <div class="error-message"></div>
                                         </td>
                                     </tr>
@@ -880,14 +878,13 @@
                 <div class="d-flex justify-content-between mt-2">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="contact">{{ __('Previous') }}</button>
                     <button type="button" class="btn btn-primary next-step" data-next="superannuation">{{ __('Next') }}</button>
-                    <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Superannuation -->
         <div class="form-step" data-step="superannuation">
-            <form id="superannuationForm" method="post" action="{{ url('/people/employees/update/' . $user->id) }}">
+            <form id="superannuationForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="superannuation">
                 <div class="box-body">
@@ -895,9 +892,9 @@
                         <label for="superannuation_id" class="form-label">{{ __('Superannuation') }} <span class="text-danger">*</span></label>
                         <select name="superannuation_id" id="superannuation_id" class="form-control" required>
                             <option value="" {{ !$superannuation->superannuation_id ? 'selected' : '' }}>{{ __('Select Superannuation') }}</option>
-                            @foreach($superannuations as $superannuation_item)
-                                <option value="{{ $superannuation_item->id }}" data-superannuation="{{ json_encode($superannuation_item) }}" {{ $superannuation->superannuation_id == $superannuation_item->id ? 'selected' : '' }}>
-                                    {{ $superannuation_item->name }} ({{ $superannuation_item->code }})
+                            @foreach($superannuations as $super)
+                                <option value="{{ $super->id }}" data-superannuation="{{ json_encode($super) }}" {{ $superannuation->superannuation_id == $super->id ? 'selected' : '' }}>
+                                    {{ $super->name }} ({{ $super->code }})
                                 </option>
                             @endforeach
                         </select>
@@ -953,14 +950,13 @@
                 <div class="d-flex justify-content-between mt-2">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="leave">{{ __('Previous') }}</button>
                     <button type="button" class="btn btn-primary next-step" data-next="bank">{{ __('Next') }}</button>
-                    <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Bank Credits -->
         <div class="form-step" data-step="bank">
-            <form id="bankForm" method="post" action="{{ url('/people/employees/update/' . $user->id) }}">
+            <form id="bankForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="step" value="bank">
                 <div class="box-body">
@@ -973,7 +969,7 @@
                                         <select class="form-control mb-3" name="bank_id" id="bank_id">
                                             <option value="" {{ !$bank->bank_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                             @foreach($bankLists as $bankList)
-                                                <option value="{{ $bankList->id }}_{{ $bankList->bank_code }}" {{ $bank->bank_id == $bankList->id ? 'selected' : '' }}>{{ $bankList->bank_name }}</option>
+                                                <option value="{{ $bankList->id }}_{{ $bankList->bank_code }}" {{ $bank->bank_id == $bankList->id . '_' . $bankList->bank_code ? 'selected' : '' }}>{{ $bankList->bank_name }}</option>
                                             @endforeach
                                         </select>
                                         <div class="error-message"></div>
@@ -1019,11 +1015,16 @@
         </div>
     </section>
 </div>
-
-@section('styles')
+@endsection
+<!-- Include Bootstrap 4 CSS and JS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     .form-step {
@@ -1108,4 +1109,185 @@
         border-top: 1px solid #ddd !important;
     }
 </style>
-@endsection
+
+<script>
+$(document).ready(function () {
+    // Initialize datepicker with consistent format
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayHighlight: true
+    }).on('changeDate', function (e) {
+        $(this).val(e.format('dd/mm/yyyy'));
+    });
+
+    // Define steps in order
+    const steps = ['personal', 'payroll', 'costcenter', 'contact', 'leave', 'superannuation', 'bank'];
+
+    // Function to update step visibility
+    function updateStep(currentStep) {
+        $('.form-step').removeClass('active').filter(`[data-step="${currentStep}"]`).addClass('active');
+        $('.step').removeClass('active').filter(`[data-step="${currentStep}"]`).addClass('active');
+        $('.prev-step').prop('disabled', currentStep === 'personal');
+        $('.next-step').toggle(currentStep !== 'bank');
+        if (currentStep === 'costcenter' && $('#department').val()) {
+            $('#department').trigger('change');
+        }
+        if (currentStep === 'superannuation' && $('#superannuation_id').val()) {
+            $('#superannuation_id').trigger('change');
+        }
+        if (currentStep === 'personal') {
+            $('#joining_date').datepicker('update');
+        }
+    }
+
+    // Client-side validation for cost center form
+    function validateCostCenterForm(form) {
+        const $form = $(form);
+        const $percentageFields = $form.find('input[name^="cost_center_share_percentage["]');
+        const selectedDepartments = $form.find('#department').val() || [];
+        const errors = [];
+
+        if (selectedDepartments.length > 1) {
+            let totalPercentage = 0;
+            const percentageKeys = [];
+            $percentageFields.each(function () {
+                const value = parseFloat($(this).val()) || 0;
+                totalPercentage += value;
+                const key = $(this).attr('name').match(/\[(\d+)\]/)[1];
+                percentageKeys.push(key);
+            });
+            if (Math.abs(totalPercentage - 100) > 0.01) {
+                errors.push('The sum of cost center share percentages must equal 100%.');
+                $form.find('#general_percentage_error').html('The sum of cost center share percentages must equal 100%.');
+            } else {
+                $form.find('#general_percentage_error').empty();
+            }
+            const departments = selectedDepartments.map(String);
+            const missingPercentageKeys = departments.filter(id => !percentageKeys.includes(id));
+            const extraPercentageKeys = percentageKeys.filter(id => !departments.includes(id));
+            if (missingPercentageKeys.length || extraPercentageKeys.length) {
+                errors.push('Each selected department must have a corresponding share percentage, and vice versa.');
+                $form.find('#general_percentage_error').append('<br>Each selected department must have a corresponding share percentage, and vice versa.');
+            }
+        } else if (selectedDepartments.length === 1) {
+            const percentageField = $percentageFields.first();
+            const value = parseFloat(percentageField.val()) || 0;
+            if (value !== 100) {
+                errors.push('When only one department is selected, its share percentage must be 100%.');
+                percentageField.addClass('error');
+                percentageField.next('.error-message').html('Percentage must be 100% for a single department.');
+            } else {
+                percentageField.removeClass('error');
+                percentageField.next('.error-message').empty();
+            }
+        }
+        $percentageFields.each(function () {
+            const value = $(this).val();
+            if (value === '' || isNaN(value) || parseFloat(value) < 0 || parseFloat(value) > 100) {
+                $(this).addClass('error');
+                $(this).next('.error-message').html('Percentage must be a number between 0 and 100.');
+                errors.push('Invalid percentage value.');
+            } else {
+                $(this).removeClass('error');
+                $(this).next('.error-message').empty();
+            }
+        });
+        return errors.length === 0;
+    }
+
+    // Handle department selection to dynamically generate share percentage fields
+    $('#department').on('change', function () {
+        const selectedDepartments = $(this).val() || [];
+        const $sharePercentageFields = $('#share_percentage_fields');
+        $sharePercentageFields.empty();
+        if (selectedDepartments.length > 0) {
+            selectedDepartments.forEach(function (deptId) {
+                const deptName = $(`#department option[value="${deptId}"]`).text();
+                const existingValue = $(`input[name="cost_center_share_percentage[${deptId}]"]`).val() || '';
+                $sharePercentageFields.append(`
+                    <div class="form-group">
+                        <label for="share_percentage_${deptId}">${deptName} Share Percentage</label>
+                        <input type="number" class="form-control" name="cost_center_share_percentage[${deptId}]" id="share_percentage_${deptId}" value="${existingValue}" min="0" max="100" step="0.01" required>
+                        <div class="error-message"></div>
+                    </div>
+                `);
+            });
+        }
+    });
+
+    // Handle superannuation selection to populate readonly fields
+    $('#superannuation_id, #empl_superannuation_id').on('change', function () {
+        const selectedOption = $(this).find('option:selected');
+        const superannuationData = selectedOption.data('superannuation') || {};
+        const contributionPercentageField = $(this).attr('id') === 'superannuation_id' ? '#employer_contribution_percentage_sup' : '#employer_contribution_percentage';
+        const contributionFixedAmountField = $(this).attr('id') === 'superannuation_id' ? '#employer_contribution_fixed_amount_sup' : '#employer_contribution_fixed_amount';
+        $(contributionPercentageField).val(superannuationData.employer_contribution_percentage || '');
+        $(contributionFixedAmountField).val(superannuationData.employer_contribution_fixed_amount || '');
+    });
+
+    // Calculate gross salary, total deduction, and net salary
+    function calculatePayroll() {
+        const annualSalary = parseFloat($('#annual_salary').val()) || 0;
+        const basicSalary = parseFloat($('#basic_salary').val()) || 0;
+        const houseRentAllowance = parseFloat($('#house_rent_allowance').val()) || 0;
+        const vehicleAllowance = parseFloat($('#vehicle_allowance').val()) || 0;
+        const mealsAllowance = $('#meals_tag').is(':checked') ? parseFloat($('#meals_allowance').val()) || 0 : 0;
+        const medicalAllowance = parseFloat($('#medical_allowance').val()) || 0;
+        const specialAllowance = parseFloat($('#special_allowance').val()) || 0;
+        const otherAllowance = parseFloat($('#other_allowance').val()) || 0;
+        const electricityAllowance = parseFloat($('#electricity_allowance').val()) || 0;
+        const securityAllowance = parseFloat($('#security_allowance').val()) || 0;
+        const taxDeduction = parseFloat($('#tax_deduction_a').val()) || 0;
+        const providentFundDeduction = parseFloat($('#provident_fund_deduction').val()) || 0;
+        const grossSalary = basicSalary + houseRentAllowance + vehicleAllowance + mealsAllowance + medicalAllowance + specialAllowance + otherAllowance + electricityAllowance + securityAllowance;
+        const totalDeduction = taxDeduction + providentFundDeduction;
+        const netSalary = grossSalary - totalDeduction;
+        $('#gross_salary').val(grossSalary.toFixed(2));
+        $('#total_deduction').val(totalDeduction.toFixed(2));
+        $('#net_salary').val(netSalary.toFixed(2));
+    }
+
+    // Trigger calculation on input change
+    $('#payrollDetailsForm').on('change input', 'input, select, checkbox', calculatePayroll);
+
+    // Handle Next button click
+    $('.next-step').on('click', function (e) {
+        e.preventDefault();
+        const currentForm = $(this).closest('form');
+        const currentStep = currentForm.find('input[name="step"]').val();
+        const nextStep = $(this).data('next');
+        currentForm.find('.error-message').empty();
+        currentForm.find('.form-control').removeClass('error');
+        let isValid = true;
+        currentForm.find('input[required], select[required]').each(function () {
+            if (!$(this).val()) {
+                $(this).addClass('error');
+                $(this).next('.error-message').html('This field is required.');
+                isValid = false;
+            } else {
+                $(this).removeClass('error');
+                $(this).next('.error-message').empty();
+            }
+        });
+        if (currentStep === 'costcenter' && !validateCostCenterForm(currentForm)) {
+            isValid = false;
+        }
+        if (!isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please correct the errors in the form.',
+            });
+            return;
+        }
+        updateStep(nextStep);
+    });
+
+    // Handle Previous button click
+    $('.prev-step').on('click', function (e) {
+        e.preventDefault();
+        const prevStep = $(this).data('prev');
+        updateStep(prevStep);
+    });
+</script>

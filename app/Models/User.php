@@ -65,4 +65,39 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function userDetails()
+    {
+        return $this->hasOne(UserDetail::class, 'user_id');
+    }
+
+    public function payroll()
+    {
+        return $this->hasOne(Payroll::class, 'user_id');
+    }
+
+    // public function costCenter()
+    // {
+    //     return $this->hasOne(CostCenter::class, 'employee_id');
+    // }
+
+    public function contact()
+    {
+        return $this->hasOne(EmployeeContact::class, 'employee_id');
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(EmployeeLeaveMst::class, 'emp_id');
+    }
+
+    public function superannuation()
+    {
+        return $this->hasOne(EmplSuperannuationRel::class, 'employee_id');
+    }
+
+    public function bank()
+    {
+        return $this->hasOne(EmployeeBankRel::class, 'emp_id');
+    }
 }
