@@ -49,6 +49,18 @@
               <button type="submit" class="btn btn-success">
                 <i class="fa fa-plus"></i> Import XLSX file
               </button>
+              <a class="btn btn-primary" href="{{ asset('sample/EmployeeAttendenceSheetV1.xlsx') }}" target="_blank">
+                  <i class="fa fa-download"></i> Download Sample Attendance Sheet
+              </a>
+            </div>
+            <div class="form-group">
+                <form id="generateAttendanceSheet" action="{{url('/hrm/attendance/generate')}}" method="POST">
+                  {{ csrf_field() }}
+                
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fa fa-plus"></i> Recalculate Attendance Sheet
+                    </button>
+                </form>
             </div>
           </form>
         </div>
@@ -56,14 +68,7 @@
         <!-- Form 2: Import CSV File -->
         <div class="col-md-6 mt-4">
           <!-- <form id="importAttendenceForm"  action="{{url('/hrm/attendance/upload_csv')}}" method="POST" enctype="multipart/form-data"> -->
-          <form id="generateAttendanceSheet" action="{{url('/hrm/attendance/generate')}}" method="POST">
-            {{ csrf_field() }}
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Generate Attendance Sheet
-              </button>
-            </div>
-          </form>
+         
         </div>
       </div>
       <!-- /.row -->

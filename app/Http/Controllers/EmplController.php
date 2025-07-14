@@ -613,22 +613,78 @@ class EmplController extends Controller {
         $superannuation = DB::table('empl_superannuation_rels')->where('employee_id', $id)->first();
         $bank = DB::table('employee_bank_rels')->where('emp_id', $id)->first();
 
+        
+
+        
+        // Fetch necessary data
+        $leaveCategories = LeaveCategory::where('publication_status', 1)->get();
+        $designations = Designation::where('deletion_status', 0)
+            ->where('publication_status', 1)
+            ->orderBy('designation', 'ASC')
+            ->select('id', 'designation')
+            ->get()
+            ->toArray();
+        $superannuations = DB::table('superannuations')
+            ->leftJoin('bank_list', 'bank_list.id', 'superannuations.bank_name')
+            ->leftJoin('bank_details', 'bank_details.bank_type', 'bank_list.id')
+            ->select('superannuations.*', 'bank_list.bank_name', 'bank_list.bank_code', 'bank_details.bank_detail_code', 'bank_details.bsb_number', 'bank_details.bank_address', 'bank_details.bank_phone', 'bank_details.employment_account_number')
+            ->get();
+        $bankDetails = BankDetail::all();
+        $bankLists = DB::table('bank_list')->get();
+        $roles = Role::all();
+        $loca_places = HraAreaPlace::query()
+            ->orderBy('loca_name', 'ASC')
+            ->orderBy('places', 'ASC')
+            ->get(['id', 'loca_name', 'places']);
+        $sumOfWorkingHours = WorkingDay::sum('working_hours');
+        $companies = DB::table('companies')
+            ->leftJoin('superannuations', 'superannuations.id', '=', 'companies.superannuation_id')
+            ->select('companies.*', 'superannuations.code', 'superannuations.name')
+            ->get();
+
         // Fetch dropdown data
-        $designations = DB::table('designations')->get()->toArray();
-        $roles = DB::table('roles')->get();
-        $leaveCategories = DB::table('leave_categories')->get();
         $superannuations = DB::table('superannuations')->get();
         $bankLists = DB::table('bank_list')->get();
         $costcenters = DB::table('cost_centers')->get();
         $departments = DB::table('departments')->get();
-        $loca_places = DB::table('pay_locations')->get();
-        $companies = DB::table('companies')->get();
+       
+        $emp_superannuation = DB::table('empl_superannuation_rels')
+            ->where('employee_id', $id)
+            ->select('empl_superannuation_rels.*')
+            ->first();
 
-        // Default working hours if payroll is null
-        $sumOfWorkingHours = $payroll->working_hours ?? 40;
+        $emp_costcentres = DB::table('employee_cost_centers')
+                        ->where('employee_id', $id)
+                        ->get(); // Fetch all rows
 
-        // Debugging payroll data (commented out to render view)
-        // dd($payroll);
+
+        $employee_leave = DB::table('employee_leave_msts')
+            ->where('emp_id', $id)
+            ->get()
+            ->keyBy('leave_category_id');
+
+        $employee_bank = DB::table('employee_bank_rels')
+            ->where('emp_id', $id)
+            ->select('employee_bank_rels.*')
+            ->first();
+
+            $cost_center = new \stdClass();
+
+            //location id
+            $cost_center->payroll_location_id = $emp_costcentres->pluck('payroll_location_id')->first();
+
+            //Pay Batch ID
+            $cost_center->payroll_batch_id = $emp_costcentres->pluck('payroll_batch_id')->first();
+
+            //Cost Center ID
+            $cost_center->cost_center_id = $emp_costcentres->pluck('cost_center_id')->first();
+
+            // Collect department IDs
+            $cost_center->department_ids = $emp_costcentres->pluck('department_id')->toArray();
+
+            // Create mapping: department_id => share_percentage
+            $cost_center->share_percentage = $emp_costcentres->pluck('share_percentage', 'department_id')->toArray();
+
 
         // Return view with compacted data
         return view('administrator.people.employee.edit_employee', compact(
@@ -648,7 +704,13 @@ class EmplController extends Controller {
             'departments',
             'loca_places',
             'companies',
-            'sumOfWorkingHours'
+            'sumOfWorkingHours',
+            'emp_superannuation',
+            'emp_costcentres',
+            'bankDetails',
+            'employee_leave',
+            'employee_bank',
+            'cost_center',
         ));
     }
 
@@ -659,59 +721,79 @@ class EmplController extends Controller {
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, User $employee)
+    public function update(Request $request, $id)
     {
+        // Fetch the User record
+        $employee = User::findOrFail($id);
+
         $step = $request->input('step');
+
+        // Define URL validation regex
+        $url = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
 
         switch ($step) {
             case 'personal':
                 $validator = Validator::make($request->all(), [
-                    'name' => 'required|string|max:255',
+                    'employee_id' => 'required|max:250',
+                    'name' => 'required|string|max:100',
+                    'father_name' => 'nullable|string|max:100',
+                    'mother_name' => 'nullable|string|max:100',
+                    'spouse_name' => 'nullable|string|max:100',
                     'gender' => 'required|in:m,f',
-                    'email' => 'required|email|max:255',
-                    'contact_no_one' => 'required|string|max:20',
+                    'marital_status' => 'nullable|in:1,2,3,4,5',
+                    'date_of_birth' => 'nullable|date_format:d/m/Y',
                     'designation_id' => 'required|exists:designations,id',
                     'joining_date' => 'required|date_format:d/m/Y',
+                    'end_date' => 'nullable|date_format:d/m/Y',
                     'branch' => 'required|exists:branches,id',
                     'role' => 'required|exists:roles,id',
                     'employee_type' => 'required|in:1,2,3,4,5',
                     'resident_status' => 'required|in:1,2',
-                    'present_address' => 'required|string|max:255',
-                    'date_of_birth' => 'nullable|date_format:d/m/Y',
-                    'end_date' => 'nullable|date_format:d/m/Y',
-                    'father_name' => 'nullable|string|max:255',
-                    'mother_name' => 'nullable|string|max:255',
-                    'spouse_name' => 'nullable|string|max:255',
-                    'marital_status' => 'nullable|in:1,2,3,4,5',
-                    'city_pr' => 'nullable|string|max:100',
-                    'state_pr' => 'nullable|string|max:100',
-                    'postcode_pr' => 'nullable|string|max:20',
-                    'country_pr' => 'nullable|string|max:100',
-                    'permanent_address' => 'nullable|string|max:255',
-                    'city' => 'nullable|string|max:100',
-                    'state' => 'nullable|string|max:100',
-                    'postcode' => 'nullable|string|max:20',
-                    'country' => 'nullable|string|max:100',
+                    'email' => 'required|email|max:100|unique:users,email,' . $employee->id,
+                    'contact_no_one' => 'required|string|max:20',
                     'emergency_contact' => 'nullable|string|max:20',
                     'passport_number' => 'nullable|string|max:50',
                     'visa_number' => 'nullable|string|max:50',
                     'academic_qualification' => 'nullable|string',
                     'professional_qualification' => 'nullable|string',
                     'experience' => 'nullable|string',
+                    'web' => 'nullable|max:150|regex:' . $url,
+                    'present_address' => 'required|string|max:250',
+                    'city_pr' => 'nullable|string|max:100',
+                    'state_pr' => 'nullable|string|max:100',
+                    'postcode_pr' => 'nullable|string|max:20',
+                    'country_pr' => 'nullable|string|max:100',
+                    'permanent_address' => 'nullable|string|max:250',
+                    'city' => 'nullable|string|max:100',
+                    'state' => 'nullable|string|max:100',
+                    'postcode' => 'nullable|string|max:20',
+                    'country' => 'nullable|string|max:100',
+                ], [
+                    'designation_id.required' => 'The designation field is required.',
+                    'contact_no_one.required' => 'The contact no field is required.',
+                    'web.regex' => 'The URL format is invalid.',
+                    'branch.required' => 'The branch field is required.',
+                    'date_of_birth.date_format' => 'The date of birth must be in DD/MM/YYYY format.',
+                    'joining_date.date_format' => 'The joining date must be in DD/MM/YYYY format.',
+                    'end_date.date_format' => 'The end date must be in DD/MM/YYYY format.',
                 ]);
 
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput()->with('step', 'personal');
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
                 }
 
                 $employee_data = [
+                    'employee_id' => $request->employee_id,
                     'name' => $request->name,
                     'father_name' => $request->father_name,
                     'mother_name' => $request->mother_name,
                     'spouse_name' => $request->spouse_name,
                     'gender' => $request->gender,
                     'marital_status' => $request->marital_status,
-                    'date_of_birth' => $request->date_of_birth ? Carbon::createFromFormat('d/m/Y', $request->date_of_birth)->format('Y-m-d') : null,
+                    'date_of_birth' => Carbon::createFromFormat('d/m/Y', $request->date_of_birth)->format('Y-m-d'),
                     'designation_id' => $request->designation_id,
                     'joining_date' => Carbon::createFromFormat('d/m/Y', $request->joining_date)->format('Y-m-d'),
                     'end_date' => $request->end_date ? Carbon::createFromFormat('d/m/Y', $request->end_date)->format('Y-m-d') : null,
@@ -727,9 +809,11 @@ class EmplController extends Controller {
                     'academic_qualification' => $request->academic_qualification,
                     'professional_qualification' => $request->professional_qualification,
                     'experience' => $request->experience,
+                    'web' => $request->web,
                 ];
 
                 $user_details_data = [
+                    'user_id' => $employee->id,
                     'present_address' => $request->present_address,
                     'city_pr' => $request->city_pr,
                     'state_pr' => $request->state_pr,
@@ -742,50 +826,81 @@ class EmplController extends Controller {
                     'country' => $request->country,
                 ];
 
-                \DB::beginTransaction();
+                DB::beginTransaction();
                 try {
                     $employee->update($employee_data);
-                    $employee->userDetails()->updateOrCreate(['employee_id' => $employee->id], $user_details_data);
-                    \DB::commit();
-                    Session::flash('success', 'Personal details updated successfully.');
+                    $employee->userDetails()->updateOrCreate(['user_id' => $employee->id], $user_details_data);
+                    DB::commit();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Personal details updated successfully.',
+                        'next_step' => 'payroll',
+                    ]);
                 } catch (\Exception $e) {
-                    \DB::rollBack();
-                    Session::flash('error', 'Failed to update personal details.');
+                    DB::rollBack();
+                    \Log::error('Failed to update personal details: ' . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'errors' => ['general' => 'Failed to update personal details.'],
+                    ], 500);
                 }
-                return redirect()->route('employees.edit', $employee->id)->with('step', 'payroll');
 
             case 'payroll':
+                 // Validate the request data
                 $validator = Validator::make($request->all(), [
-                    'tax_residency' => 'required|in:1,2',
-                    'annual_salary' => 'required|numeric|min:0',
+                    'tax_residency' => 'required|in:1,2', // Changed from resident_status to match form
                     'basic_salary' => 'required|numeric|min:0',
-                    'hrly_salary_rate' => 'required|numeric|min:0',
-                    'superannuation_id' => 'required|exists:superannuations,id',
-                    'hr_place' => 'nullable|exists:pay_locations,id',
-                    'hr_area' => 'nullable|string|max:255',
-                    'hra_type' => 'nullable|in:1,2,3',
-                    'hra_amount_per_week' => 'nullable|numeric|min:0',
                     'house_rent_allowance' => 'nullable|numeric|min:0',
-                    'va_type' => 'nullable|in:1,2,3',
-                    'vehicle_allowance' => 'nullable|numeric|min:0',
-                    'meals_tag' => 'nullable|boolean',
-                    'meals_allowance' => 'nullable|numeric|min:0',
                     'medical_allowance' => 'nullable|numeric|min:0',
                     'special_allowance' => 'nullable|numeric|min:0',
+                    'provident_fund_contribution' => 'nullable|numeric|min:0',
                     'other_allowance' => 'nullable|numeric|min:0',
+                    'provident_fund_deduction' => 'nullable|numeric|min:0',
+                    'other_deduction' => 'nullable|numeric|min:0',
+                    'no_of_dependent' => 'nullable|integer|min:0',
+                    'hrly_salary_rate' => 'required|numeric|min:0', // Made required to match form
+                    'overtime_hr' => 'nullable|numeric|min:0',
+                    'overtime_rate' => 'nullable|numeric|min:0',
+                    'overtime_amt' => 'nullable|numeric|min:0',
+                    'sales_comm' => 'nullable|numeric|min:0',
                     'electricity_allowance' => 'nullable|numeric|min:0',
                     'security_allowance' => 'nullable|numeric|min:0',
-                    'tax_deduction_a' => 'nullable|numeric|min:0',
-                    'no_of_dependent' => 'nullable|integer|min:0|max:5',
+                    'tax_deduction_a' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
+                    'tax_deduction_b' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
+                    'hr_place' => 'required|numeric',
+                    'hr_area' => 'required', // Changed to numeric to match form behavior
+                    'hra_type' => 'required|in:1,2,3',
+                    'hra_amount_per_week' => 'nullable|numeric|min:0',
+                    'va_type' => 'required|in:1,2,3',
+                    'vehicle_allowance' => 'nullable|numeric|min:0',
+                    'meals_tag' => 'nullable|in:1', // Changed to match checkbox value
+                    'meals_allowance' => 'nullable|numeric|min:0',
+                    'annual_salary' => 'required|numeric|min:0',
+                    'superannuation_id' => 'required|numeric', // Added to match form
                     'employer_contribution_percentage' => 'nullable|numeric|min:0',
-                    'provident_fund_deduction' => 'nullable|numeric|min:0',
+                ], [
+                    'tax_residency.required' => 'The tax residency field is required.',
+                    'employee_type.required' => 'The employee type field is required.',
+                    'basic_salary.required' => 'The basic salary field is required.',
+                    'hr_place.required' => 'The HR place field is required.',
+                    'hr_area.required' => 'The HR area field is required.',
+                    'hra_type.required' => 'The housing allowance type field is required.',
+                    'va_type.required' => 'The vehicle allowance type field is required.',
+                    'annual_salary.required' => 'The annual salary field is required.',
+                    'hrly_salary_rate.required' => 'The hourly salary rate field is required.',
+                    'superannuation_id.required' => 'The superannuation field is required.',
+                    'tax_deduction_a.regex' => 'The tax deduction A must have up to two decimal places.',
+                    'tax_deduction_b.regex' => 'The tax deduction B must have up to two decimal places.',
                 ]);
-
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput()->with('step', 'payroll');
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
                 }
 
                 $payroll_data = [
+                    'user_id' => $employee->id,
                     'resident_status' => $request->tax_residency,
                     'period_definition' => $request->period_definition,
                     'annual_salary' => $request->annual_salary,
@@ -812,69 +927,130 @@ class EmplController extends Controller {
                     'provident_fund_deduction' => $request->provident_fund_deduction,
                 ];
 
-                \DB::beginTransaction();
+                DB::beginTransaction();
                 try {
-                    $employee->payroll()->updateOrCreate(['employee_id' => $employee->id], $payroll_data);
-                    \DB::commit();
-                    Session::flash('success', 'Payroll details updated successfully.');
+                    $employee->payroll()->updateOrCreate(['user_id' => $employee->id], $payroll_data);
+                    DB::commit();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Payroll details updated successfully.',
+                        'next_step' => 'costcenter',
+                    ]);
                 } catch (\Exception $e) {
-                    \DB::rollBack();
-                    Session::flash('error', 'Failed to update payroll details.');
+                    DB::rollBack();
+                    \Log::error('Failed to update payroll details: ' . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'errors' => ['general' => 'Failed to update payroll details.'],
+                    ], 500);
                 }
-                return redirect()->route('employees.edit', $employee->id)->with('step', 'costcenter');
 
             case 'costcenter':
                 $validator = Validator::make($request->all(), [
                     'payroll_location' => 'required|exists:pay_locations,id',
                     'pay_batch_number' => 'required|exists:pay_batch_numbers,id',
-                    'cost_center' => 'required|exists:cost_centers,id',
-                    'department' => 'required|array',
+                    'cost_center' => 'required|exists:cost_centers,id', // Verify table name
+                    'department' => 'required|array|min:1',
                     'department.*' => 'exists:departments,id',
+                    'cost_center_share_percentage' => 'required|array',
                     'cost_center_share_percentage.*' => 'nullable|numeric|min:0|max:100',
                 ]);
 
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput()->with('step', 'costcenter');
+                    \Log::info('Costcenter validation failed: ' . json_encode($validator->errors()));
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
                 }
 
                 $departments = $request->department ?: [];
                 $share_percentages = $request->cost_center_share_percentage ?: [];
 
+                // Log input data for debugging
+                \Log::info('Costcenter input data: ', [
+                    'payroll_location' => $request->payroll_location,
+                    'pay_batch_number' => $request->pay_batch_number,
+                    'cost_center' => $request->cost_center,
+                    'department' => $departments,
+                    'cost_center_share_percentage' => $share_percentages,
+                ]);
+
+                // Validate percentage alignment and total
                 if (count($departments) > 1) {
-                    $total_percentage = array_sum($share_percentages);
+                    $total_percentage = array_sum(array_map('floatval', $share_percentages));
                     if (abs($total_percentage - 100) > 0.01) {
-                        return redirect()->back()->withErrors(['department' => 'The sum of cost center share percentages must equal 100%.'])->withInput()->with('step', 'costcenter');
+                        return response()->json([
+                            'success' => false,
+                            'errors' => ['cost_center_share_percentage' => 'The sum of cost center share percentages must equal 100%.'],
+                        ], 422);
                     }
                     foreach ($departments as $dept_id) {
-                        if (!isset($share_percentages[$dept_id]) || $share_percentages[$dept_id] < 0 || $share_percentages[$dept_id] > 100) {
-                            return redirect()->back()->withErrors(['department' => 'Invalid share percentage for department.'])->withInput()->with('step', 'costcenter');
+                        if (!isset($share_percentages[$dept_id]) || $share_percentages[$dept_id] === '' || $share_percentages[$dept_id] < 0 || $share_percentages[$dept_id] > 100) {
+                            return response()->json([
+                                'success' => false,
+                                'errors' => ['cost_center_share_percentage' => 'Invalid share percentage for department ' . $dept_id . '.'],
+                            ], 422);
                         }
                     }
                 } elseif (count($departments) === 1) {
-                    $dept_id = $departments[0];
-                    if (!isset($share_percentages[$dept_id]) || $share_percentages[$dept_id] != 100) {
-                        return redirect()->back()->withErrors(['department' => 'Share percentage must be 100% for a single department.'])->withInput()->with('step', 'costcenter');
+                    $dept_id = reset($departments);
+                    $percentage = floatval($share_percentages[$dept_id] ?? 0);
+                    if ($percentage != 100) {
+                        return response()->json([
+                            'success' => false,
+                            'errors' => ['cost_center_share_percentage' => 'Share percentage must be 100% for a single department.'],
+                        ], 422);
                     }
                 }
 
-                $cost_center_data = [
-                    'payroll_location_id' => $request->payroll_location,
-                    'payroll_batch_id' => $request->pay_batch_number,
-                    'cost_center_id' => $request->cost_center,
-                    'department_ids' => $departments,
-                    'share_percentage' => $share_percentages,
-                ];
-
-                \DB::beginTransaction();
-                try {
-                    $employee->costCenter()->updateOrCreate(['employee_id' => $employee->id], $cost_center_data);
-                    \DB::commit();
-                    Session::flash('success', 'Cost center details updated successfully.');
-                } catch (\Exception $e) {
-                    \DB::rollBack();
-                    Session::flash('error', 'Failed to update cost center details.');
+                // Validate department and percentage alignment
+                $departmentIds = array_map('strval', $departments);
+                $percentageKeys = array_keys($share_percentages);
+                if (array_diff($departmentIds, $percentageKeys) || array_diff($percentageKeys, $departmentIds)) {
+                    return response()->json([
+                        'success' => false,
+                        'errors' => ['cost_center_share_percentage' => 'Each selected department must have a corresponding share percentage, and vice versa.'],
+                    ], 422);
                 }
-                return redirect()->route('employees.edit', $employee->id)->with('step', 'contact');
+
+                DB::beginTransaction();
+                try {
+                    // Delete existing cost center assignments for the employee
+                    DB::table('employee_cost_centers')->where('employee_id', $employee->id)->delete();
+
+                    // Insert new cost center assignments
+                    $now = now();
+                    $insertData = [];
+                    foreach ($departments as $dept_id) {
+                        $insertData[] = [
+                            'employee_id' => $employee->id,
+                            'cost_center_id' => $request->cost_center,
+                            'department_id' => $dept_id,
+                            'share_percentage' => floatval($share_percentages[$dept_id] ?? 0),
+                            'payroll_location_id' => $request->payroll_location,
+                            'payroll_batch_id' => $request->pay_batch_number,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
+
+                    DB::table('employee_cost_centers')->insert($insertData);
+
+                    DB::commit();
+                    \Log::info('Cost center details updated successfully for employee_id: ' . $employee->id);
+                    return response()->json([
+                        'success' => true,
+                        'next_step' => 'contact',
+                    ]);
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    \Log::error('Failed to update cost center details for employee_id ' . $employee->id . ': ' . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
+                    return response()->json([
+                        'success' => false,
+                        'errors' => ['general' => 'Failed to update cost center details: ' . $e->getMessage()],
+                    ], 500);
+                }
 
             case 'contact':
                 $validator = Validator::make($request->all(), [
@@ -887,28 +1063,48 @@ class EmplController extends Controller {
                 ]);
 
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput()->with('step', 'contact');
+                    \Log::info('Contact validation failed: ' . json_encode($validator->errors()));
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
                 }
 
                 $contact_data = [
+                    'employee_id' => $employee->id,
                     'employee_contact_name' => $request->employee_contact_name,
                     'employee_contact_address' => $request->employee_contact_address,
                     'employee_contact_phone' => $request->employee_contact_phone,
                     'employee_contact_mobile' => $request->employee_contact_mobile,
                     'employee_contact_email' => $request->employee_contact_email,
                     'employee_contact_relationship' => $request->employee_contact_relationship,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
 
-                \DB::beginTransaction();
+                DB::beginTransaction();
                 try {
-                    $employee->contact()->updateOrCreate(['employee_id' => $employee->id], $contact_data);
-                    \DB::commit();
-                    Session::flash('success', 'Contact details updated successfully.');
+                    // Delete existing contact record for the employee
+                    DB::table('employee_contacts')->where('employee_id', $employee->id)->delete();
+
+                    // Insert new contact record
+                    DB::table('employee_contacts')->insert($contact_data);
+
+                    DB::commit();
+                    \Log::info('Contact details updated successfully for employee_id: ' . $employee->id);
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Contact details updated successfully.',
+                        'next_step' => 'leave',
+                    ]);
                 } catch (\Exception $e) {
-                    \DB::rollBack();
-                    Session::flash('error', 'Failed to update contact details.');
+                    DB::rollBack();
+                    \Log::error('Failed to update contact details for employee_id ' . $employee->id . ': ' . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
+                    return response()->json([
+                        'success' => false,
+                        'errors' => ['general' => 'Failed to update contact details: ' . $e->getMessage()],
+                    ], 500);
                 }
-                return redirect()->route('employees.edit', $employee->id)->with('step', 'leave');
 
             case 'leave':
                 $validator = Validator::make($request->all(), [
@@ -920,7 +1116,11 @@ class EmplController extends Controller {
                 ]);
 
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput()->with('step', 'leave');
+                    \Log::info('Leave validation failed: ' . json_encode($validator->errors()));
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
                 }
 
                 $leave_category_ids = $request->leave_category_id ?: [];
@@ -928,24 +1128,50 @@ class EmplController extends Controller {
                 $leave_types = $request->leave_type ?: [];
                 $leave_actives = $request->leave_active ?: [];
 
-                \DB::beginTransaction();
+                // Log input data for debugging
+                \Log::info('Leave input data: ', [
+                    'leave_category_id' => $leave_category_ids,
+                    'leave_balance' => $leave_balances,
+                    'leave_type' => $leave_types,
+                    'leave_active' => $leave_actives,
+                ]);
+
+                DB::beginTransaction();
                 try {
-                    $employee->leaves()->delete(); // Clear existing leaves
+                    // Delete existing leave records for the employee
+                    DB::table('employee_leave_msts')->where('emp_id', $employee->id)->delete();
+
+                    // Insert new leave records
+                    $now = now();
+                    $insertData = [];
                     foreach ($leave_category_ids as $index => $leave_id) {
-                        $employee->leaves()->create([
+                        $insertData[] = [
+                            'emp_id' => $employee->id,
                             'leave_category_id' => $leave_id,
-                            'leave_balance' => $leave_balances[$index] ?? 0,
-                            'leave_type' => $leave_types[$index] ?? '',
-                            'leave_active' => in_array($leave_id, $leave_actives) ? 1 : 0,
-                        ]);
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
                     }
-                    \DB::commit();
-                    Session::flash('success', 'Leave details updated successfully.');
+
+                    if (!empty($insertData)) {
+                        DB::table('employee_leave_msts')->insert($insertData);
+                    }
+
+                    DB::commit();
+                    \Log::info('Leave details updated successfully for employee_id: ' . $employee->id);
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Leave details updated successfully.',
+                        'next_step' => 'superannuation',
+                    ]);
                 } catch (\Exception $e) {
-                    \DB::rollBack();
-                    Session::flash('error', 'Failed to update leave details.');
+                    DB::rollBack();
+                    \Log::error('Failed to update leave details for employee_id ' . $employee->id . ': ' . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
+                    return response()->json([
+                        'success' => false,
+                        'errors' => ['general' => 'Failed to update leave details: ' . $e->getMessage()],
+                    ], 500);
                 }
-                return redirect()->route('employees.edit', $employee->id)->with('step', 'superannuation');
 
             case 'superannuation':
                 $validator = Validator::make($request->all(), [
@@ -959,72 +1185,142 @@ class EmplController extends Controller {
                 ]);
 
                 if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput()->with('step', 'superannuation');
+                    \Log::info('Superannuation validation failed: ' . json_encode($validator->errors()));
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
                 }
 
                 $superannuation_data = [
+                    'employee_id' => $employee->id,
                     'superannuation_id' => $request->superannuation_id,
                     'employer_superannuation_no' => $request->employer_superannuation_no,
-                    'employer_contribution_percentage' => $request->employer_contribution_percentage,
-                    'employer_contribution_fixed_amount' => $request->employer_contribution_fixed_amount,
+                    'employer_contribution_percentage' => floatval($request->employer_contribution_percentage ?? 0),
+                    'employer_contribution_fixed_amount' => floatval($request->employer_contribution_fixed_amount ?? 0),
                     'bank_name' => $request->bank_name,
                     'bank_address' => $request->bank_address,
                     'bank_account_number' => $request->bank_account_number,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
 
-                \DB::beginTransaction();
+                DB::beginTransaction();
                 try {
-                    $employee->superannuation()->updateOrCreate(['employee_id' => $employee->id], $superannuation_data);
-                    \DB::commit();
-                    Session::flash('success', 'Superannuation details updated successfully.');
+                    // Delete existing superannuation record for the employee
+                    DB::table('empl_superannuation_rels')->where('employee_id', $employee->id)->delete();
+
+                    // Insert new superannuation record
+                    DB::table('empl_superannuation_rels')->insert($superannuation_data);
+
+                    DB::commit();
+                    \Log::info('Superannuation details updated successfully for employee_id: ' . $employee->id);
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Superannuation details updated successfully.',
+                        'next_step' => 'bank',
+                    ]);
                 } catch (\Exception $e) {
-                    \DB::rollBack();
-                    Session::flash('error', 'Failed to update superannuation details.');
-                }
-                return redirect()->route('employees.edit', $employee->id)->with('step', 'bank');
-
-            case 'bank':
-                $validator = Validator::make($request->all(), [
-                    'bank_id' => 'nullable|string|max:255',
-                    'acct_no' => 'nullable|string|max:255',
-                    'swift_code' => 'nullable|string|max:50',
-                    'acct_name' => 'nullable|string|max:255',
-                    'acct_add' => 'nullable|string|max:255',
-                    'acct_city' => 'nullable|string|max:100',
-                    'acct_email' => 'nullable|email|max:255',
-                    'acct_ccode' => 'nullable|string|max:3',
-                ]);
-
-                if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput()->with('step', 'bank');
+                    DB::rollBack();
+                    \Log::error('Failed to update superannuation details for employee_id ' . $employee->id . ': ' . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
+                    return response()->json([
+                        'success' => false,
+                        'errors' => ['general' => 'Failed to update superannuation details: ' . $e->getMessage()],
+                    ], 500);
                 }
 
-                $bank_data = [
-                    'bank_id' => $request->bank_id,
-                    'account_no' => $request->acct_no,
-                    'swift_code' => $request->swift_code,
-                    'account_holder_name' => $request->acct_name,
-                    'address' => $request->acct_add,
-                    'city' => $request->acct_city,
-                    'email_address' => $request->acct_email,
-                    'country_code' => $request->acct_ccode,
-                ];
+                case 'bank':
+                    // Define the fields to check for emptiness
+                    $bank_fields = [
+                        'bank_id' => $request->bank_id,
+                        'acct_no' => $request->acct_no,
+                        'swift_code' => $request->swift_code,
+                        'acct_name' => $request->acct_name,
+                        'acct_add' => $request->acct_add,
+                        'acct_city' => $request->acct_city,
+                        'acct_email' => $request->acct_email,
+                        'acct_ccode' => $request->acct_ccode,
+                    ];
 
-                \DB::beginTransaction();
-                try {
-                    $employee->bank()->updateOrCreate(['employee_id' => $employee->id], $bank_data);
-                    \DB::commit();
-                    Session::flash('success', 'Employee details updated successfully.');
-                    return redirect()->route('employees.index'); // Redirect to employee list
-                } catch (\Exception $e) {
-                    \DB::rollBack();
-                    Session::flash('error', 'Failed to update bank details.');
-                    return redirect()->route('employees.edit', $employee->id)->with('step', 'bank');
-                }
+                    // Check if all fields are empty or null
+                    $all_empty = collect($bank_fields)->every(function ($value) {
+                        return is_null($value) || $value === '';
+                    });
 
+                    if ($all_empty) {
+                        \Log::info('Bank details empty for employee_id ' . $employee->id . ', skipping update.');
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Employee details updated successfully (no bank details provided).',
+                            'redirect' => route('employees.index'),
+                        ]);
+                    }
+
+                    // Validate if any field is provided
+                    $validator = Validator::make($request->all(), [
+                        'bank_id' => 'required|string|max:255',
+                        'acct_no' => 'required|string|max:255',
+                        'swift_code' => 'nullable|string|max:50',
+                        'acct_name' => 'required|string|max:255',
+                        'acct_add' => 'nullable|string|max:255',
+                        'acct_city' => 'nullable|string|max:100',
+                        'acct_email' => 'nullable|email|max:255',
+                        'acct_ccode' => 'nullable|string|max:3',
+                    ]);
+
+                    if ($validator->fails()) {
+                        \Log::info('Bank validation failed: ' . json_encode($validator->errors()));
+                        return response()->json([
+                            'success' => false,
+                            'errors' => $validator->errors(),
+                        ], 422);
+                    }
+
+                    $bank_data = [
+                        'emp_id' => $employee->id,
+                        'bank_id' => $request->bank_id,
+                        'account_no' => $request->acct_no,
+                        'swift_code' => $request->swift_code,
+                        'account_holder_name' => $request->acct_name,
+                        'address' => $request->acct_add,
+                        'city' => $request->acct_city,
+                        'email_address' => $request->acct_email,
+                        'country_code' => $request->acct_ccode,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    \Log::info('Bank data to update: ' . json_encode($bank_data));
+
+                    DB::beginTransaction();
+                    try {
+                        // Delete existing bank record for the employee
+                        DB::table('employee_bank_rels')->where('emp_id', $employee->id)->delete();
+
+                        // Insert new bank record
+                        DB::table('employee_bank_rels')->insert($bank_data);
+
+                        DB::commit();
+                        \Log::info('Bank details updated successfully for employee_id: ' . $employee->id);
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Employee details updated successfully.',
+                            'redirect' => route('employees.index'),
+                        ]);
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        \Log::error('Failed to update bank details for employee_id ' . $employee->id . ': ' . $e->getMessage() . "\nStack trace: " . $e->getTraceAsString());
+                        return response()->json([
+                            'success' => false,
+                            'errors' => ['general' => 'Failed to update bank details: ' . $e->getMessage()],
+                        ], 500);
+                    }
+            
             default:
-                Session::flash('error', 'Invalid step.');
-                return redirect()->route('employees.index');
+                return response()->json([
+                    'success' => false,
+                    'errors' => ['step' => 'Invalid step.'],
+                ], 422);
         }
     }
 

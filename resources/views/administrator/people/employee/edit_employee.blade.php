@@ -1,4 +1,3 @@
-```blade
 @extends('administrator.master')
 @section('title', __('Edit Employee'))
 
@@ -494,7 +493,7 @@
                                                 <td>
                                                     <select name="hr_place" id="hr_place" class="form-control">
                                                         <option value="" {{ isset($payroll->hr_place) && !$payroll->hr_place ? 'selected' : '' }}>{{ __('Select place for house allowance') }}</option>
-                                                        @if(isset($loca_places) && isset( $payroll->hr_place ))
+                                                        @if(isset($loca_places) && isset($payroll->hr_place))
                                                             @foreach($loca_places as $item)
                                                                 <option value="{{ $item->id }}" {{ $payroll->hr_place == $item->id ? 'selected' : '' }}>{{ $item->places }}</option>
                                                             @endforeach
@@ -640,7 +639,7 @@
                                                     <select id="empl_superannuation_id" name="superannuation_id" class="form-control" required>
                                                         <option value="">{{ __('Select Superannuation') }}</option>
                                                         @foreach($superannuations as $superannuation)
-                                                            <option value="{{ $superannuation->id }}" data-superannuation="{{ json_encode($superannuation) }}" {{ $payroll->superannuation_id == $superannuation->id ? 'selected' : '' }}>
+                                                            <option value="{{ $superannuation->id }}" data-superannuation="{{ json_encode($superannuation) }}" {{ $emp_superannuation->superannuation_id == $superannuation->id ? 'selected' : '' }}>
                                                                 {{ $superannuation->name }} ({{ $superannuation->code }})
                                                             </option>
                                                         @endforeach
@@ -710,7 +709,6 @@
                                     <tr>
                                         <td>
                                             <select name="payroll_location" id="payroll_location" class="form-control" required>
-                                                <option value="" {{ !$cost_center->payroll_location_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                 @foreach(\App\Models\PayLocation::all() as $location)
                                                     <option value="{{ $location->id }}" {{ $cost_center->payroll_location_id == $location->id ? 'selected' : '' }}>{{ $location->payroll_location_name }}</option>
                                                 @endforeach
@@ -719,7 +717,6 @@
                                         </td>
                                         <td>
                                             <select name="pay_batch_number" id="pay_batch_number" class="form-control" required>
-                                                <option value="" {{ !$cost_center->payroll_batch_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                 @foreach(\App\Models\PayBatchNumber::all() as $batch)
                                                     <option value="{{ $batch->id }}" {{ $cost_center->payroll_batch_id == $batch->id ? 'selected' : '' }}>{{ $batch->pay_batch_number_name }}</option>
                                                 @endforeach
@@ -728,7 +725,6 @@
                                         </td>
                                         <td>
                                             <select name="cost_center" id="cost_center" class="form-control" required>
-                                                <option value="" {{ !$cost_center->cost_center_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                                 @if(isset($costcenters))
                                                     @foreach($costcenters as $costcenter)
                                                         <option value="{{ $costcenter->id }}" {{ $cost_center->cost_center_id == $costcenter->id ? 'selected' : '' }}>{{ $costcenter->name }} - {{ $costcenter->cost_center_code }}</option>
@@ -738,30 +734,52 @@
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
-                                            <select name="department[]" id="department" class="form-control" multiple required>
+                                            <select name="department[]" class="form-control" multiple required>
                                                 <option value="" disabled>{{ __('Select one or more') }}</option>
                                                 @if(isset($departments))
                                                     @foreach($departments as $dept)
-                                                        <option value="{{ $dept->id }}" {{ in_array($dept->id, $cost_center->department_ids ?? []) ? 'selected' : '' }}>{{ $dept->department }}</option>
+                                                        <option value="{{ $dept->id }}"
+                                                            {{ in_array($dept->id, $cost_center->department_ids ?? []) ? 'selected' : '' }}>
+                                                            {{ $dept->department }}
+                                                        </option>
                                                     @endforeach
                                                 @endif
                                             </select>
+
                                             <div class="error-message"></div>
                                         </td>
+
                                         <td>
                                             <div id="share_percentage_fields">
+                                                
                                                 @if(isset($cost_center->department_ids) && $cost_center->department_ids)
                                                     @foreach($cost_center->department_ids as $deptId)
                                                         @php $dept = collect($departments)->firstWhere('id', $deptId); @endphp
+                                                    
                                                         <div class="form-group">
-                                                            <label for="share_percentage_{{ $deptId }}">{{ $dept ? $dept->department : 'Department' }} Share Percentage</label>
-                                                            <input type="number" class="form-control" name="cost_center_share_percentage[{{ $deptId }}]" id="share_percentage_{{ $deptId }}" value="{{ $cost_center->share_percentage[$deptId] ?? '' }}" min="0" max="100" step="0.01" required>
+                                                            <label for="share_percentage_{{ $deptId }}">
+                                                                {{ $dept ? $dept->department : 'Department' }} Share Percentage
+
+                                                            </label>
+                                                            <input type="number"
+                                                                class="form-control"
+                                                                name="cost_center_share_percentage[{{ $deptId }}]"
+                                                                id="share_percentage_{{ $deptId }}"
+                                                                 value="{{ old('cost_center_share_percentage.' . $deptId, $cost_center->share_percentage[(int)$deptId] ?? '') }}">
+                                                                min="0"
+                                                                max="100"
+                                                                step="0.01"
+                                                                required>
+
                                                             <div class="error-message"></div>
                                                         </div>
+                                                        <script>
+                                                            const sharePercentageMap = @json($cost_center->share_percentage ?? []);
+                                                        </script>
+
                                                     @endforeach
                                                 @endif
                                             </div>
-                                            <div class="error-message" id="general_percentage_error"></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -851,26 +869,45 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($leaveCategories as $leave)
-                                    @php $employee_leave = isset($leaves[$leave->id]) ? $leaves[$leave->id] : null; @endphp
+                               @foreach ($leaveCategories as $leave)
+                                    @php
+                                        $employee_leave_item = $leaves[$leave->id] ?? null;
+                                    @endphp
                                     <tr>
-                                        <td>{{ $leave->leave_category }}
+                                        <td>
+                                            {{ $leave->leave_category }}
                                             <input type="hidden" name="leave_category_id[]" value="{{ $leave->id }}">
                                         </td>
                                         <td>
-                                            <input type="number" id="leave_balance_{{ $leave->id }}" name="leave_balance[]" class="form-control" value="{{ $employee_leave->leave_balance ?? $leave->qty }}" readonly>
+                                            <input type="number"
+                                                id="leave_balance_{{ $leave->id }}"
+                                                name="leave_balance[]"
+                                                class="form-control"
+                                                value="{{ $leave->qty }}"
+                                                readonly>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
-                                            <input type="text" id="leave_type_{{ $leave->id }}" name="leave_type[]" class="form-control" value="{{ $employee_leave->leave_type ?? $leave->type_of_leave }}" readonly>
+                                            <input type="text"
+                                                id="leave_type_{{ $leave->id }}"
+                                                name="leave_type[]"
+                                                class="form-control"
+                                                value="{{ $leave->type_of_leave }}"
+                                                readonly>
                                             <div class="error-message"></div>
                                         </td>
                                         <td>
-                                            <input type="checkbox" id="leave_active_{{ $leave->id }}" name="leave_active[]" value="{{ $leave->id }}" class="form-control" {{ $employee_leave && $employee_leave->leave_active ? 'checked' : '' }}>
+                                            <input type="checkbox"
+                                                id="leave_active_{{ $leave->id }}"
+                                                name="leave_active[]"
+                                                value="{{ $leave->id }}"
+                                                class="form-control"
+                                                {{ $employee_leave_item ? 'checked' : '' }}>
                                             <div class="error-message"></div>
                                         </td>
                                     </tr>
                                 @endforeach
+
                             </tbody>
                         </table>
                     </div>
@@ -891,9 +928,9 @@
                     <div class="mb-3">
                         <label for="superannuation_id" class="form-label">{{ __('Superannuation') }} <span class="text-danger">*</span></label>
                         <select name="superannuation_id" id="superannuation_id" class="form-control" required>
-                            <option value="" {{ !$superannuation->superannuation_id ? 'selected' : '' }}>{{ __('Select Superannuation') }}</option>
+                            <option value="" {{ !$emp_superannuation->superannuation_id ? 'selected' : '' }}>{{ __('Select Superannuation') }}</option>
                             @foreach($superannuations as $super)
-                                <option value="{{ $super->id }}" data-superannuation="{{ json_encode($super) }}" {{ $superannuation->superannuation_id == $super->id ? 'selected' : '' }}>
+                                <option value="{{ $super->id }}" data-superannuation="{{ json_encode($super) }}" {{ $emp_superannuation->superannuation_id == $super->id ? 'selected' : '' }}>
                                     {{ $super->name }} ({{ $super->code }})
                                 </option>
                             @endforeach
@@ -903,10 +940,10 @@
                     <div class="mb-3">
                         <label for="employer_superannuation_no" class="form-label">{{ __('Employer Superannuation No') }} <span class="text-danger">*</span></label>
                         <select id="employer_superannuation_no" name="employer_superannuation_no" class="form-control" required>
-                            <option value="" {{ !$superannuation->employer_superannuation_no ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                            <option value="" {{ !$emp_superannuation->employer_superannuation_no ? 'selected' : '' }}>{{ __('Select one') }}</option>
                             @if($companies)
                                 @foreach($companies as $company)
-                                    <option value="{{ $company->superannuation_number }}" {{ $superannuation->employer_superannuation_no == $company->superannuation_number ? 'selected' : '' }}>{{ $company->superannuation_number }} - {{ $company->name }}</option>
+                                    <option value="{{ $company->superannuation_number }}" {{ $emp_superannuation->employer_superannuation_no == $company->superannuation_number ? 'selected' : '' }}>{{ $company->superannuation_number }} - {{ $company->name }}</option>
                                 @endforeach
                             @endif
                         </select>
@@ -914,36 +951,36 @@
                     </div>
                     <div class="mb-3">
                         <label for="employer_contribution_percentage_sup" class="form-label">{{ __('Employer Contribution (%)') }}</label>
-                        <input type="text" id="employer_contribution_percentage_sup" name="employer_contribution_percentage" value="{{ $superannuation->employer_contribution_percentage ?? '' }}" class="form-control" readonly>
+                        <input type="text" id="employer_contribution_percentage_sup" name="employer_contribution_percentage" value="{{ $emp_superannuation->employer_contribution_percentage ?? '' }}" class="form-control" readonly>
                         <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="employer_contribution_fixed_amount_sup" class="form-label">{{ __('Employer Fixed Contribution') }}</label>
-                        <input type="text" id="employer_contribution_fixed_amount_sup" name="employer_contribution_fixed_amount" value="{{ $superannuation->employer_contribution_fixed_amount ?? '' }}" class="form-control" readonly>
+                        <input type="text" id="employer_contribution_fixed_amount_sup" name="employer_contribution_fixed_amount" value="{{ $emp_superannuation->employer_contribution_fixed_amount ?? '' }}" class="form-control" readonly>
                         <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_name" class="form-label">{{ __('Employee Superannuation Bank Name (If any)') }}</label>
                         @if($bankLists)
                             <select name="bank_name" id="bank_name" class="form-control">
-                                <option value="" {{ !$superannuation->bank_name ? 'selected' : '' }}>{{ __('Select Bank') }}</option>
+                                <option value="" {{ !$emp_superannuation->bank_name ? 'selected' : '' }}>{{ __('Select Bank') }}</option>
                                 @foreach($bankLists as $bank)
-                                    <option value="{{ $bank->id }}" {{ $superannuation->bank_name == $bank->id ? 'selected' : '' }}>{{ $bank->bank_name }}</option>
+                                    <option value="{{ $bank->id }}" {{ $emp_superannuation->bank_name == $bank->id ? 'selected' : '' }}>{{ $bank->bank_name }}</option>
                                 @endforeach
                             </select>
                         @else
-                            <input type="text" name="bank_name" id="bank_name" class="form-control" value="{{ $superannuation->bank_name ?? '' }}" placeholder="{{ __('Enter bank name..') }}">
+                            <input type="text" name="bank_name" id="bank_name" class="form-control" value="{{ $emp_superannuation->bank_name ?? '' }}" placeholder="{{ __('Enter bank name..') }}">
                         @endif
                         <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_address" class="form-label">{{ __('Employee Superannuation Bank Address (If any)') }}</label>
-                        <input type="text" id="bank_address" name="bank_address" value="{{ $superannuation->bank_address ?? '' }}" class="form-control" placeholder="{{ __('Enter bank address..') }}">
+                        <input type="text" id="bank_address" name="bank_address" value="{{ $emp_superannuation->bank_address ?? '' }}" class="form-control" placeholder="{{ __('Enter bank address..') }}">
                         <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_account_number" class="form-label">{{ __('Employee Bank Account Number (If any)') }}</label>
-                        <input type="text" id="bank_account_number" name="bank_account_number" value="{{ $superannuation->bank_account_number ?? '' }}" class="form-control" placeholder="{{ __('Enter bank account number..') }}">
+                        <input type="text" id="bank_account_number" name="bank_account_number" value="{{ $emp_superannuation->bank_account_number ?? '' }}" class="form-control" placeholder="{{ __('Enter bank account number..') }}">
                         <div class="error-message"></div>
                     </div>
                 </div>
@@ -958,6 +995,19 @@
         <div class="form-step" data-step="bank">
             <form id="bankForm" method="post" action="{{ url('/people/employees/update/' . $employee->id) }}">
                 {{ csrf_field() }}
+                @php
+                    // Safely ensure $employee_bank is an object with default empty properties
+                    $employee_bank = $employee_bank ?? new \stdClass();
+                    $employee_bank->bank_id = $employee_bank->bank_id ?? '';   
+                    $employee_bank->account_no = $employee_bank->account_no ?? '';
+                    $employee_bank->swift_code = $employee_bank->swift_code ?? '';
+                    $employee_bank->account_holder_name = $employee_bank->account_holder_name ?? '';
+                    $employee_bank->address = $employee_bank->address ?? '';
+                    $employee_bank->city = $employee_bank->city ?? '';
+                    $employee_bank->email_address = $employee_bank->email_address ?? '';
+                    $employee_bank->country_code = $employee_bank->country_code ?? '';
+                @endphp
+
                 <input type="hidden" name="step" value="bank">
                 <div class="box-body">
                     <div class="card">
@@ -967,46 +1017,67 @@
                                     <strong class="d-block mb-2">{{ __('Select Bank') }} <span class="text-danger"></span></strong>
                                     @if($bankLists)
                                         <select class="form-control mb-3" name="bank_id" id="bank_id">
-                                            <option value="" {{ !$bank->bank_id ? 'selected' : '' }}>{{ __('Select one') }}</option>
+                                            <option value="">{{ __('Select one') }}</option>
                                             @foreach($bankLists as $bankList)
-                                                <option value="{{ $bankList->id }}_{{ $bankList->bank_code }}" {{ $bank->bank_id == $bankList->id . '_' . $bankList->bank_code ? 'selected' : '' }}>{{ $bankList->bank_name }}</option>
+                                                @php
+                                                    $bankValue = $bankList->id . '_' . $bankList->bank_code;
+                                                @endphp
+                                                <option value="{{ $bankValue }}"
+                                                    {{ $employee_bank->bank_id == $bankValue ? 'selected' : '' }}>
+                                                    {{ $bankList->bank_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                         <div class="error-message"></div>
                                     @endif
                                 </div>
+
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_no" id="acct_no" value="{{ $bank->account_no ?? '' }}" placeholder="{{ __('Account No') }}">
+                                    <input type="text" class="form-control" name="acct_no" id="acct_no"
+                                        value="{{ $employee_bank->account_no }}" placeholder="{{ __('Account No') }}">
                                     <div class="error-message"></div>
                                 </div>
+
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="swift_code" id="swift_code" value="{{ $bank->swift_code ?? '' }}" placeholder="{{ __('Swift Code') }}">
+                                    <input type="text" class="form-control" name="swift_code" id="swift_code"
+                                        value="{{ $employee_bank->swift_code }}" placeholder="{{ __('Swift Code') }}">
                                     <div class="error-message"></div>
                                 </div>
+
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_name" id="acct_name" value="{{ $bank->account_holder_name ?? '' }}" placeholder="{{ __('Account Name') }}">
+                                    <input type="text" class="form-control" name="acct_name" id="acct_name"
+                                        value="{{ $employee_bank->account_holder_name }}" placeholder="{{ __('Account Name') }}">
                                     <div class="error-message"></div>
                                 </div>
+
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_add" id="acct_add" value="{{ $bank->address ?? '' }}" placeholder="{{ __('Address') }}">
+                                    <input type="text" class="form-control" name="acct_add" id="acct_add"
+                                        value="{{ $employee_bank->address }}" placeholder="{{ __('Address') }}">
                                     <div class="error-message"></div>
                                 </div>
+
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" name="acct_city" id="acct_city" value="{{ $bank->city ?? '' }}" placeholder="{{ __('City') }}">
+                                    <input type="text" class="form-control" name="acct_city" id="acct_city"
+                                        value="{{ $employee_bank->city }}" placeholder="{{ __('City') }}">
                                     <div class="error-message"></div>
                                 </div>
+
                                 <div class="col-md-6 mb-3">
-                                    <input type="email" class="form-control" name="acct_email" id="acct_email" value="{{ $bank->email_address ?? '' }}" placeholder="{{ __('Email Address') }}">
+                                    <input type="email" class="form-control" name="acct_email" id="acct_email"
+                                        value="{{ $employee_bank->email_address }}" placeholder="{{ __('Email Address') }}">
                                     <div class="error-message"></div>
                                 </div>
+
                                 <div class="col-md-6 mb-3">
-                                    <input type="text" class="form-control" maxlength="3" name="acct_ccode" id="acct_ccode" value="{{ $bank->country_code ?? '' }}" placeholder="{{ __('Country Code') }}">
+                                    <input type="text" class="form-control" maxlength="3" name="acct_ccode" id="acct_ccode"
+                                        value="{{ $employee_bank->country_code }}" placeholder="{{ __('Country Code') }}">
                                     <div class="error-message"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="d-flex justify-content-between mt-2">
                     <button type="button" class="btn btn-secondary prev-step" data-prev="superannuation">{{ __('Previous') }}</button>
                     <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
@@ -1112,12 +1183,15 @@
 
 <script>
 $(document).ready(function () {
+    console.log('Start of script');
+
     // Initialize datepicker with consistent format
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy',
         autoclose: true,
         todayHighlight: true
     }).on('changeDate', function (e) {
+        // Ensure date is formatted correctly for submission
         $(this).val(e.format('dd/mm/yyyy'));
     });
 
@@ -1126,29 +1200,35 @@ $(document).ready(function () {
 
     // Function to update step visibility
     function updateStep(currentStep) {
+        console.log('Updating step to:', currentStep);
         $('.form-step').removeClass('active').filter(`[data-step="${currentStep}"]`).addClass('active');
         $('.step').removeClass('active').filter(`[data-step="${currentStep}"]`).addClass('active');
         $('.prev-step').prop('disabled', currentStep === 'personal');
         $('.next-step').toggle(currentStep !== 'bank');
-        if (currentStep === 'costcenter' && $('#department').val()) {
-            $('#department').trigger('change');
+        if (currentStep === 'costcenter' && $('select[name="department[]"]').val()) {
+            $('select[name="department[]"]').trigger('change');
         }
         if (currentStep === 'superannuation' && $('#superannuation_id').val()) {
             $('#superannuation_id').trigger('change');
         }
-        if (currentStep === 'personal') {
-            $('#joining_date').datepicker('update');
+        if (currentStep === 'personal' && $('#datepicker4').length) {
+            $('#datepicker4').datepicker('update');
         }
     }
 
     // Client-side validation for cost center form
     function validateCostCenterForm(form) {
+        console.log('Validating cost center form');
         const $form = $(form);
         const $percentageFields = $form.find('input[name^="cost_center_share_percentage["]');
-        const selectedDepartments = $form.find('#department').val() || [];
+        const selectedDepartments = $form.find('select[name="department[]"]').val() || [];
         const errors = [];
+        $form.find('#general_percentage_error').empty();
 
-        if (selectedDepartments.length > 1) {
+        if (selectedDepartments.length === 0) {
+            $form.find('#general_percentage_error').html('At least one department must be selected.');
+            errors.push('No departments selected.');
+        } else if (selectedDepartments.length > 1) {
             let totalPercentage = 0;
             const percentageKeys = [];
             $percentageFields.each(function () {
@@ -1160,8 +1240,6 @@ $(document).ready(function () {
             if (Math.abs(totalPercentage - 100) > 0.01) {
                 errors.push('The sum of cost center share percentages must equal 100%.');
                 $form.find('#general_percentage_error').html('The sum of cost center share percentages must equal 100%.');
-            } else {
-                $form.find('#general_percentage_error').empty();
             }
             const departments = selectedDepartments.map(String);
             const missingPercentageKeys = departments.filter(id => !percentageKeys.includes(id));
@@ -1193,31 +1271,35 @@ $(document).ready(function () {
                 $(this).next('.error-message').empty();
             }
         });
+        console.log('Cost center validation errors:', errors);
         return errors.length === 0;
     }
 
     // Handle department selection to dynamically generate share percentage fields
-    $('#department').on('change', function () {
+    $('select[name="department[]"]').on('change', function () {
         const selectedDepartments = $(this).val() || [];
         const $sharePercentageFields = $('#share_percentage_fields');
         $sharePercentageFields.empty();
+
         if (selectedDepartments.length > 0) {
             selectedDepartments.forEach(function (deptId) {
-                const deptName = $(`#department option[value="${deptId}"]`).text();
-                const existingValue = $(`input[name="cost_center_share_percentage[${deptId}]"]`).val() || '';
-                $sharePercentageFields.append(`
+                const deptName = $(`select[name="department[]"] option[value="${deptId}"]`).text().trim() || 'Department';
+                const existingValue = window.sharePercentageMap ? (window.sharePercentageMap[deptId] || '') : '';
+                const inputHTML = `
                     <div class="form-group">
-                        <label for="share_percentage_${deptId}">${deptName} Share Percentage</label>
+                        <label for="share_percentage_${deptId}">${$('<div>').text(deptName).html()} Share Percentage</label>
                         <input type="number" class="form-control" name="cost_center_share_percentage[${deptId}]" id="share_percentage_${deptId}" value="${existingValue}" min="0" max="100" step="0.01" required>
                         <div class="error-message"></div>
                     </div>
-                `);
+                `;
+                $sharePercentageFields.append(inputHTML);
             });
         }
     });
 
-    // Handle superannuation selection to populate readonly fields
+    // Handle superannuation selection
     $('#superannuation_id, #empl_superannuation_id').on('change', function () {
+        console.log('Superannuation selection changed:', $(this).val());
         const selectedOption = $(this).find('option:selected');
         const superannuationData = selectedOption.data('superannuation') || {};
         const contributionPercentageField = $(this).attr('id') === 'superannuation_id' ? '#employer_contribution_percentage_sup' : '#employer_contribution_percentage';
@@ -1226,8 +1308,9 @@ $(document).ready(function () {
         $(contributionFixedAmountField).val(superannuationData.employer_contribution_fixed_amount || '');
     });
 
-    // Calculate gross salary, total deduction, and net salary
+    // Calculate payroll
     function calculatePayroll() {
+        console.log('Calculating payroll');
         const annualSalary = parseFloat($('#annual_salary').val()) || 0;
         const basicSalary = parseFloat($('#basic_salary').val()) || 0;
         const houseRentAllowance = parseFloat($('#house_rent_allowance').val()) || 0;
@@ -1248,19 +1331,19 @@ $(document).ready(function () {
         $('#net_salary').val(netSalary.toFixed(2));
     }
 
-    // Trigger calculation on input change
     $('#payrollDetailsForm').on('change input', 'input, select, checkbox', calculatePayroll);
 
-    // Handle Next button click
-    $('.next-step').on('click', function (e) {
+    // Handle form submission with AJAX
+    $('.form-step form').on('submit', function (e) {
         e.preventDefault();
-        const currentForm = $(this).closest('form');
-        const currentStep = currentForm.find('input[name="step"]').val();
-        const nextStep = $(this).data('next');
-        currentForm.find('.error-message').empty();
-        currentForm.find('.form-control').removeClass('error');
+        const $form = $(this);
+        const currentStep = $form.find('input[name="step"]').val();
+        $form.find('.error-message').empty();
+        $form.find('.form-control').removeClass('error');
+
+        // Client-side validation
         let isValid = true;
-        currentForm.find('input[required], select[required]').each(function () {
+        $form.find('input[required], select[required]').each(function () {
             if (!$(this).val()) {
                 $(this).addClass('error');
                 $(this).next('.error-message').html('This field is required.');
@@ -1270,9 +1353,11 @@ $(document).ready(function () {
                 $(this).next('.error-message').empty();
             }
         });
-        if (currentStep === 'costcenter' && !validateCostCenterForm(currentForm)) {
+
+        if (currentStep === 'costcenter' && !validateCostCenterForm($form)) {
             isValid = false;
         }
+
         if (!isValid) {
             Swal.fire({
                 icon: 'error',
@@ -1281,13 +1366,93 @@ $(document).ready(function () {
             });
             return;
         }
-        updateStep(nextStep);
+
+        // Submit form via AJAX
+        $.ajax({
+            url: $form.attr('action'),
+            method: 'POST',
+            data: $form.serialize(),
+            dataType: 'json',
+            success: function (response) {
+                console.log('AJAX success:', response);
+                if (response.success) {
+                    if (currentStep === 'bank') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message || 'Employee details updated successfully.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            if (response.redirect) {
+                                window.location.href = response.redirect || '{{ url("/people/employees") }}';
+                            }
+                        });
+                    } else if (response.next_step) {
+                        updateStep(response.next_step);
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        html: Object.values(response.errors || {}).join('<br>'),
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.error('AJAX error:', xhr);
+                if (xhr.status === 422) {
+                    const errors = xhr.responseJSON.errors || {};
+                    $.each(errors, function (key, messages) {
+                        const field = $form.find(`[name="${key}"], [name="${key}[]"]`);
+                        if (field.length) {
+                            field.addClass('error');
+                            field.next('.error-message').html(messages.join('<br>'));
+                        } else {
+                            const matches = key.match(/^(cost_center_share_percentage)\[(\d+)\]$/);
+                            if (matches) {
+                                const fieldName = matches[1];
+                                const index = matches[2];
+                                $form.find(`[name="${fieldName}[${index}]"]`).addClass('error').next('.error-message').html(messages.join('<br>'));
+                            }
+                        }
+                    });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: 'Please correct the errors in the form.',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.errors?.general || xhr.responseJSON?.message || 'An error occurred. Please try again.',
+                    });
+                }
+            }
+        });
+    });
+
+    // Handle Next button click
+    $('.next-step').on('click', function (e) {
+        e.preventDefault();
+        console.log('Next button clicked');
+        const $form = $(this).closest('form');
+        $form.submit();
     });
 
     // Handle Previous button click
     $('.prev-step').on('click', function (e) {
         e.preventDefault();
+        console.log('Previous button clicked');
         const prevStep = $(this).data('prev');
         updateStep(prevStep);
     });
+
+    // Initialize the first step
+    console.log('Initializing first step');
+    updateStep('personal');
+
+    console.log('End of script');
+});
 </script>

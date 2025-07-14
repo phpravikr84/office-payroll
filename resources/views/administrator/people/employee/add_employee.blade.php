@@ -978,7 +978,7 @@
                                         <select class="form-control mb-3" name="bank_id" id="bank_id">
                                             <option value="" {{ !session('employee_data.bank.bank_id', old('bank_id')) ? 'selected' : '' }}>{{ __('Select one') }}</option>
                                             @foreach($bankLists as $bankList)
-                                                <option value="{{ $bankList->id }}_{{ $bankList->bank_code }}" {{ session('employee_data.bank.bank_id', old('bank_id')) == $bankList->id . '_' . $bankList->bank_code ? 'selected' : '' }}>{{ $bankList->bank_name }}</option>
+                                                <option value="{{ $bankList->id }}" {{ session('employee_data.bank.bank_id', old('bank_id')) == $bankList->id . '_' . $bankList->bank_code ? 'selected' : '' }}>{{ $bankList->bank_name }}</option>
                                             @endforeach
                                         </select>
                                         <div class="error-message"></div>
