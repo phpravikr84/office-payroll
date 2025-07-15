@@ -182,7 +182,13 @@
                                     <td>{{ $attendance->paid_hours }}</td>
                                     <td>{{ $attendance->created_at }}</td>
                                     <td>{{ $attendance->updated_at }}</td>
-                                    <td>{!! $statusBadge !!}</td>
+                                    <td>{!! $statusBadge !!}
+                                        <!-- @if(Auth::user()->user_type == 1)
+                                            <a href="{{ url('/hrm/attendance/edit_attendance/'.$attendance->attendance_id) }}" class="btn btn-xs btn-primary">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                        @endif -->
+                                    </td>
                                 </tr>
                                 @php $i++ @endphp
                             @endforeach

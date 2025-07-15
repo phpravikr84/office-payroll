@@ -406,6 +406,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('/manage', [AttendanceController::class, 'attendance_manage'])->name('attendance_manage');
 		Route::get('/edit/{id}', [AttendanceController::class, 'attendance_edit'])->name('attendance_edit');
 		Route::get('/report', [AttendanceController::class, 'report'])->name('report');
+		Route::get('/edit_attendance/{id}', [AttendanceController::class, 'attendance_edit_report'])->name('attendance_edit_report');
 		Route::post('/updated/{id}', [AttendanceController::class, 'update_new'])->name('update_new');
 		Route::get('/search', [AttendanceController::class, 'searchAttendance'])->name('search_attendance');
 		Route::post('/generate', [AttendanceController::class, 'generateAttendanceSheet'])->name('generate_attendance_sheet');

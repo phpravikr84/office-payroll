@@ -1902,6 +1902,9 @@ class EmplController extends Controller {
             // Insert into users table
             $userId = DB::table('users')->insertGetId([
                 'name' => $personal['name'],
+                'father_name' => $personal['father_name'] ?? null,
+                'mother_name' => $personal['mother_name'] ?? null,
+                'spouse_name' => $personal['spouse_name'] ?? null,
                 'gender' => $personal['gender'],
                 'marital_status' => $personal['marital_status'],
                 'date_of_birth' => $personal['date_of_birth'],
@@ -1924,7 +1927,7 @@ class EmplController extends Controller {
                 'user_type' => $personal['role'] ?? 2, // Default to 2 if not set
                 'passport_number' => $personal['passport_number'] ?? null,
                 'visa_number' => $personal['visa_number'] ?? null,
-                'created_by' => auth()->check() ? auth()->user()->id : 1,
+                //'created_by' => auth()->check() ? auth()->user()->id : 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -2006,15 +2009,38 @@ class EmplController extends Controller {
                     'user_id' => $userId,
                     'employee_type' => $personal['employee_type'],
                     'basic_salary' => $payroll['basic_salary'],
-                    'annual_salary' => $payroll['annual_salary'],
-                    'resident_status' => $personal['resident_status'],
+                    'house_rent_allowance' => $payroll['house_rent_allowance'] ?? null,
+                    'medical_allowance' => $payroll['medical_allowance'] ?? null,
+                    'special_allowance' => $payroll['special_allowance'] ?? null,
+                    'provident_fund_contribution' => $payroll['provident_fund_contribution'] ?? null,
+                    'other_allowance' => $payroll['other_allowance'] ?? null,
+                    'provident_fund_deduction' => $payroll['provident_fund_deduction'] ?? null,
+                    'other_deduction' => $payroll['other_deduction'] ?? null,
+                    'resident_status' => $payroll['tax_residency'],
+                    'no_of_dependent' => $payroll['no_of_dependent'] ?? null,
+                    'hrly_salary_rate' => $payroll['hrly_salary_rate'] ?? null,
+                    'overtime_hr' => $payroll['overtime_hr'] ?? null,
+                    'overtime_rate' => $payroll['overtime_rate'] ?? null,
+                    'overtime_amt' => $payroll['overtime_amt'] ?? null,
+                    'sales_comm' => $payroll['sales_comm'] ?? null,
+                    'electricity_allowance' => $payroll['electricity_allowance'] ?? null,
+                    'security_allowance' => $payroll['security_allowance'] ?? null,
+                    'tax_deduction_a' => $payroll['tax_deduction_a'] ?? null,
+                    'tax_deduction_b' => $payroll['tax_deduction_b'] ?? null,
                     'hr_place' => $payroll['hr_place'],
-                    'hr_area' => $payroll['hr_area'],
                     'hra_type' => $payroll['hra_type'],
+                    'hra_amount_per_week' => $payroll['hra_amount_per_week'] ?? null,
                     'va_type' => $payroll['va_type'],
+                    'vehicle_allowance' => $payroll['vehicle_allowance'] ?? null,
+                    'meals_tag' => $payroll['meals_tag'] ?? null,
+                    'meals_allowance' => $payroll['meals_allowance'] ?? null,
+                    'annual_salary' => $payroll['annual_salary'],
+                    'hr_area' => $payroll['hr_area'] ?? null,
+                    'empl_superannuation_id' => $payroll['empl_superannuation_id'] ?? null,
+                    'employer_contribution_percentage' => $payroll['employer_contribution_percentage'] ?? null,
                     'created_by' => auth()->check() ? auth()->user()->id : 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => now() ?? null,
+                    'updated_at' => now() ?? null,
                 ]);
                 DB::table('users')->where('id', $userId)->update(['user_payroll_rel_id' => $payrollId]);
                 Log::info('storeEmployee: Inserted into payrolls table', ['payroll_id' => $payrollId]);
@@ -2122,7 +2148,7 @@ class EmplController extends Controller {
             // Insert bank data
             if (isset($employeeData['bank']) && $employeeData['bank']['bank_id']!=0 && !empty(($employeeData['bank']))) {
                 $bank = $employeeData['bank'];
-                if (isset($bank['bank_id']) && $bank['bank_id'] && !DB::table('banks')->where('id', $bank['bank_id'])->exists()) {
+                if (isset($bank['bank_id']) && $bank['bank_id'] && !DB::table('bank_list')->where('id', $bank['bank_id'])->exists()) {
                     Log::error('storeEmployee: Invalid bank_id', ['bank_id' => $bank['bank_id']]);
                     throw new \Exception('Invalid bank_id');
                 }

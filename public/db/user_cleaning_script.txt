@@ -1,0 +1,41 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE user_details;
+TRUNCATE TABLE role_user;
+TRUNCATE TABLE payrolls;
+TRUNCATE TABLE pay_reference_update_loans;
+TRUNCATE TABLE pay_reference_update_leaves;
+TRUNCATE TABLE pay_reference_pay_slips;
+TRUNCATE TABLE pay_reference_pay_location_rels;
+TRUNCATE TABLE pay_reference_payitems;
+TRUNCATE TABLE pay_reference_emp_superannuation_rels;
+TRUNCATE TABLE pay_reference_empl_relations;
+TRUNCATE TABLE pay_reference_department_rels;
+TRUNCATE TABLE pay_references;
+TRUNCATE TABLE loan_payments;
+TRUNCATE TABLE loans;
+TRUNCATE TABLE leave_managements;
+TRUNCATE TABLE leave_applications;
+TRUNCATE TABLE increments;
+TRUNCATE TABLE expence_managements;
+TRUNCATE TABLE empl_superannuation_rels;
+TRUNCATE TABLE employee_relations;
+TRUNCATE TABLE employee_leave_msts;
+TRUNCATE TABLE employee_bank_rels;
+TRUNCATE TABLE employee_awards;
+TRUNCATE TABLE employee_cost_centers;
+TRUNCATE TABLE attendance_reports;
+TRUNCATE TABLE attendance_records;
+TRUNCATE TABLE attendances;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+DELETE FROM users WHERE user_type != 1;
+
+SET @max_id = (SELECT MAX(id) FROM users);
+SET @new_ai = IFNULL(@max_id, 0) + 1;
+SET @query = CONCAT('ALTER TABLE users AUTO_INCREMENT = ', @new_ai);
+PREPARE stmt FROM @query;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+

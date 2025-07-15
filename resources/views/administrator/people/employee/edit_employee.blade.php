@@ -775,6 +775,7 @@
                                                         </div>
                                                         <script>
                                                             const sharePercentageMap = @json($cost_center->share_percentage ?? []);
+                                                            console.log('sharePercentageMap:', sharePercentageMap);
                                                         </script>
 
                                                     @endforeach
@@ -1275,10 +1276,13 @@ $(document).ready(function () {
         return errors.length === 0;
     }
 
+    //On page load
+    
     // Handle department selection to dynamically generate share percentage fields
-    $('select[name="department[]"]').on('change', function () {
-        const selectedDepartments = $(this).val() || [];
-        const $sharePercentageFields = $('#share_percentage_fields');
+    const $departmentSelect = $('select[name="department[]"]');
+    const $sharePercentageFields = $('#share_percentage_fields');
+    function renderSharePercentageFields() {
+        const selectedDepartments = $departmentSelect.val() || [];
         $sharePercentageFields.empty();
 
         if (selectedDepartments.length > 0) {
@@ -1292,10 +1296,37 @@ $(document).ready(function () {
                         <div class="error-message"></div>
                     </div>
                 `;
+                console.log('Adding share percentage field for department:', deptId, 'with value:', existingValue);
                 $sharePercentageFields.append(inputHTML);
             });
         }
-    });
+    }
+
+    // Bind change event
+    $departmentSelect.on('change', renderSharePercentageFields);
+
+    // Trigger manually on load to populate fields if editing
+    renderSharePercentageFields();
+    // $('select[name="department[]"]').on('change', function () {
+    //     const selectedDepartments = $(this).val() || [];
+    //     const $sharePercentageFields = $('#share_percentage_fields');
+    //     $sharePercentageFields.empty();
+
+    //     if (selectedDepartments.length > 0) {
+    //         selectedDepartments.forEach(function (deptId) {
+    //             const deptName = $(`select[name="department[]"] option[value="${deptId}"]`).text().trim() || 'Department';
+    //             const existingValue = window.sharePercentageMap ? (window.sharePercentageMap[deptId] || '') : '';
+    //             const inputHTML = `
+    //                 <div class="form-group">
+    //                     <label for="share_percentage_${deptId}">${$('<div>').text(deptName).html()} Share Percentage</label>
+    //                     <input type="number" class="form-control" name="cost_center_share_percentage[${deptId}]" id="share_percentage_${deptId}" value="${existingValue}" min="0" max="100" step="0.01" required>
+    //                     <div class="error-message"></div>
+    //                 </div>
+    //             `;
+    //             $sharePercentageFields.append(inputHTML);
+    //         });
+    //     }
+    // });
 
     // Handle superannuation selection
     $('#superannuation_id, #empl_superannuation_id').on('change', function () {

@@ -183,6 +183,7 @@ class AttendanceController extends Controller {
 	 *  Edti Attendance
 	 */
 	public function attendance_edit(Request $request, $id){
+
 		  // Fetch the attendance record by ID
 		  $attendance = AttendanceRecord::findOrFail($id);
 
@@ -193,6 +194,23 @@ class AttendanceController extends Controller {
 
 		  // Pass the attendance record to the edit view
 		  return view('administrator.hrm.attendance.edit_attendance_new', compact('attendance'));
+	}
+
+	public function attendance_edit_report(Request $request, $id){
+		
+		  // Fetch the attendance record by ID
+		  //$attendance = AttendanceReport::findOrFail($id);
+		   $attendance = DB::table('attendance_reports')
+			->where('id', $id)
+			->first();	  		
+
+		  // In your controller, when fetching the attendance record
+			$attendance->in_time = \Carbon\Carbon::parse($attendance->in_time)->format('H:i');
+			$attendance->out_time = \Carbon\Carbon::parse($attendance->out_time)->format('H:i');
+
+
+		  // Pass the attendance record to the edit view
+		  return view('administrator.hrm.attendance.edit_attendance_new_rprt', compact('attendance'));
 	}
 
 	/**
@@ -401,7 +419,7 @@ class AttendanceController extends Controller {
 			 $attendanceRecords = DB::table('attendance_reports')
 			 ->leftJoin('leave_managements', 'attendance_reports.leave_id', '=', 'leave_managements.id')
 			 ->leftJoin('leave_categories', 'attendance_reports.leave_category_id', '=', 'leave_categories.id')
-			 ->select('attendance_reports.*', 'leave_managements.leave_type', 'leave_categories.leave_category')
+			 ->select('attendance_reports.*', 'attendance_reports.id as attendance_id', 'leave_managements.leave_type', 'leave_categories.leave_category')
 			 ->get();
 			 //dd($employees);
 			

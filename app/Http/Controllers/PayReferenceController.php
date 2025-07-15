@@ -232,6 +232,8 @@ class PayReferenceController extends Controller
             ->get();
         // $excludedEmployees = [];
 
+        //dd($excludedEmployees);
+
         //Check Leave Button Add Employee Exist
         $addLeaveButtonExist = $this->getLeaveDetailsByPayReference($pay_reference->id) ? $this->getLeaveDetailsByPayReference($pay_reference->id) : false;
 
@@ -591,10 +593,14 @@ class PayReferenceController extends Controller
     */
     public function showPaymentSlip(Request $request, $employee_id, $pay_ref_id)
     {
+       
         // Get pay period based on pay_ref_id from pay_references table
         $payReference = DB::table('pay_references')
-            ->where('id', $pay_ref_id)
-            ->first(['pay_period_start_date', 'pay_period_end_date']);
+                        ->select('pay_period_start_date', 'pay_period_end_date')
+                        ->where('id', $pay_ref_id)
+                        ->first();
+
+
 
         if (!$payReference) {
             // Handle for both AJAX and non-AJAX requests
@@ -609,7 +615,9 @@ class PayReferenceController extends Controller
             ->where('employee_id', $employee_id)
             ->whereBetween('attendance_date', [$payReference->pay_period_start_date, $payReference->pay_period_end_date])
             ->get();
-         
+
+        
+                    // Check if pay reference exists  
 
         // Check if attendance data exists
         if ($attendanceData->isEmpty()) {

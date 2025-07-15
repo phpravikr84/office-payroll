@@ -148,7 +148,7 @@ function updateDate2() {
             //format: "yyyy-mm-dd"
             dateFormat: "dd-mm-yy"
         });
-        $('#datepicker').datepicker('setDate', 'now');
+        //$('#datepicker').datepicker('setDate', 'now');
 
         //Date picker
         $('#datepicker2').datepicker({

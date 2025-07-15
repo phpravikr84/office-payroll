@@ -53,15 +53,6 @@
                   <i class="fa fa-download"></i> Download Sample Attendance Sheet
               </a>
             </div>
-            <div class="form-group">
-                <form id="generateAttendanceSheet" action="{{url('/hrm/attendance/generate')}}" method="POST">
-                  {{ csrf_field() }}
-                
-                    <button type="submit" class="btn btn-primary">
-                      <i class="fa fa-plus"></i> Recalculate Attendance Sheet
-                    </button>
-                </form>
-            </div>
           </form>
         </div>
 

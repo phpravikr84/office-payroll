@@ -40,41 +40,43 @@
                         </thead>
                         <tbody>
                             @foreach($pay_references as $pay_reference)
-                                @php
-                                    switch($pay_reference->payref_status){
-                                        case 1:
-                                            $status = "New";
-                                            break;
-                                        case 2:
-                                            $status = "Processing";
-                                            break;
-                                        case 3:
-                                            $status = "Complete";
-                                            break;
-                                        case 4:
-                                            $status = "Cancel";
-                                            break;
-                                        default:
-                                            $status = '';
-                                    }
-                                @endphp;
-                                <tr>
-                                    <td>{{ $pay_reference->id }}</td>
-                                    <td>{{ $pay_reference->pay_reference_name }}</td>
-                                    <td>{{ $pay_reference->pay_period_start_date }}</td>
-                                    <td>{{ $pay_reference->pay_period_end_date }}</td>
-                                    <td>{{ $pay_reference->branch_name }}</td>
-                                    <td>{{ $status }}</td>
-                                    <td>{{ $pay_reference->payroll_number }}</td>
-                                    <td>
-                                        @if($status!='Cancel')
-                                            <a href="{{ route('pay_references.payref.allpayslips', $pay_reference->id) }}" class="btn btn-success btn-sm">{{ __('View all payslips') }}</a>
-                                        @else
-                                            <span class="badge badge-danger">Payref Rejected</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @php
+                                switch($pay_reference->payref_status) {
+                                    case 1:
+                                        $status = 'New';
+                                        break;
+                                    case 2:
+                                        $status = 'Processing';
+                                        break;
+                                    case 3:
+                                        $status = 'Complete';
+                                        break;
+                                    case 4:
+                                        $status = 'Cancel';
+                                        break;
+                                    default:
+                                        $status = '';
+                                }
+                            @endphp
+                            <tr>
+                                <td>{{ $pay_reference->id }}</td>
+                                <td>{{ $pay_reference->pay_reference_name }}</td>
+                                <td>{{ $pay_reference->pay_period_start_date }}</td>
+                                <td>{{ $pay_reference->pay_period_end_date }}</td>
+                                <td>{{ $pay_reference->branch_name }}</td>
+                                <td>{{ $status }}</td>
+                                <td>{{ $pay_reference->payroll_number }}</td>
+                                <td>
+                                    @if($status !== 'Cancel')
+                                        <a href="{{ route('pay_references.payref.allpayslips', $pay_reference->id) }}" class="btn btn-success btn-sm">
+                                            {{ __('View all payslips') }}
+                                        </a>
+                                    @else
+                                        <span class="badge bg-danger">Payref Rejected</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>

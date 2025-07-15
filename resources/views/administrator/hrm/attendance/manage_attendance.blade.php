@@ -29,6 +29,15 @@
         <div class="row">
             <div class="col-md-12">
                 <!-- Add notification content here if needed -->
+                 <div class="form-group">
+                    <form id="generateAttendanceSheet" action="{{url('/hrm/attendance/generate')}}" method="POST">
+                    {{ csrf_field() }}
+                    
+                        <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-plus"></i> Generate Attendance Sheet
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
         <!-- /.Notification Box -->

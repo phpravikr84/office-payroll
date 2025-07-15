@@ -134,7 +134,7 @@
                                             <label for="date_of_birth">{{ __('Date of Birth') }}</label>
                                             <div class="form-group">
                                                 <div class="input-group">
-                                                    <input type="text" name="date_of_birth" class="form-control datepicker" value="{{ session('employee_data.personal.date_of_birth', old('date_of_birth')) }}" id="datepicker">
+                                                    <input type="text" name="date_of_birth" class="form-control datepicker" value="{{ session('employee_data.personal.date_of_birth', old('date_of_birth')) }}" id="datepicker" placeholder="{{ __('mm/dd/yyyy') }}">
                                                     <div class="input-group-append">
                                                         <!-- <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span> -->
                                                     </div>
@@ -173,7 +173,7 @@
                                             <label for="joining_date">{{ __('Joining Date') }}<span class="text-danger">*</span></label>
                                             <div class="form-group">
                                                 <div class="input-group date">
-                                                    <input type="text" name="joining_date" class="form-control datepicker" id="datepicker4" value="{{ session('employee_data.personal.joining_date', old('joining_date')) }}" placeholder="{{ __('dd/mm/yyyy') }}" required>
+                                                    <input type="text" name="joining_date" class="form-control datepicker" id="datepicker4" value="{{ session('employee_data.personal.joining_date', old('joining_date')) }}" placeholder="{{ __('mm/dd/yyyy') }}" required>
                                                     <!-- <span class="input-group-text calendar-icon"><i class="fa fa-calendar"></i></span> -->
                                                 </div>
                                                 <div class="error-message"></div>
@@ -947,12 +947,12 @@
                     </div>
                     <div class="mb-3">
                         <label for="bank_address" class="form-label">{{ __('Employee Superannuation Bank Address (If any)') }}</label>
-                        <input type="text" id="bank_address" name="bank_address" value="{{ session('employee_data.superannuation.bank_address', old('bank_address')) }}" class="form-control" placeholder="{{ __('Enter bank address..') }}">
+                        <input type="text" id="bank_address" name="bank_address" value="{{ session('employee_data.superannuation.bank_address', '') }}" class="form-control" placeholder="{{ __('Enter bank address..') }}">
                         <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
                         <label for="bank_account_number" class="form-label">{{ __('Employee Bank Account Number (If any)') }}</label>
-                        <input type="text" id="bank_account_number" name="bank_account_number" value="{{ session('employee_data.superannuation.bank_account_number', old('bank_account_number')) }}" class="form-control" placeholder="{{ __('Enter bank account number..') }}">
+                        <input type="text" id="bank_account_number" name="bank_account_number" value="{{ session('employee_data.superannuation.bank_account_number', '') }}" class="form-control" placeholder="{{ __('Enter bank account number..') }}">
                         <div class="error-message"></div>
                     </div>
                 </div>
